@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>无名树 · 产品原型</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234F7C55'/%3E%3Ccircle cx='23' cy='9' r='4' fill='%23F2C14E'/%3E%3Cpath d='M4 24c6-4 10-3 12-6 2 3 6 5 12 6' stroke='%23FBFAF5' stroke-width='2.4' fill='none'/%3E%3C/svg%3E">
+<style>
+*{box-sizing:border-box}
+:root{
+  --paper:#FBFAF5;--card:#FFFFFF;
+  --ink:#22302A;--ink-2:#5C6A61;--ink-3:#9AA69D;
+  --line:#ECE6D8;--line-2:#F4F0E4;
+  --green:#4F7C55;--green-2:#3B6042;--green-soft:#E7F1E2;
+  --yellow:#E8B03F;--yellow-soft:#FBEFCF;
+  --blue:#6FA8C7;--blue-soft:#E5F0F6;
+  --red:#D2705E;--red-soft:#F9E4DE;
+  --violet:#A98BB5;--violet-soft:#EFE7F2;
+  --round:"Yuanti SC","YouYuan","STYuanti","PingFang SC","Microsoft YaHei",sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+  --sh:0 1px 2px rgba(34,48,42,.05),0 10px 22px -14px rgba(34,48,42,.3);
+  --sh-s:0 1px 3px rgba(34,48,42,.07);
+}
+html,body{height:100%}
+body{margin:0;font-family:var(--sans);color:var(--ink);background:#EDEBE1;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;color:inherit}
+*:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+
+/* ---------- 桌面外壳 ---------- */
+.shell{min-height:100vh;display:flex;gap:56px;align-items:flex-start;justify-content:center;padding:34px 40px}
+.guide{width:248px;flex:0 0 248px;padding-top:4px}
+.gm{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.gmsvg{color:var(--green);display:flex}
+.gm h1{font-family:var(--round);font-size:19px;font-weight:400;letter-spacing:.06em;margin:0}
+.gcap{font-size:10.5px;letter-spacing:.08em;color:#8B9389;margin:0 0 28px 32px}
+.gl{display:flex;align-items:baseline;justify-content:space-between;gap:12px;width:100%;text-align:left;background:none;border:0;border-top:1px solid #DAD5C8;padding:13px 0;cursor:pointer;font-size:13px;color:#3A453E;transition:color .18s}
+.gl b{font-weight:400;font-family:var(--round)}
+.gl span{font-size:10.5px;color:#8B9389;letter-spacing:.03em}
+.gl:hover{color:var(--green)}
+.gnote{font-size:11px;line-height:1.9;color:#7E877F;margin-top:26px;border-top:1px solid #DAD5C8;padding-top:16px}
+
+/* ---------- 设备 ---------- */
+.device{position:relative;width:390px;flex:0 0 390px;height:min(844px,calc(100vh - 68px));background:var(--paper);border-radius:26px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 2px rgba(34,48,42,.08),0 30px 70px -16px rgba(34,48,42,.3)}
+.sbar{height:26px;flex:0 0 26px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:10.5px;letter-spacing:.03em;color:var(--ink-2);background:var(--paper)}
+.sbar .sg{display:flex;gap:4px;align-items:center;color:var(--ink-3)}
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;-webkit-overflow-scrolling:touch}
+.screen::-webkit-scrollbar{width:0}
+.dockwrap{flex:0 0 auto;background:var(--paper)}
+
+/* ---------- 顶部 ---------- */
+.hd{height:56px;display:flex;align-items:center;gap:4px;padding:0 14px;position:sticky;top:0;background:var(--paper);z-index:20}
+.hd .bk{width:38px;height:38px;flex:0 0 38px;display:flex;align-items:center;justify-content:center;background:#fff;border:0;cursor:pointer;color:var(--ink);border-radius:50%;box-shadow:var(--sh-s)}
+.hd .tt{font-family:var(--round);font-size:17px;letter-spacing:.03em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:6px}
+.hd .rt{display:flex;align-items:center;gap:4px;flex:0 0 auto}
+.hd .rt button{width:38px;height:38px;background:#fff;border:0;cursor:pointer;color:var(--green);display:flex;align-items:center;justify-content:center;border-radius:50%;box-shadow:var(--sh-s);padding:0}
+
+/* ---------- 通用 ---------- */
+.pad{padding:0 20px}
+.cd{background:var(--card);border-radius:18px;box-shadow:var(--sh);padding:16px}
+.sec-h{font-family:var(--round);font-size:13.5px;color:var(--ink);margin:26px 0 10px;display:flex;align-items:center;gap:8px}
+.sec-h::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);flex:0 0 7px}
+.rise{animation:rise .34s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.btn{border:0;font-size:15px;font-weight:500;height:48px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;transition:transform .12s,background .18s}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:var(--green);color:#fff;width:100%}
+.btn.primary:active{background:var(--green-2)}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line);width:100%}
+.btn.text{background:none;color:var(--ink-2);font-size:12.5px;height:auto;padding:8px 6px}
+
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;padding:3px 9px;border-radius:999px;line-height:1.55;white-space:nowrap;font-weight:500}
+.pill.green{background:var(--green-soft);color:var(--green-2)}
+.pill.yellow{background:var(--yellow-soft);color:#8A6420}
+.pill.blue{background:var(--blue-soft);color:#336A86}
+.pill.red{background:var(--red-soft);color:#A25445}
+.pill.gray{background:#F1EEE5;color:var(--ink-2)}
+.pill.line{background:#fff;border:1.5px solid var(--line);color:var(--ink-2);font-weight:400}
+
+.li{display:flex;align-items:center;gap:13px;width:100%;background:none;border:0;padding:14px 0;text-align:left;cursor:pointer;min-height:56px;border-bottom:1px solid var(--line-2)}
+.li:last-child{border-bottom:0}
+.li .ic{flex:0 0 36px;width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:var(--green-soft);color:var(--green-2)}
+.li .mai{flex:1;min-width:0}
+.li b{font-size:14.5px;font-weight:500;display:block;line-height:1.5}
+.li p{font-size:11.5px;color:var(--ink-3);margin:3px 0 0;line-height:1.6}
+.li .rt{flex:0 0 auto;color:var(--ink-3);display:flex;align-items:center;gap:7px;font-size:11px}
+
+.field{margin-bottom:18px}
+.field .lb{display:block;font-size:12px;font-weight:500;color:var(--ink-2);margin-bottom:7px}
+.field .lb i{font-style:normal;color:var(--red);margin-left:3px}
+.in{width:100%;border:1.5px solid var(--line);border-radius:12px;background:#fff;padding:12px 14px;font-size:15px;font-family:inherit;color:var(--ink);outline:none;transition:border-color .18s}
+.in::placeholder{color:#B6BDB4}
+.in:focus{border-color:var(--green)}
+textarea.in{resize:none;line-height:1.75}
+.hint{display:flex;align-items:flex-start;gap:6px;font-size:11px;color:var(--ink-3);margin-top:8px;line-height:1.7}
+.hint svg{flex:0 0 13px;margin-top:2px}
+
+.risk{display:flex;gap:9px;font-size:11.5px;line-height:1.75;color:var(--ink-2);background:#FFFBF0;border:1px solid #F2E4C2;border-radius:12px;padding:11px 13px}
+.risk b{font-weight:500;color:var(--ink)}
+.risk svg{flex:0 0 auto;margin-top:1px}
+
+.kv{display:flex;justify-content:space-between;gap:18px;padding:11px 0;border-bottom:1px solid var(--line-2)}
+.kv:last-child{border-bottom:0}
+.kv b{font-weight:400;font-size:11.5px;color:var(--ink-3);flex:0 0 auto}
+.kv span{font-size:13.5px;text-align:right;line-height:1.6}
+
+.sw{position:relative;display:inline-block;width:44px;height:26px;flex:0 0 44px}
+.sw input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;z-index:2}
+.sw .tr{position:absolute;inset:0;background:#DDD8C8;border-radius:999px;transition:background .2s}
+.sw .kn{position:absolute;top:3px;left:3px;width:20px;height:20px;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.16);transition:transform .22s cubic-bezier(.2,.8,.2,1)}
+.sw input:checked+.tr{background:var(--green)}
+.sw input:checked~.kn{transform:translateX(18px)}
+
+.seg{display:flex;gap:6px;background:#F0EDE2;padding:4px;border-radius:999px}
+.seg button{flex:1;background:none;border:0;padding:9px;font-size:13px;color:var(--ink-2);cursor:pointer;border-radius:999px;transition:background .18s,color .18s;min-height:40px}
+.seg button.on{background:#fff;color:var(--green-2);font-weight:500;box-shadow:var(--sh-s)}
+
+/* ---------- 首页 ---------- */
+.hero-card{position:relative;border-radius:22px;background:var(--green-soft);padding:20px 20px 0;min-height:230px;overflow:hidden}
+.hero-card .hk{font-size:10.5px;letter-spacing:.08em;color:#5D7A60;margin-bottom:12px}
+.hero-card .ht{font-family:var(--round);font-size:24px;font-weight:400;line-height:1.5;letter-spacing:.03em;margin:0;color:#2C4A33;position:relative;z-index:2}
+.hero-card .hs{position:absolute;right:-10px;bottom:-8px;pointer-events:none}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{display:flex;flex-direction:column;justify-content:space-between;text-align:left;border:0;border-radius:18px;padding:14px;min-height:112px;cursor:pointer;transition:transform .14s}
+.tile:active{transform:scale(.98)}
+.tile .ti{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.72);display:flex;align-items:center;justify-content:center}
+.tile .tn{display:block;font-family:var(--round);font-size:14.5px;font-weight:400;letter-spacing:.03em;line-height:1.4;margin-top:14px}
+.tile .ts{display:block;font-size:10.5px;color:var(--ink-2);margin-top:3px;line-height:1.5}
+.tile.g{background:var(--green-soft);color:#2C4A33}
+.tile.y{background:var(--yellow-soft);color:#7A5A18}
+.tile.b{background:var(--blue-soft);color:#2F6480}
+.tile.v{background:var(--violet-soft);color:#7A5F88}
+.annocard{display:flex;gap:12px;align-items:flex-start;background:#fff;border-radius:18px;padding:15px;box-shadow:var(--sh);margin-top:12px;cursor:pointer;text-align:left;border:0;width:100%}
+.annocard .ad{width:38px;height:38px;flex:0 0 38px;border-radius:11px;background:var(--yellow-soft);display:flex;align-items:center;justify-content:center;color:#A57B22}
+.annocard .ab{flex:1;min-width:0}
+.annocard b{font-family:var(--round);font-size:14.5px;font-weight:400;display:block;line-height:1.5}
+.annocard p{font-size:11px;color:var(--ink-3);margin:4px 0 0;line-height:1.6}
+.footq{font-family:var(--round);font-size:12.5px;line-height:1.9;color:var(--ink-3);text-align:center;margin:22px 0 28px}
+
+/* ---------- 树洞 ---------- */
+.postcard{background:#fff;border-radius:18px;padding:16px;box-shadow:var(--sh);margin-bottom:10px;cursor:pointer}
+.postcard h3{font-family:var(--round);font-size:16.5px;line-height:1.55;font-weight:400;letter-spacing:.02em;margin:0 0 8px}
+.postcard .bd{font-size:13px;line-height:1.8;color:var(--ink-2);margin:0 0 12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.postcard .ft{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:10.5px;color:var(--ink-3)}
+.postcard .ft .l{display:flex;align-items:center;gap:7px}
+.cnt{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;color:var(--ink-3)}
+.fl{display:flex;gap:11px;padding:0 0 18px}
+.fl .fav{width:30px;height:30px;flex:0 0 30px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--green-2);font-family:var(--round)}
+.fl .fbd{flex:1;min-width:0}
+.fl .fh{display:flex;align-items:center;gap:7px;font-size:10.5px;color:var(--ink-3);margin-bottom:6px}
+.fl p{font-size:13.5px;line-height:1.85;margin:0}
+.fl .sub{margin-top:9px;background:#F6F4EA;border-radius:12px;padding:10px 12px;font-size:12.5px;line-height:1.8;color:var(--ink-2)}
+
+/* ---------- 资源库 ---------- */
+.fd{display:flex;align-items:center;gap:13px;width:100%;background:#fff;border:0;border-radius:16px;padding:14px;text-align:left;cursor:pointer;box-shadow:var(--sh);margin-bottom:9px}
+.fd .fi{flex:0 0 38px;width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--blue-soft);color:#3D7C9B}
+.fd .fm{flex:1;min-width:0}
+.fd b{font-size:14px;font-weight:500;display:block;line-height:1.5}
+.fd p{font-size:11px;color:var(--ink-3);margin:3px 0 0;line-height:1.6}
+.fd .n{flex:0 0 auto;font-size:10.5px;color:var(--ink-3);background:#F1EEE5;border-radius:999px;padding:2px 8px}
+
+/* ---------- 活动 ---------- */
+.chips{display:flex;gap:8px;padding:2px 20px 14px;overflow-x:auto;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chipx{flex:0 0 auto;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:7px 13px;font-size:12px;color:var(--ink-2);cursor:pointer;transition:all .16s}
+.chipx.on{background:var(--green);border-color:var(--green);color:#fff;font-weight:500}
+.actcard{display:block;width:100%;background:#fff;border:0;border-radius:20px;overflow:hidden;box-shadow:var(--sh);margin-bottom:12px;cursor:pointer;text-align:left;padding:0}
+.cover{height:88px;position:relative;display:flex;align-items:center;justify-content:center}
+.cover .dt{position:absolute;left:12px;top:12px;background:rgba(255,255,255,.94);border-radius:999px;font-size:10.5px;padding:3px 9px;color:var(--ink);font-weight:500;letter-spacing:.02em}
+.cover .qt{position:absolute;right:12px;top:12px;background:rgba(255,255,255,.94);border-radius:999px;font-size:10.5px;padding:3px 9px;font-weight:500}
+.ainfo{padding:13px 15px 15px}
+.ainfo h4{font-family:var(--round);font-size:16px;font-weight:400;line-height:1.5;margin:0 0 6px;letter-spacing:.02em}
+.ainfo p{font-size:11px;color:var(--ink-3);margin:0 0 9px;line-height:1.6}
+.ainfo .m{display:flex;align-items:center;gap:7px;font-size:10.5px;color:var(--ink-2)}
+.tabs{display:flex;gap:8px;padding:0 20px 16px}
+.tabs button{background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:7px 14px;font-size:12px;color:var(--ink-2);cursor:pointer}
+.tabs button.on{background:var(--green);border-color:var(--green);color:#fff;font-weight:500}
+
+/* ---------- 档案 ---------- */
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.ph{aspect-ratio:1;border-radius:12px;position:relative;overflow:hidden}
+.ph .mk{position:absolute;left:5px;bottom:5px;font-size:9px;color:#fff;letter-spacing:.02em;background:rgba(0,0,0,.28);padding:1px 5px;border-radius:999px}
+.ph .nb{position:absolute;right:4px;top:4px;font-size:8px;color:#8A4B3E;background:rgba(255,255,255,.92);padding:1px 4px;border-radius:4px;max-width:calc(100% - 8px);line-height:1.5}
+.wk{display:flex;align-items:center;gap:12px;width:100%;background:#fff;border:0;border-radius:14px;padding:11px;text-align:left;cursor:pointer;box-shadow:var(--sh-s);margin-bottom:8px}
+.wk .th{width:42px;height:42px;flex:0 0 42px;border-radius:10px;background:var(--yellow-soft)}
+.wk .wm{flex:1;min-width:0}
+.wk b{font-size:13px;font-weight:500;display:block;line-height:1.5}
+.wk p{font-size:10.5px;color:var(--ink-3);margin:2px 0 0}
+.note{background:#fff;border-radius:16px;padding:14px;box-shadow:var(--sh);margin-bottom:9px;position:relative}
+.note .who{display:flex;align-items:center;gap:7px;font-size:10.5px;color:var(--ink-3);margin-bottom:8px}
+.note .who b{font-weight:500;color:var(--green-2);font-family:var(--round);font-size:12px}
+.note p{font-size:13.5px;line-height:1.9;color:var(--ink);margin:0}
+
+/* ---------- 私信 ---------- */
+.msg{max-width:76%;font-size:13.5px;line-height:1.75;padding:10px 13px;margin:7px 0;border-radius:16px}
+.msg.them{background:#fff;box-shadow:var(--sh-s);border-bottom-left-radius:6px;margin-right:auto}
+.msg.me{background:var(--green);color:#fff;border-bottom-right-radius:6px;margin-left:auto}
+.mtime{font-size:10px;color:var(--ink-3);text-align:center;padding:14px 0 4px;letter-spacing:.04em}
+
+/* ---------- 底栏 ---------- */
+.tb{display:flex;background:var(--paper);border-top:1px solid var(--line);padding-bottom:2px}
+.tb button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;padding:9px 0 8px;font-size:9.5px;letter-spacing:.05em;color:var(--ink-3);cursor:pointer}
+.tb button.on{color:var(--green-2);font-weight:500}
+.tb button svg{width:21px;height:21px}
+.dock{padding:12px 20px 14px;background:var(--paper);border-top:1px solid var(--line)}
+.dockrow{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
+.dockrow .pr{font-family:var(--round);font-size:17px;color:var(--ink)}
+.dockrow .lo{font-size:11px;color:var(--ink-3)}
+
+/* ---------- 弹层 ---------- */
+.ov{position:absolute;inset:0;background:rgba(34,48,42,.36);display:flex;align-items:flex-end;z-index:50;animation:fade .18s ease}
+.ov.center{align-items:center;justify-content:center}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.sheet{width:100%;background:var(--paper);border-radius:22px 22px 0 0;padding:20px 20px 24px;animation:up .26s cubic-bezier(.2,.8,.2,1);max-height:82%;overflow:auto}
+@keyframes up{from{transform:translateY(22px)}to{transform:none}}
+.sheet h4{font-family:var(--round);font-size:17px;font-weight:400;margin:0 0 6px}
+.sheet .sp2{font-size:11.5px;color:var(--ink-2);line-height:1.7;margin:0 0 8px}
+.dialog{width:304px;background:var(--paper);border-radius:20px;padding:22px}
+.dialog h4{font-family:var(--round);font-size:16.5px;font-weight:400;margin:0 0 8px}
+.dialog p{font-size:12.5px;line-height:1.8;color:var(--ink-2);margin:0}
+.acts{display:flex;gap:9px;margin-top:20px}
+.acts .btn{flex:1}
+.rrow{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line-2);font-size:13.5px;cursor:pointer;min-height:46px}
+.rrow:last-child{border-bottom:0}
+.rrow input{accent-color:var(--green);width:17px;height:17px}
+.toast{position:absolute;left:50%;bottom:118px;transform:translate(-50%,8px);background:#22302A;color:#FBFAF5;font-size:12px;padding:9px 15px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:60;max-width:78%;text-align:center;line-height:1.5}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.empty{text-align:center;padding:56px 10px;color:var(--ink-3)}
+.empty svg{margin-bottom:10px;color:#CFD6CB}
+.empty p{font-size:12.5px;line-height:1.8;margin:0}
+.body p{font-size:14px;line-height:1.9;margin:0 0 13px;color:var(--ink)}
+.body p:last-child{margin-bottom:0}
+.body .lead{font-family:var(--round);font-size:15.5px;line-height:1.95;color:var(--ink);letter-spacing:.02em}
+.bul{margin:0 0 12px;padding-left:0;list-style:none;font-size:13.5px;line-height:1.9}
+.bul li{display:flex;gap:9px;margin:5px 0}
+.bul li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);margin-top:11px;flex:0 0 6px}
+
+@media (max-width:480px){
+  .shell{padding:0;gap:0;display:block;min-height:100dvh}
+  .guide{display:none}
+  .device{width:100vw;height:100dvh;border-radius:0;box-shadow:none}
+  .sbar{height:12px;flex-basis:12px}
+  .sbar .sg,.sbar .st{display:none}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="guide" aria-label="原型导览">
+    <div class="gm"><span class="gmsvg"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 19c4-3 7-2.4 8.5-4.6 1.6 2.4 4.6 3.6 8.5 4.6"/><circle cx="16.6" cy="7" r="2.6"/></svg></span><h1>无名树</h1></div>
+    <p class="gcap">产品原型 · 2026 秋</p>
+    <button class="gl" data-go="gate"><b>01　入群与审核</b><span>邀请码</span></button>
+    <button class="gl" data-go="home"><b>02　首页与四个入口</b><span>今日</span></button>
+    <button class="gl" data-go="hollow"><b>03　树洞发帖与回应</b><span>匿名</span></button>
+    <button class="gl" data-go="activities"><b>04　活动报名与档案</b><span>5 场</span></button>
+    <button class="gl" data-go="settings"><b>05　我的与隐私设置</b><span>免打扰</span></button>
+    <p class="gnote">点任意一项可直接跳到该流程。发帖、回应、报名都会真的写进数据。</p>
+  </aside>
+  <div class="device">
+    <div class="sbar"><span class="st">9:41</span><span class="sg"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 18V9M8 18V6M13 18V8M18 18V4"/></svg><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="9" width="15" height="8" rx="2"/><path d="M20 11v4"/></svg></span></div>
+    <div class="screen" id="screen"></div>
+    <div class="dockwrap" id="dockwrap"></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </div>
+</div>
+<script>
+/* ===== 图标（1.6px 圆一点） ===== */
+var I={};
+(function(){
+  var P={
+    back:'<path d="M20 12H5M11 6l-6 6 6 6"/>',
+    arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+    lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8.5 11V8.5a3.5 3.5 0 0 1 7 0V11"/>',
+    chat:'<path d="M20 6H4v11h5v3.6l4-3.6h7z"/>',
+    art:'<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 16l4.5-4.5 3.5 3.5 3-3 5 5"/><circle cx="8.5" cy="9.5" r="1.4"/>',
+    cal:'<rect x="4" y="6" width="16" height="15" rx="2"/><path d="M4 10.5h16M9 3v4M15 3v4"/>',
+    gear:'<circle cx="12" cy="12" r="3.3"/><path d="M12 3.5v2.8M12 17.7v2.8M3.5 12h2.8M17.7 12h2.8M6 6l2 2M16 16l2 2M18 6l-2 2M8 16l-2 2"/>',
+    user:'<circle cx="12" cy="8" r="3.4"/><path d="M4.6 20c1.2-4 4-6 7.4-6s6.2 2 7.4 6"/>',
+    send:'<path d="M21.5 2.5L10.5 13.5"/><path d="M21.5 2.5l-8.5 19-2.5-8-8-2.5z"/>',
+    check:'<path d="M4.5 12.5l4.5 4.5L19.5 6"/>',
+    clock:'<circle cx="12" cy="12" r="8.4"/><path d="M12 7v5.2l3.8 2"/>',
+    close:'<path d="M6 6l12 12M18 6L6 18"/>',
+    book:'<path d="M12 6.5c-2-1.6-5-2.1-8-1.6v14c3-.5 6 .1 8 1.6 2-1.5 5-2.1 8-1.6v-14c-3-.5-6 0-8 1.6z"/><path d="M12 6.5v14"/>',
+    folder:'<path d="M3.5 6.5h6.5l2 2.5h8.5v10.5h-17z"/>',
+    search:'<circle cx="10.5" cy="10.5" r="6.4"/><path d="M15.4 15.4L21 21"/>',
+    plus:'<path d="M12 4.5v15M4.5 12h15"/>',
+    bell:'<path d="M6.5 17V11a5.5 5.5 0 0 1 11 0v6M4.5 17h15M9.8 20a2.3 2.3 0 0 0 4.4 0"/>',
+    leaf:'<path d="M5 19c0-7 5-12 14-13-1 9-6 13-14 13z"/><path d="M5 19l7-7"/>',
+    heart:'<path d="M12 20.4S4.8 15.8 4.8 10.8A3.7 3.7 0 0 1 12 8.4a3.7 3.7 0 0 1 7.2 2.4c0 5-7.2 9.6-7.2 9.6z"/>',
+    home:'<path d="M4 11l8-7 8 7"/><path d="M6.5 10v10h11v-10"/>'
+  };
+  Object.keys(P).forEach(function(k){
+    I[k]=function(o){o=o||20;return '<svg viewBox="0 0 24 24" width="'+o+'" height="'+o+'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+P[k]+'</svg>';};
+  });
+  I.dots=function(o){o=o||19;return '<svg viewBox="0 0 24 24" width="'+o+'" height="'+o+'" fill="currentColor" aria-hidden="true"><circle cx="5.5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18.5" cy="12" r="1.6"/></svg>';};
+})();
+
+/* ===== 状态 ===== */
+var S={
+  view:'gate',params:{},
+  anon:true,strangerDM:false,quiet:'22:00–07:00',nick:'LU',
+  enrolled:{},filter:'all',atab:'detail',
+  draft:{t:'',b:'',anon:true}
+};
+var hist=[];
+
+/* ===== 数据（全部虚构示例） ===== */
+var DATA={
+  posts:[
+    {id:'p1',t:'孩子今天第一次愿意爬上那棵树',b:'在基地东边那棵歪脖子树，他在下面站了差不多二十分钟，一直摸树皮。最后爬上去两米，没敢再高。下来的时候手在抖，但他自己在笑。',anon:true,time:'2 小时前',n:12,mine:false},
+    {id:'p2',t:'昨天他爸说了一句「你就是惯的」',b:'我没吵。回了房间，坐在地上哭了一会儿。今天早上起来，还是我送他去的基地。有些话我没办法跟身边的人说，只能说在这里。',anon:true,time:'昨天 21:40',n:23,mine:false},
+    {id:'p3',t:'一到周一就说肚子疼，去医院查了两次',b:'各项指标都正常。医生说是压力性腹痛。我不知道该松手还是该推一把，这两件事每天都在我脑子里打架。',anon:true,time:'昨天 09:12',n:31,mine:false},
+    {id:'p4',t:'今天没去学校，我们在河边坐了一下午',b:'他捡了一堆石头，一个一个往水里扔，说听声音。回家路上他说想吃上次那个面。我没提学校的事。',anon:false,who:'青禾',time:'前天',n:8,mine:false}
+  ],
+  replies:{
+    p1:[
+      {who:'山雀',anon:true,time:'2 小时前',tx:'手抖但是自己在笑，这个画面我能记很久。',lv:1},
+      {who:'LU',anon:true,time:'1 小时前',tx:'我们家也是从两米开始的。不用急。',lv:1},
+      {who:'山雀',anon:true,time:'1 小时前',tx:'谢谢。今天没问他在学校怎么样，忍住了。',lv:2},
+      {who:'青禾',anon:false,time:'40 分钟前',tx:'树皮那个触感对他可能是个很重要的锚点，别急着往上。',lv:1}
+    ],
+    p2:[
+      {who:'小满',anon:true,time:'昨天 22:05',tx:'那句「惯的」我也听过。听的时候不觉得什么，晚上躺下才难受。',lv:1},
+      {who:'LU',anon:true,time:'昨天 22:30',tx:'你没有跟他吵，已经很用力在护着孩子了。',lv:1}
+    ],
+    p3:[
+      {who:'青禾',anon:false,time:'昨天 09:40',tx:'压力性腹痛很常见，别先怀疑自己。先看看周一早上具体是哪个环节让他紧。',lv:1},
+      {who:'山雀',anon:true,time:'昨天 10:02',tx:'我们家的是一到周日晚上就开始。后来发现是书包。',lv:1}
+    ],
+    p4:[]
+  },
+  notices:[
+    {id:'n1',t:'秋季四场活动开放预报名',d:'11.01',from:'管理员 · 木',pin:true},
+    {id:'n2',t:'社群公约更新：关于「不评价别人孩子」',d:'10.18',from:'管理员 · 木',pin:false}
+  ],
+  noticeBody:{
+    n1:'<p class="lead">这个秋天，基地备好了落叶、故事和无尽的探索。四场活动已开放预报名，名额有限，按报名顺序确认。</p><p>野外生存（11.14）、PBL 共建（11.21）、家长沙龙（11.28）、戏剧营（12.05，名额已满，可加入等待名单）、家乡推荐官（01.09）。</p><p>每场活动的报名表里都有一个「孩子特殊关照备注」栏，只有本次带队老师能看到，不进入任何社群可见区域。</p><p>如果孩子当天状态不适合上山，随时可以不来，不扣名额。这句话是认真的。</p>',
+    n2:'<p class="lead">公约只有一条被反复强调：不要评价别人的孩子，也不要在别人的帖子里给建议，除非对方明确说了「想听听大家怎么说」。</p><p>这里很多人是在别的地方被评价过太多次，才来到这里的。</p><p>举报入口在每条帖子的右上角。举报人不会被对方知道。</p>'
+  },
+  folders:[
+    {id:'f1',t:'入学适应与拒学',n:14,d:'从「不想去」到「不能去」之间的那段路',open:true},
+    {id:'f2',t:'情绪与身体反应',n:11,d:'腹痛、失眠、抽动、躯体化',open:true},
+    {id:'f3',t:'自然教育与户外',n:9,d:'基地活动设计、装备、风险边界',open:true},
+    {id:'f4',t:'本期活动资料',n:6,d:'仅本季报名成员可见',open:false},
+    {id:'f5',t:'家长自荐读物',n:8,d:'成员自己读过、愿意推荐的',open:true}
+  ],
+  files:{
+    f1:[
+      {id:'d1',t:'第一次陪他去基地，我在门口站了四十分钟',by:'山雀',d:'10.26',type:'家长笔记'},
+      {id:'d2',t:'和班主任沟通的三种开口方式',by:'青禾',d:'10.20',type:'经验整理'},
+      {id:'d3',t:'「不上学」这件事，家里其他人怎么说',by:'小满',d:'10.12',type:'讨论存档'}
+    ],
+    f2:[
+      {id:'d4',t:'孩子说肚子疼的时候，我试过的四句话',by:'LU',d:'10.28',type:'家长笔记'},
+      {id:'d5',t:'关于躯体化，我们能查到的有限资料',by:'青禾',d:'10.15',type:'资料合集'}
+    ],
+    f4:[
+      {id:'d6',t:'11.14 野外生存 · 装备清单与集合点',by:'管理员 · 木',d:'11.02',type:'活动文件'},
+      {id:'d7',t:'11.21 PBL 共建 · 基地平面图（打印用）',by:'管理员 · 木',d:'11.02',type:'活动文件'}
+    ]
+  }
+};
+
+/* ===== 工具 ===== */
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function findAct(id){for(var i=0;i<DATA.acts.length;i++){if(DATA.acts[i].id===id){return DATA.acts[i];}}return null;}
+function findPost(id){for(var i=0;i<DATA.posts.length;i++){if(DATA.posts[i].id===id){return DATA.posts[i];}}return null;}
+function findFolder(id){for(var i=0;i<DATA.folders.length;i++){if(DATA.folders[i].id===id){return DATA.folders[i];}}return null;}
+function anonTag(){return '<span class="pill gray">匿名</span>';}
+var toastEl=document.getElementById('toast'),toastTimer=null;
+function toast(t){
+  toastEl.textContent=t;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){toastEl.classList.remove('show');},2100);
+}
+function hd(t,right){
+  return '<div class="hd"><button class="bk" data-back aria-label="返回">'+I.back(20)+'</button>'
+    +'<div class="tt">'+esc(t)+'</div><div class="rt">'+(right||'')+'</div></div>';
+}
+function bottom(h){return '<!--DOCK-->'+h;}
+function tabbar(){
+  var items=[['home','home','首页'],['hollow','chat','树洞'],['activities','cal','活动'],['library','book','资源'],['me','user','我的']];
+  return '<div class="tb">'+items.map(function(x){
+    var on=(S.view===x[0])||(x[0]==='hollow'&&(S.view==='post'||S.view==='compose'));
+    return '<button data-nav="'+x[0]+'" class="'+(on?'on':'')+'">'+I[x[1]](21)+'<span>'+x[2]+'</span></button>';
+  }).join('')+'</div>';
+}
+/* 首页手绘风景 */
+function scene(){
+  return '<svg viewBox="0 0 210 132" width="196" height="122" aria-hidden="true">'
+    +'<circle cx="170" cy="26" r="14" fill="#F0C153"/>'
+    +'<ellipse cx="40" cy="31" rx="13" ry="9" fill="#FFFFFF"/><ellipse cx="56" cy="34" rx="8" ry="6" fill="#FFFFFF"/>'
+    +'<path d="M92 104L128 66L166 104Z" fill="#7FA47F"/>'
+    +'<path d="M28 104L80 48L134 104Z" fill="#5E8A60"/>'
+    +'<path d="M0 104C58 98 152 98 210 104V132H0Z" fill="#C6D8BE"/>'
+    +'<path d="M162 104V86" stroke="#4F7C55" stroke-width="3"/>'
+    +'<circle cx="162" cy="78" r="9" fill="#7FA47F"/><circle cx="154" cy="84" r="7" fill="#8FB08A"/><circle cx="170" cy="84" r="7" fill="#8FB08A"/>'
+  +'</svg>';
+}
+/* 活动封面图形 */
+function art(kind,size){
+  var w='stroke="#fff" stroke-opacity=".92" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"';
+  var s='<svg viewBox="0 0 120 80" width="'+(size||104)+'" height="'+(size?Math.round(size*0.66):72)+'" aria-hidden="true">';
+  if(kind==='peak'){
+    s+='<circle cx="94" cy="20" r="8" fill="#FBEFCF"/>'
+      +'<path d="M10 64L42 28L72 64" '+w+'/>'
+      +'<path d="M52 64L78 38L104 64" '+w+' fill="#fff" fill-opacity=".26"/>';
+  }else if(kind==='sign'){
+    s+='<rect x="32" y="16" width="56" height="36" rx="5" '+w+' fill="#fff" fill-opacity=".22"/>'
+      +'<path d="M60 52v12" '+w+'/>'
+      +'<path d="M42 28h36M42 38h22" '+w+' stroke-opacity=".7"/>';
+  }else if(kind==='stage'){
+    s+='<path d="M12 8v58c14-3 20-17 20-29s-6-26-20-29z" fill="#fff" fill-opacity=".26" stroke="#fff" stroke-opacity=".8" stroke-width="2"/>'
+      +'<path d="M108 8v58c-14-3-20-17-20-29s6-26 20-29z" fill="#fff" fill-opacity=".26" stroke="#fff" stroke-opacity=".8" stroke-width="2"/>'
+      +'<path d="M60 30l4.5 9 10 1.5-7 7 1.7 10-9.2-4.8-9.2 4.8 1.7-10-7-7 10-1.5z" fill="#FBEFCF"/>';
+  }else if(kind==='lantern'){
+    s+='<path d="M54 12h12M54 58h12" '+w+' stroke-opacity=".75"/>'
+      +'<ellipse cx="60" cy="35" rx="17" ry="21" '+w+' fill="#fff" fill-opacity=".3"/>'
+      +'<path d="M45 35h30" '+w+' stroke-opacity=".55"/>'
+      +'<path d="M60 58v10M54 70h12" '+w+' stroke-opacity=".7"/>';
+  }else{
+    s+='<path d="M18 20h44v26H34l-9 8v-8H18z" '+w+' fill="#fff" fill-opacity=".24"/>'
+      +'<path d="M62 38h38v20H78l-8 7v-7H62z" '+w+'/>';
+  }
+  return s+'</svg>';
+}
+
+/* ===== 视图：入群 ===== */
+function vGate(){
+  return '<div class="pad" style="padding-top:44px;padding-bottom:24px">'
+    +'<div style="margin-bottom:20px">'+scene()+'</div>'
+    +'<h1 style="font-family:var(--round);font-size:27px;font-weight:400;letter-spacing:.07em;margin:0 0 12px;color:#2C4A33">无名树</h1>'
+    +'<p style="font-size:13px;line-height:1.95;color:var(--ink-2);margin:0 0 34px">一个不评判、不外传的家长社群。<br>只接受已有成员的邀请。</p>'
+    +'<div class="field"><label class="lb" for="g-code">邀请码<i>*</i></label><input class="in" id="g-code" placeholder="6 位，向邀请你的成员索取" autocomplete="off"></div>'
+    +'<div class="field"><label class="lb" for="g-nick">你想用的昵称<i>*</i></label><input class="in" id="g-nick" placeholder="不必用真名" autocomplete="off"><p class="hint" style="margin-top:7px">进群后所有人都只看到这个昵称，手机号不会展示。</p></div>'
+    +'<label class="rrow" style="border-bottom:0;padding:6px 0 2px"><input type="checkbox" id="g-agree"><span style="font-size:12.5px;line-height:1.7;color:var(--ink-2)">我已读过社群公约：不评价别人的孩子，不把这里的话带到外面。</span></label>'
+    +'<div style="height:24px"></div>'
+    +'<button class="btn primary" data-act="apply">提交申请</button>'
+    +'<p style="font-size:11px;line-height:1.9;color:var(--ink-3);margin-top:16px">管理员人工审核，通常 1 天内回复。未通过不会保留你填写的任何内容。</p>'
+    +'</div>';
+}
+function vGateOk(){
+  return '<div class="pad" style="padding-top:78px;text-align:center">'
+    +'<div style="width:64px;height:64px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;color:var(--green)">'+I.check(26)+'</div>'
+    +'<h1 style="font-family:var(--round);font-size:22px;font-weight:400;letter-spacing:.05em;margin:0 0 12px">申请已提交</h1>'
+    +'<p style="font-size:12.5px;line-height:1.95;color:var(--ink-2);margin:0 auto;max-width:270px">管理员会核对邀请码再放行。通过后你只会收到一条通知。</p>'
+    +'<div style="height:32px"></div>'
+    +'<button class="btn ghost" data-act="pass">模拟管理员通过</button>'
+    +'<p style="font-size:11px;line-height:1.9;color:var(--ink-3);margin-top:18px;text-align:left">演示用：真实产品里这一步在后台完成，家长端看不到这个按钮。</p>'
+    +'</div>';
+}
+
+/* ===== 视图：首页 ===== */
+function vHome(){
+  var tiles=[
+    ['hollow','chat','树洞互助','12 条新回应','g'],
+    ['activities','cal','活动专区','秋季 4 场开放','y'],
+    ['library','book','资源库','42 份资料','b'],
+    ['me','user','我的','1 个报名','v']
+  ];
+  return '<div class="pad" style="padding-top:14px">'
+    +'<div class="hero-card rise">'
+      +'<div class="hk">11.07 · 立冬</div>'
+      +'<h1 class="ht">今天不必<br>勉强自己。</h1>'
+      +'<div class="hs">'+scene()+'</div>'
+    +'</div>'
+    +'<div class="grid2" style="margin-top:12px">'
+    +tiles.map(function(t){
+      return '<button class="tile '+t[4]+'" data-nav="'+t[0]+'">'
+        +'<span class="ti">'+I[t[1]](19)+'</span>'
+        +'<span><span class="tn">'+t[2]+'</span><span class="ts">'+t[3]+'</span></span>'
+      +'</button>';
+    }).join('')
+    +'</div>'
+    +'<button class="annocard" data-nav="notice">'
+      +'<span class="ad">'+I.bell(19)+'</span>'
+      +'<span class="ab"><b>秋季四场活动开放预报名</b><p>11.01 · 野外生存 / PBL / 沙龙 / 家乡推荐官</p></span>'
+    +'</button>'
+    +'<p class="footq">这里没有排行榜，没有打卡，<br>也没有谁的孩子更厉害。</p>'
+    +'</div>'
+    +bottom(tabbar());
+}
+
+/* ===== 视图：公告 ===== */
+function vNotice(){
+  return hd('公告')
+    +'<div class="pad rise" style="padding-top:2px">'
+    +DATA.notices.map(function(n){
+      return '<div class="cd" style="margin-bottom:10px;cursor:pointer;display:flex;gap:12px;align-items:flex-start" data-nav="noticeDetail" data-id="'+n.id+'">'
+        +'<span style="width:36px;height:36px;flex:0 0 36px;border-radius:11px;background:var(--yellow-soft);display:flex;align-items:center;justify-content:center;color:#A57B22">'+I.bell(18)+'</span>'
+        +'<span style="flex:1;min-width:0">'
+          +'<span style="display:flex;align-items:center;gap:7px;margin-bottom:5px">'
+            +(n.pin?'<span class="pill green">置顶</span>':'')
+            +'<span style="font-size:10px;color:var(--ink-3)">'+n.d+' · '+esc(n.from)+'</span>'
+          +'</span>'
+          +'<span style="font-family:var(--round);font-size:15px;line-height:1.55;display:block">'+esc(n.t)+'</span>'
+        +'</span>'
+      +'</div>';
+    }).join('')
+    +'<p style="font-size:11px;color:var(--ink-3);line-height:1.8;margin:18px 0 28px">公告不开放评论。有想问的，去树洞里说。</p>'
+    +'</div>'
+    +bottom(tabbar());
+}
+function vNoticeDetail(id){
+  var n=null;
+  DATA.notices.forEach(function(x){if(x.id===id){n=x;}});
+  if(!n){return hd('公告')+'<div class="pad"><div class="empty">'+I.bell(30)+'<p>这条公告已经撤下</p></div></div>';}
+  return hd('公告')
+    +'<div class="pad rise" style="padding-top:4px">'
+    +'<div style="display:flex;align-items:center;gap:7px;margin-bottom:11px">'
+      +(n.pin?'<span class="pill green">置顶</span>':'')
+      +'<span style="font-size:10px;color:var(--ink-3)">'+n.d+' · '+esc(n.from)+'</span>'
+    +'</div>'
+    +'<h1 style="font-family:var(--round);font-size:21px;font-weight:400;line-height:1.55;letter-spacing:.02em;margin:0 0 20px">'+esc(n.t)+'</h1>'
+    +'<div class="body">'+(DATA.noticeBody[id]||'')+'</div>'
+    +'<p style="font-size:11px;color:var(--ink-3);line-height:1.85;margin-top:22px">公告不开放评论。有想问的，去树洞里说。</p>'
+    +'<div style="height:28px"></div></div>';
+}
+
+/* ===== 视图：树洞 ===== */
+function postRow(p){
+  return '<div class="postcard" data-nav="post" data-id="'+p.id+'">'
+    +'<h3>'+esc(p.t)+'</h3>'
+    +'<p class="bd">'+esc(p.b)+'</p>'
+    +'<div class="ft"><span class="l">'+(p.anon?anonTag():'<span style="color:var(--ink-2);font-size:11.5px">'+esc(p.who)+'</span>')+'<span>'+esc(p.time)+'</span></span>'
+      +'<span class="cnt">'+I.chat(13)+'<span>'+p.n+'</span></span></div>'
+  +'</div>';
+}
+function vHollow(){
+  return hd('树洞互助','<button data-nav="compose" aria-label="发起倾诉">'+I.plus(19)+'</button>')
+    +'<div class="pad rise" style="padding-top:2px">'
+    +'<div class="risk" style="margin-bottom:14px">'+I.lock(15)+'<span>默认匿名。这里的话不会出现在任何外部平台，也不会被搜索到。</span></div>'
+    +DATA.posts.map(postRow).join('')
+    +'<p style="font-size:11px;color:var(--ink-3);line-height:1.85;text-align:center;margin:18px 0 26px">看到这里了。今天可以只是看看，不用回。</p>'
+    +'</div>'
+    +bottom(tabbar());
+}
+
+/* ===== 视图：发布 ===== */
+function vCompose(){
+  var anon=S.draft.anon;
+  return hd('发起倾诉')
+    +'<div class="pad rise" style="padding-top:8px">'
+    +'<div class="seg" style="margin-bottom:12px">'
+      +'<button class="'+(anon?'on':'')+'" data-anon="1">匿名发布</button>'
+      +'<button class="'+(anon?'':'on')+'" data-anon="0">实名 · '+esc(S.nick)+'</button>'
+    +'</div>'
+    +'<p style="font-size:11px;line-height:1.85;color:var(--ink-3);margin:0 0 22px">'+(anon?'帖子上不会出现你的昵称和手机号，管理员也看不到发布者。':'帖子上会显示「'+esc(S.nick)+'」，手机号仍然不显示。')+'</p>'
+    +'<div class="field"><label class="lb" for="cp-t">标题</label><input class="in" id="cp-t" placeholder="给这件事一个名字" value="'+esc(S.draft.t)+'" autocomplete="off"></div>'
+    +'<div class="field"><label class="lb" for="cp-b">想说的</label><textarea class="in" id="cp-b" placeholder="写一点此刻的感受。不用完整，也不用有结论" style="height:150px">'+esc(S.draft.b)+'</textarea></div>'
+    +'<p style="font-size:11px;line-height:1.9;color:var(--ink-3)">发布后你可以自己删除。这里不做审核，只做「被看见了就说一声」。</p>'
+    +'<div style="height:16px"></div></div>'
+    +bottom('<div class="dock"><button class="btn primary" data-act="publish">发布</button></div>');
+}
+
+/* ===== 视图：帖子 ===== */
+function vPost(id){
+  var p=findPost(id);
+  if(!p){return hd('树洞互助')+'<div class="pad"><div class="empty">'+I.chat(30)+'<p>这条帖子已被发布者删除</p></div></div>';}
+  var rs=DATA.replies[id]||[];
+  var lanes='';
+  rs.forEach(function(r){
+    var av=r.anon?'匿':esc(String(r.who).charAt(0));
+    if(r.lv===2){
+      lanes+='<div class="fl" style="padding-left:41px;padding-bottom:14px">'
+        +'<div class="fbd"><div class="fh"><span>'+(r.anon?'匿名':esc(r.who))+'</span><span>'+esc(r.time)+'</span></div>'
+        +'<div class="sub">'+esc(r.tx)+'</div></div></div>';
+    }else{
+      lanes+='<div class="fl"><div class="fav">'+av+'</div><div class="fbd">'
+        +'<div class="fh"><span>'+(r.anon?'匿名':esc(r.who))+'</span><span>'+esc(r.time)+'</span></div>'
+        +'<p>'+esc(r.tx)+'</p></div></div>';
+    }
+  });
+  return hd('树洞互助','<button data-act="report" aria-label="举报或更多">'+I.dots(19)+'</button>')
+    +'<div class="pad rise" style="padding-top:4px">'
+    +'<h1 style="font-family:var(--round);font-size:21px;font-weight:400;line-height:1.55;letter-spacing:.02em;margin:0 0 13px">'+esc(p.t)+'</h1>'
+    +'<div style="display:flex;align-items:center;gap:8px;font-size:10.5px;color:var(--ink-3);margin-bottom:18px">'
+      +(p.anon?anonTag():'<span style="color:var(--ink-2)">'+esc(p.who)+'</span>')+'<span>'+esc(p.time)+'</span><span>'+p.n+' 条回应</span></div>'
+    +'<div class="cd"><div class="body">'+esc(p.b).replace(/\n/g,'</p><p>')+'</div></div>'
+    +'<div class="sec-h" style="margin-top:24px">回应</div>'
+    +'<div style="padding-top:4px">'+(lanes||'<div class="cd" style="text-align:center;color:var(--ink-3);font-size:12px;line-height:1.8">还没有人回应。第一个说话的人，往往也不确定自己说得对不对。</div>')+'</div>'
+    +'<div style="height:12px"></div></div>'
+    +bottom('<div class="dock" style="display:flex;gap:8px;align-items:flex-end">'
+      +'<textarea class="in" id="rp-b" placeholder="回应一句" style="height:44px;padding:11px 13px;flex:1;border-radius:999px"></textarea>'
+      +'<button class="btn primary" data-act="reply" data-id="'+p.id+'" aria-label="发送回应" style="width:44px;height:44px;flex:0 0 44px;padding:0;border-radius:50%">'+I.send(18)+'</button>'
+    +'</div>');
+}
+
+/* ===== 视图：资源库 ===== */
+function vLibrary(){
+  return hd('资源库','<button data-act="search" aria-label="检索">'+I.search(19)+'</button>')
+    +'<div class="pad rise" style="padding-top:2px">'
+    +'<p style="font-size:11px;line-height:1.85;color:var(--ink-3);margin:0 0 14px">成员自己写的，不搬运网上的文章。没有阅读量，也没有收藏数。</p>'
+    +DATA.folders.map(function(f){
+      return '<button class="fd" data-nav="folder" data-id="'+f.id+'">'
+        +'<span class="fi">'+I.folder(19)+'</span>'
+        +'<span class="fm"><b>'+esc(f.t)+(f.open?'':' <span class="pill gray" style="font-size:9.5px;padding:2px 7px">仅活动成员</span>')+'</b><p>'+esc(f.d)+'</p></span>'
+        +'<span class="n">'+f.n+'</span>'
+      +'</button>';
+    }).join('')
+    +'<div style="height:24px"></div></div>'
+    +bottom(tabbar());
+}
+function vFolder(id){
+  var f=findFolder(id);
+  if(!f){return hd('资源库')+'<div class="pad"><div class="empty">'+I.folder(30)+'<p>这个文件夹不存在</p></div></div>';}
+  var locked=(!f.open && Object.keys(S.enrolled).length===0);
+  if(locked){
+    return hd(f.t)
+      +'<div class="pad rise" style="padding-top:2px">'
+      +'<div class="empty" style="padding-top:50px">'+I.lock(30)+'<p>这个文件夹只对本季活动报名成员开放。<br>报名任意一场后自动解锁。</p>'
+      +'<button class="btn text" data-nav="activities" style="margin-top:6px">去看活动</button></div></div>'
+      +bottom(tabbar());
+  }
+  var fs=DATA.files[id]||[];
+  return hd(f.t)
+    +'<div class="pad rise" style="padding-top:2px">'
+    +'<p style="font-size:11px;color:var(--ink-3);line-height:1.85;margin:0 0 12px">'+esc(f.d)+'</p>'
+    +(fs.length?fs.map(function(x){
+      return '<button class="li" style="background:#fff;border-radius:14px;padding:13px 14px;margin-bottom:8px;box-shadow:var(--sh-s);border-bottom:0;align-items:flex-start" data-act="file" data-id="'+esc(x.t)+'">'
+        +'<span class="mai"><b style="font-family:var(--round);font-size:14.5px;font-weight:400;line-height:1.55">'+esc(x.t)+'</b>'
+        +'<p>'+esc(x.by)+' · '+esc(x.d)+' · '+esc(x.type)+'</p></span>'
+        +'<span class="rt">'+I.arrow(15)+'</span>'
+      +'</button>';
+    }).join(''):'<div class="empty">'+I.book(30)+'<p>这个文件夹还是空的<br>成员陆续会往里放东西</p></div>')
+    +'<div style="height:24px"></div></div>'
+    +bottom(tabbar());
+}
+
+/* ===== 活动与档案数据 ===== */
+DATA.acts=[
+  {id:'a1',t:'小小野外生存家',type:'野外生存',date:'11.14',dow:'周六',place:'基地 · 东侧山径',age:'7–12 岁',quota:'剩 6 位',price:'¥480',full:false,kind:'peak',bg:'#5E8A60'},
+  {id:'a2',t:'共建无名树 · 公共标识系统',type:'PBL 共建',date:'11.21',dow:'周六',place:'基地 · 全区域',age:'8–13 岁',quota:'剩 9 位',price:'¥420',full:false,kind:'sign',bg:'#4E8AA8'},
+  {id:'a3',t:'豆蔻镇的居民与强盗 · 戏剧营',type:'文学戏剧',date:'12.05',dow:'周六',place:'基地剧场 · 林间舞台',age:'7–12 岁',quota:'名额已满',price:'¥560',full:true,kind:'stage',bg:'#B8615A'},
+  {id:'a4',t:'寻味中国年 · 家乡推荐官',type:'传统文化',date:'01.09',dow:'周六',place:'基地食堂 · 长桌',age:'6–12 岁',quota:'剩 15 位',price:'¥380',full:false,kind:'lantern',bg:'#C99A3E'},
+  {id:'a5',t:'家长沙龙 · 这个冬天怎么过',type:'家长沙龙',date:'11.28',dow:'周五',place:'线上 · 语音',age:'家长本人',quota:'不限',price:'免费',full:false,kind:'chat',bg:'#8A6A99'}
+];
+DATA.actBody={
+  a1:'<p class="lead">在真正的自然里，身体是最好的老师。从基础徒步攀爬，到核心力量的平衡训练，再到勇敢向上的爬树挑战。</p><p>我们鼓励孩子用双手触摸粗糙的树皮，用双脚感受泥土的起伏。在一次次攀爬与跨越中，克服恐惧、突破自我，建立起与荒野最原始、最深刻的连接。</p><p>带队老师全程在视线范围内，不做保护性干预，只在孩子主动求助时靠近。这是这项活动最难的部分，也是它真正有价值的部分。</p>',
+  a2:'<p class="lead">几十亩的基地，该如何被认识与记忆？这一次，主导权完全交给孩子。</p><p>这是一个融合美术、数学与个人回忆的跨学科项目。孩子会先规划游览动线与功能分区，再把对这片土地的情感注入标识设计里。从线路图到功能牌命名，每一处标识都是孩子与基地的对话。</p><p>结营时，孩子做的标识会真的装到基地里，用一整个冬天。</p>',
+  a3:'<p class="lead">把经典文学搬进大自然。孩子在徒步中找故事线索，在自然手工里做道具，最后在搭起来的舞台上，演一场自己的秋日大戏。</p><p>这是每年秋季的保留节目，报名通常在开放当天满员。名额已满后可以加入等待名单，有人退出会按顺序通知。</p>',
+  a4:'<p class="lead">孩子做「家乡推荐官」，带着对故土的眷恋，分享各地的春节习俗与地道美食。</p><p>从北方的饺子到南方的年糕，从贴春联的讲究到守岁的故事。最后会一起在长桌上做一顿各家的年饭。</p>',
+  a5:'<p class="lead">给家长自己的活动，孩子不用来。线上语音，两小时，聊这个冬天怎么过。</p><p>没有讲师，没有课程表。有人带一个具体的问题来，其他人说说自己试过什么。不需要准备，也可以全程只听。</p>'
+};
+DATA.talk={
+  a1:[
+    {t:'七岁孩子可以参加吗，会不会跟不上',b:'他平时不太运动，走路半小时就喊累。想报但怕拖大家后腿。',anon:true,who:'',time:'11.03'},
+    {t:'爬山那天的鞋有具体要求吗',b:'家里只有一双普通的运动鞋，需要专门买徒步鞋吗？',anon:true,who:'',time:'11.02'}
+  ],
+  a2:[{t:'孩子说想画一只猫当标识，可以吗',b:'他不太想按分区功能牌来，只想画自己记得的东西。',anon:true,who:'',time:'11.01'}]
+};
+DATA.archive={
+  a1:{
+    notes:[
+      {who:'山',name:'阿山 · 带队',time:'11.14 15:20',tx:'今天最明显的是他在树上待了很久没有往下看。中间有两次想下来，手放到下面又收回去。最后是自己数着「一、二、三」跳下来的，落地的时候摔了一下，但马上站起来了，没哭，也没看我。'},
+      {who:'叶',name:'小叶 · 协作',time:'11.14 16:05',tx:'午饭他吃了两碗。吃完自己把碗拿去洗了，之前从来没做过。没有表扬他，只是说了句「放那儿就行」。'}
+    ],
+    works:[
+      {t:'我的树（树皮拓印）',by:'作品 · 11.14'},
+      {t:'下山路线图',by:'作品 · 11.14'},
+      {t:'一块石头的记录',by:'作品 · 11.14'}
+    ]
+  }
+};
+DATA.dm=[
+  {id:'d1',who:'林老师',role:'带队老师 · 野外生存',last:'他今天爬到了两米，手抖但自己在笑。',time:'16:20',unread:true,
+    msgs:[
+      {me:false,tx:'今天下山的时候他走在我旁边，主动说了句「那个树皮好粗」。',time:'15:50'},
+      {me:true,tx:'他在家很少主动说基地的事，谢谢您告诉我。',time:'16:02'},
+      {me:false,tx:'他今天爬到了两米，手抖但自己在笑。',time:'16:20'}
+    ]}
+];
+
+/* ===== 视图：活动列表 ===== */
+var TYPES=['全部','野外生存','PBL 共建','文学戏剧','传统文化','家长沙龙'];
+function actCard(a){
+  var qc=a.full?'#A25445':(a.quota.indexOf('剩')>=0?'#3B6042':'#5C6A61');
+  return '<button class="actcard" data-nav="activity" data-id="'+a.id+'">'
+    +'<div class="cover" style="background:'+a.bg+'">'
+      +'<span class="dt">'+esc(a.date)+' · '+esc(a.dow)+'</span>'
+      +'<span class="qt" style="color:'+qc+'">'+esc(a.quota)+'</span>'
+      +art(a.kind)
+    +'</div>'
+    +'<div class="ainfo"><h4>'+esc(a.t)+'</h4><p>'+esc(a.place)+' · 适合 '+esc(a.age)+'</p>'
+      +'<div class="m"><span class="pill line" style="font-size:10px;padding:2px 8px">'+esc(a.type)+'</span>'
+      +'<span>'+esc(a.price)+'</span></div></div>'
+  +'</button>';
+}
+function vActivities(){
+  var chips=TYPES.map(function(t){
+    var on=(S.filter==='all'&&t==='全部')||(S.filter===t);
+    return '<button class="chipx'+(on?' on':'')+'" data-filter="'+esc(t)+'">'+esc(t)+'</button>';
+  }).join('');
+  var list=DATA.acts.filter(function(a){return S.filter==='all'||a.type===S.filter;}).map(actCard).join('');
+  if(!list){list='<div class="empty">'+I.cal(30)+'<p>这个类别暂时没有排期</p></div>';}
+  return hd('活动专区')
+    +'<div class="chips rise">'+chips+'</div>'
+    +'<div class="pad rise" style="padding-top:2px">'+list
+    +'<p style="font-size:11px;line-height:1.85;color:var(--ink-3);margin:14px 0 26px">名额按报名顺序确认。已满的场次可以加入等待名单，有人退出会按顺序通知。</p>'
+    +'</div>'
+    +bottom(tabbar());
+}
+
+/* ===== 视图：活动详情 ===== */
+function vActivity(){
+  var a=findAct(S.params.id)||DATA.acts[0];
+  var enrolled=!!S.enrolled[a.id];
+  var tab=S.atab||'detail';
+  var tabs='<div class="tabs">'
+    +'<button data-tab="detail" class="'+(tab==='detail'?'on':'')+'">详情</button>'
+    +'<button data-tab="talk" class="'+(tab==='talk'?'on':'')+'">讨论区</button>'
+    +(enrolled?'<button data-tab="archive" class="'+(tab==='archive'?'on':'')+'">活动档案</button>':'')
+    +'</div>';
+  var btn;
+  if(enrolled){btn='<button class="btn primary" data-act="jump-archive">已报名 · 查看活动档案</button>';}
+  else if(a.full){btn='<button class="btn ghost" data-act="waitlist">名额已满 · 加入等待名单</button>';}
+  else{btn='<button class="btn primary" data-nav="enroll" data-id="'+a.id+'">立即报名</button>';}
+  return hd(a.t)
+    +'<div class="rise">'
+    +'<div class="cover" style="background:'+a.bg+';height:158px;border-radius:22px;margin:0 20px 16px">'
+      +'<span class="dt">'+esc(a.date)+' · '+esc(a.dow)+'</span>'
+      +'<span class="qt" style="color:'+(a.full?'#A25445':'#3B6042')+'">'+esc(a.quota)+'</span>'
+      +art(a.kind,152)
+    +'</div>'
+    +'<div class="pad">'
+      +'<h1 style="font-family:var(--round);font-size:22px;font-weight:400;line-height:1.55;letter-spacing:.02em;margin:0 0 8px">'+esc(a.t)+'</h1>'
+      +'<p style="font-size:11.5px;color:var(--ink-3);margin:0 0 12px">'+esc(a.place)+' · '+esc(a.age)+'</p>'
+      +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'
+        +'<span class="pill green">'+esc(a.type)+'</span>'
+        +'<span class="pill yellow">'+esc(a.price)+'</span>'
+      +'</div>'
+    +'</div>'
+    +'<div style="height:18px"></div>'
+    +tabs
+    +'<div class="pad">'+actTab(a,tab,enrolled)+'</div>'
+    +'</div>'
+    +bottom('<div class="dock"><div class="dockrow"><span class="pr">'+esc(a.price)+'</span><span class="lo">'+esc(a.quota)+'</span></div>'+btn+'</div>');
+}
+function actTab(a,tab,enrolled){
+  if(tab==='talk'){
+    var ts=DATA.talk[a.id]||[];
+    if(!ts.length){return '<div class="empty">'+I.chat(30)+'<p>还没有人提问<br>你可以是第一个</p></div>';}
+    return '<div class="risk" style="margin:0 0 16px"><span>活动进行中可自由提问，结束两周后转为只读归档。</span></div>'
+      +ts.map(function(x){
+        return '<div class="postcard" style="cursor:default;margin-bottom:9px">'
+          +'<h3 style="font-size:15.5px">'+esc(x.t)+'</h3>'
+          +'<p class="bd" style="-webkit-line-clamp:3;margin-bottom:10px">'+esc(x.b)+'</p>'
+          +'<div class="ft"><span class="l">'+(x.anon?anonTag():'<span>'+esc(x.who)+'</span>')+'<span>'+esc(x.time)+'</span></span></div>'
+        +'</div>';
+      }).join('');
+  }
+  if(tab==='archive'){
+    if(!enrolled){return '<div class="empty">'+I.lock(30)+'<p>报名后才能看到本期档案</p></div>';}
+    var ar=DATA.archive[a.id];
+    if(!ar){return '<div class="empty">'+I.art(30)+'<p>本期档案将在活动当天开启<br>结束后转为只读归档</p></div>';}
+    var tones=['var(--yellow-soft)','var(--blue-soft)','var(--green-soft)','var(--violet-soft)','var(--red-soft)'];
+    var gal='';
+    for(var i=0;i<9;i++){
+      gal+='<div class="ph" style="background:'+tones[i%5]+'">'+(i<3?'<span class="mk">集体</span>':'')+((i===4||i===6)?'<span class="nb">禁止保存转发</span>':'')+'</div>';
+    }
+    return '<div class="risk" style="margin:0 0 20px"><span>相册只显示集体合照与你孩子本人的照片。老师手记只记录发生了什么，不打分、不评级。</span></div>'
+      +'<div class="sec-h" style="margin-top:0">相册</div>'
+      +'<div class="gal" style="margin-top:10px">'+gal+'</div>'
+      +'<div class="sec-h">作品</div>'
+      +ar.works.map(function(w){
+        return '<button class="wk" data-act="file" data-id="'+esc(w.t)+'"><div class="th"></div>'
+          +'<div class="wm"><b>'+esc(w.t)+'</b><p>'+esc(w.by)+'</p></div><span style="color:var(--ink-3);display:flex">'+I.arrow(15)+'</span></button>';
+      }).join('')
+      +'<div class="sec-h">老师手记</div>'
+      +ar.notes.map(function(n){
+        return '<div class="note"><div class="who"><span style="width:20px;height:20px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-family:var(--round);color:var(--green-2);font-size:10.5px">'+esc(n.who)+'</span><b>'+esc(n.name)+'</b><span>'+esc(n.time)+'</span></div>'
+          +'<p>'+esc(n.tx)+'</p></div>';
+      }).join('')
+      +'<div style="height:18px"></div>';
+  }
+  return '<div class="cd"><div class="body">'+(DATA.actBody[a.id]||DATA.actBody.a1)+'</div></div>'
+    +'<div class="sec-h">时间与地点</div>'
+    +'<div class="cd" style="padding:4px 16px">'
+      +kv('时间',a.date+' '+a.dow)+kv('集合',a.place)+kv('适合',a.age)+kv('名额',a.quota)+kv('费用',a.price)
+    +'</div>'
+    +'<div class="sec-h">装备清单</div>'
+    +'<ul class="bul"><li>速干长裤，不要牛仔裤</li><li>抓地力好的运动鞋，另备一双干袜</li><li>轻便雨衣，山上风大不用伞</li><li>500ml 水壶，午餐自备</li></ul>'
+    +'<div class="risk" style="margin:16px 0 4px"><span>如果孩子当天状态不适合上山，<b>随时可以不来，不扣名额</b>。这句话是认真的。</span></div>'
+    +'<div style="height:12px"></div>';
+}
+function kv(k,v){
+  return '<div class="kv"><b>'+esc(k)+'</b><span>'+esc(v)+'</span></div>';
+}
+
+/* ===== 视图：报名 ===== */
+function vEnroll(){
+  var a=findAct(S.params.id)||DATA.acts[0];
+  return hd('报名')
+    +'<div class="pad rise" style="padding-top:2px">'
+    +'<div class="cd" style="display:flex;gap:12px;margin-bottom:22px;padding:12px">'
+      +'<div style="width:52px;height:52px;flex:0 0 52px;border-radius:14px;background:'+a.bg+';display:flex;align-items:center;justify-content:center;overflow:hidden">'+art(a.kind,44)+'</div>'
+      +'<div style="flex:1;min-width:0">'
+        +'<div style="font-size:10px;color:var(--ink-3);margin-bottom:3px">'+esc(a.date)+' · '+esc(a.place)+'</div>'
+        +'<div style="font-family:var(--round);font-size:14.5px;line-height:1.45">'+esc(a.t)+'</div>'
+      +'</div>'
+    +'</div>'
+    +'<div class="field"><label class="lb" for="e-name">孩子姓名<i>*</i></label><input class="in" id="e-name" placeholder="请输入" autocomplete="off"></div>'
+    +'<div class="field"><label class="lb" for="e-age">孩子年龄<i>*</i></label><input class="in" id="e-age" placeholder="例如 9" inputmode="numeric" autocomplete="off"></div>'
+    +'<div class="field"><label class="lb" for="e-phone">紧急联系人电话<i>*</i></label><input class="in" id="e-phone" placeholder="11 位手机号" inputmode="numeric" autocomplete="off"></div>'
+    +'<div class="field"><label class="lb" for="e-note">孩子特殊关照备注</label>'
+      +'<textarea class="in" id="e-note" placeholder="感官敏感、怕高、情绪特点、需要特别照顾的地方" style="height:92px"></textarea>'
+      +'<div class="hint">'+I.lock(13)+'<span>仅本次带队老师可见。单独加密存储，不进入社群任何可见区域，管理员也看不到。</span></div></div>'
+    +'<p style="font-size:11px;line-height:1.9;color:var(--ink-3);margin:2px 0 22px">报名后如果来不了，随时取消，不扣名额，也不会有任何追问。</p>'
+    +'</div>'
+    +bottom('<div class="dock"><button class="btn primary" data-act="submit-enroll" data-id="'+a.id+'">提交报名</button></div>');
+}
+function vEnrollOk(){
+  var a=findAct(S.params.id)||DATA.acts[0];
+  return '<div class="pad rise" style="padding-top:64px;text-align:center">'
+    +'<div style="width:68px;height:68px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;color:var(--green)">'+I.check(28)+'</div>'
+    +'<h1 style="font-family:var(--round);font-size:22px;font-weight:400;letter-spacing:.06em;margin:0 0 12px">报名成功</h1>'
+    +'<p style="font-family:var(--round);font-size:14.5px;line-height:1.7;color:var(--ink-2);margin:0 auto 10px;max-width:290px">'+esc(a.t)+'</p>'
+    +'<p style="font-size:11.5px;line-height:1.9;color:var(--ink-3);margin:0 auto;max-width:280px">活动前一天会推送集合点与装备清单。档案在活动当天开启。</p>'
+    +'<div style="height:30px"></div>'
+    +'<button class="btn primary" data-nav="activity" data-id="'+a.id+'" data-tab="archive">前往活动档案</button>'
+    +'<div style="height:4px"></div>'
+    +'<button class="btn text" data-nav="activities">返回活动专区</button>'
+    +'</div>';
+}
+
+/* ===== 视图：我的 ===== */
+function vMe(){
+  var rows=[
+    ['mySignups','cal','我的报名',Object.keys(S.enrolled).length+' 个活动','var(--green-soft)','var(--green-2)'],
+    ['myPosts','chat','我的帖子',DATA.posts.filter(function(p){return p.mine;}).length+' 条','var(--yellow-soft)','#A57B22'],
+    ['myWorks','art','我的作品','3 件 · 来自活动档案','var(--blue-soft)','#3D7C9B'],
+    ['dm','user','私信','1 条未读','var(--violet-soft)','#7A5F88'],
+    ['settings','gear','设置','匿名默认 · 免打扰 '+S.quiet,'#F1EEE5','var(--ink-2)']
+  ];
+  return '<div class="pad rise" style="padding-top:30px">'
+    +'<div style="font-family:var(--round);font-size:13px;color:var(--ink-3);margin-bottom:16px">我的</div>'
+    +'<div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">'
+      +'<div style="width:58px;height:58px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-family:var(--round);font-size:19px;color:var(--green-2);flex:0 0 58px">'+esc(S.nick.slice(0,2))+'</div>'
+      +'<div style="flex:1;min-width:0">'
+        +'<div style="font-family:var(--round);font-size:18px;letter-spacing:.03em">'+esc(S.nick)+'</div>'
+        +'<div style="font-size:10.5px;color:var(--ink-3);margin-top:5px;display:flex;align-items:center;gap:5px">'+I.lock(12)+'<span>匿名默认开启 · 主页不对外公开</span></div>'
+      +'</div>'
+    +'</div>'
+    +'<div class="cd" style="padding:2px 15px">'
+    +rows.map(function(r){
+      return '<button class="li" data-nav="'+r[0]+'"><span class="ic" style="background:'+r[4]+';color:'+r[5]+'">'+I[r[1]](19)+'</span>'
+        +'<span class="mai"><b>'+r[2]+'</b><p>'+r[3]+'</p></span>'
+        +'<span class="rt">'+I.arrow(15)+'</span></button>';
+    }).join('')
+    +'</div>'
+    +'<p style="font-size:11px;line-height:1.9;color:var(--ink-3);margin:18px 0 26px">手机号对其他家长不可见。孩子的特殊关照备注单独存储，仅带队老师可读。</p>'
+    +'</div>'
+    +bottom(tabbar());
+}
+function vMySignups(){
+  var keys=Object.keys(S.enrolled);
+  var head=hd('我的报名');
+  if(!keys.length){
+    return head+'<div class="pad rise"><div class="empty" style="padding-top:54px">'+I.cal(30)+'<p>还没有报名记录</p>'
+      +'<button class="btn text" data-nav="activities" style="margin-top:4px">去活动专区</button></div></div>';
+  }
+  return head+'<div class="pad rise" style="padding-top:2px">'
+    +'<p style="font-size:11px;line-height:1.85;color:var(--ink-3);margin:0 0 14px">点开可以直接看相册、作品和老师手记。</p>'
+    +keys.map(function(id){
+      var a=findAct(id);if(!a){return '';}
+      return '<button class="actcard" data-nav="activity" data-id="'+a.id+'" data-tab="archive">'
+        +'<div class="cover" style="background:'+a.bg+';height:66px">'
+          +'<span class="dt">'+esc(a.date)+'</span><span class="qt" style="color:#3B6042">已报名</span>'
+          +art(a.kind,80)
+        +'</div>'
+        +'<div class="ainfo" style="padding:12px 15px"><h4 style="font-size:14.5px">'+esc(a.t)+'</h4>'
+          +'<p style="margin:0">'+esc(a.place)+'</p></div>'
+      +'</button>';
+    }).join('')
+    +'<p style="font-size:11px;line-height:1.9;color:var(--ink-3);margin:14px 0 26px">活动结束后会转入归档，但相册、作品与手记永久保留。</p>'
+    +'</div>';
+}
+function vMyPosts(){
+  var mine=DATA.posts.filter(function(p){return p.mine;});
+  return hd('我的帖子')+'<div class="pad rise" style="padding-top:2px">'
+    +(mine.length?mine.map(postRow).join(''):'<div class="empty" style="padding-top:50px">'+I.chat(30)+'<p>你还没有发过帖子<br>发过的帖子会一直留在这里，除非你自己删掉</p>'
+      +'<button class="btn text" data-nav="compose" style="margin-top:4px">发起倾诉</button></div>')
+    +'<div style="height:24px"></div></div>';
+}
+function vMyWorks(){
+  var ar=DATA.archive.a1;
+  return hd('我的作品')+'<div class="pad rise" style="padding-top:2px">'
+    +'<p style="font-size:11px;color:var(--ink-3);line-height:1.85;margin:0 0 12px">来自 11.14 野外生存活动。作品由孩子自己完成，老师只做记录，不做评比。</p>'
+    +ar.works.map(function(w){
+      return '<button class="wk" data-act="file" data-id="'+esc(w.t)+'"><div class="th"></div>'
+        +'<div class="wm"><b>'+esc(w.t)+'</b><p>'+esc(w.by)+'</p></div><span style="color:var(--ink-3);display:flex">'+I.arrow(15)+'</span></button>';
+    }).join('')
+    +'<div style="height:24px"></div></div>';
+}
+
+/* ===== 视图：设置 ===== */
+function vSettings(){
+  return hd('设置')
+    +'<div class="pad rise" style="padding-top:2px">'
+    +'<div class="sec-h" style="margin-top:10px">发帖与隐私</div>'
+    +'<div class="cd" style="padding:15px;margin-bottom:14px">'
+      +'<div style="font-size:13.5px;font-weight:500;margin-bottom:10px">默认发帖模式</div>'
+      +'<div class="seg"><button class="'+(S.anon?'on':'')+'" data-defanon="1">匿名</button>'
+      +'<button class="'+(S.anon?'':'on')+'" data-defanon="0">实名 · '+esc(S.nick)+'</button></div>'
+      +'<p style="font-size:11px;line-height:1.85;color:var(--ink-3);margin:10px 0 0">切到实名后只在帖子上显示昵称，手机号始终不显示。</p>'
+    +'</div>'
+    +'<div class="cd" style="padding:2px 15px;margin-bottom:14px">'
+      +'<div class="li" style="cursor:default"><span class="ic" style="background:var(--blue-soft);color:#3D7C9B">'+I.user(19)+'</span>'
+        +'<span class="mai"><b>接收陌生人私信</b><p>关闭后只有同活动组员与管理员能私信你</p></span>'
+        +'<span class="sw"><input type="checkbox" id="sw-stranger" '+(S.strangerDM?'checked':'')+' aria-label="接收陌生人私信"><span class="tr"></span><span class="kn"></span></span>'
+      +'</div>'
+      +'<button class="li" data-act="quiet"><span class="ic" style="background:var(--yellow-soft);color:#A57B22">'+I.clock(19)+'</span>'
+        +'<span class="mai"><b>消息免打扰</b><p>该时段内所有推送静默</p></span>'
+        +'<span class="rt"><span>'+esc(S.quiet)+'</span>'+I.arrow(14)+'</span></button>'
+    +'</div>'
+    +'<div class="sec-h">账号</div>'
+    +'<div class="cd" style="padding:2px 15px">'
+      +'<button class="li" data-act="nick"><span class="ic">'+I.leaf(19)+'</span>'
+        +'<span class="mai"><b>修改昵称</b><p>当前：'+esc(S.nick)+'</p></span>'
+        +'<span class="rt">'+I.arrow(15)+'</span></button>'
+      +'<button class="li" data-act="logout"><span class="ic" style="background:var(--red-soft);color:#A25445">'+I.close(19)+'</span>'
+        +'<span class="mai"><b style="color:#A25445">退出登录</b><p>需要重新用邀请码申请</p></span>'
+        +'<span class="rt">'+I.arrow(15)+'</span></button>'
+    +'</div>'
+    +'<div style="height:30px"></div></div>';
+}
+
+/* ===== 视图：私信 ===== */
+function vDm(){
+  return hd('私信')
+    +'<div class="pad rise" style="padding-top:2px">'
+    +'<p style="font-size:11px;color:var(--ink-3);line-height:1.8;margin:0 0 14px">只出现同活动组员与管理员，不会有陌生人。</p>'
+    +DATA.dm.map(function(d){
+      return '<button class="li" style="background:#fff;border-radius:16px;padding:13px;margin-bottom:9px;box-shadow:var(--sh-s);border-bottom:0" data-nav="dmDetail" data-id="'+d.id+'">'
+        +'<span class="ic" style="flex:0 0 44px;width:44px;height:44px;border-radius:50%;background:var(--green-soft);color:var(--green-2);font-family:var(--round);font-size:16px">'+esc(d.who.charAt(0))+'</span>'
+        +'<span class="mai"><b>'+esc(d.who)+'</b><p>'+esc(d.last)+'</p></span>'
+        +'<span class="rt" style="flex-direction:column;align-items:flex-end;gap:6px"><span style="font-size:10px">'+esc(d.time)+'</span>'
+          +(d.unread?'<span style="width:7px;height:7px;border-radius:50%;background:var(--red)"></span>':'')+'</span>'
+      +'</button>';
+    }).join('')
+    +'<p style="font-size:11px;line-height:1.85;color:var(--ink-3);margin:16px 0 26px">一对一私信只有双方可见，管理员也看不到内容。</p>'
+    +'</div>';
+}
+function vDmDetail(){
+  var d=DATA.dm[0];
+  var body=d.msgs.map(function(m){
+    return '<div class="msg '+(m.me?'me':'them')+'">'+esc(m.tx)+'</div>';
+  }).join('');
+  return hd(d.who)
+    +'<div class="pad rise" style="padding-top:4px">'
+    +'<div style="text-align:center;font-size:10.5px;color:var(--ink-3);padding:6px 0 4px">'+esc(d.role)+'</div>'
+    +'<div class="mtime">昨天</div>'
+    +body
+    +'<div style="height:24px"></div></div>'
+    +bottom('<div class="dock" style="display:flex;gap:8px;align-items:flex-end">'
+      +'<textarea class="in" id="dm-b" placeholder="写一条消息" style="height:44px;padding:11px 13px;flex:1;border-radius:999px"></textarea>'
+      +'<button class="btn primary" data-act="send-dm" aria-label="发送" style="width:44px;height:44px;flex:0 0 44px;padding:0;border-radius:50%">'+I.send(18)+'</button>'
+    +'</div>');
+}
+
+/* ===== 渲染 ===== */
+var scEl=document.getElementById('screen');
+var dockEl=document.getElementById('dockwrap');
+function render(){
+  var v=S.view,p=S.params||{},html='';
+  switch(v){
+    case 'gate':html=vGate();break;
+    case 'gateOk':html=vGateOk();break;
+    case 'home':html=vHome();break;
+    case 'notice':html=vNotice();break;
+    case 'noticeDetail':html=vNoticeDetail(p.id);break;
+    case 'hollow':html=vHollow();break;
+    case 'compose':html=vCompose();break;
+    case 'post':html=vPost(p.id);break;
+    case 'library':html=vLibrary();break;
+    case 'folder':html=vFolder(p.id);break;
+    case 'activities':html=vActivities();break;
+    case 'activity':html=vActivity();break;
+    case 'enroll':html=vEnroll();break;
+    case 'enrollOk':html=vEnrollOk();break;
+    case 'me':html=vMe();break;
+    case 'mySignups':html=vMySignups();break;
+    case 'myPosts':html=vMyPosts();break;
+    case 'myWorks':html=vMyWorks();break;
+    case 'settings':html=vSettings();break;
+    case 'dm':html=vDm();break;
+    case 'dmDetail':html=vDmDetail();break;
+    default:html=vHome();
+  }
+  var i=html.indexOf('<!--DOCK-->');
+  if(i>=0){dockEl.innerHTML=html.slice(i+11);html=html.slice(0,i);}
+  else{dockEl.innerHTML='';}
+  scEl.innerHTML=html;
+  scEl.scrollTop=0;
+}
+
+function collect(el){
+  var o={};
+  ['id','tab'].forEach(function(k){
+    var vv=el.getAttribute('data-'+k);
+    if(vv!==null){o[k]=vv;}
+  });
+  return o;
+}
+function go(v,p){
+  p=p||{};
+  hist.push({v:S.view,p:S.params});
+  if(hist.length>40){hist.shift();}
+  S.view=v;S.params=p;
+  if(v==='activity'){S.atab=p.tab||'detail';}
+  render();
+}
+function back(){
+  var h=hist.pop();
+  if(h){S.view=h.v;S.params=h.p||{};}
+  else{S.view='home';S.params={};}
+  render();
+}
+
+/* ===== 弹层 ===== */
+var dev=document.querySelector('.device');
+function overlay(html){
+  closeOv();
+  var tmp=document.createElement('div');
+  tmp.innerHTML=html;
+  var node=tmp.firstElementChild;
+  node.id='ovNode';
+  dev.appendChild(node);
+}
+function closeOv(){
+  var o=document.getElementById('ovNode');
+  if(o&&o.parentNode){o.parentNode.removeChild(o);}
+}
+function openReport(){
+  var opts=['评判、说教、否定他人','争吵与冲突','广告与推销','泄露他人信息','其他'];
+  overlay('<div class="ov"><div class="sheet">'
+    +'<h4>举报这条内容</h4>'
+    +'<p class="sp2">会直接推给管理员。被举报的人不会知道是谁举报的，你也不会被拉进任何讨论。</p>'
+    +opts.map(function(o,i){
+      return '<label class="rrow"><input type="radio" name="rp" value="'+esc(o)+'" '+(i===0?'checked':'')+'>'+esc(o)+'</label>';
+    }).join('')
+    +'<textarea class="in" id="rp-note" placeholder="补充说明（选填）" style="height:70px;margin-top:14px"></textarea>'
+    +'<div class="acts"><button class="btn ghost" data-act="close-ov">取消</button>'
+    +'<button class="btn primary" data-act="send-report">提交</button></div>'
+  +'</div></div>');
+}
+function openQuiet(){
+  var opts=['22:00–07:00','23:00–08:00','不设置'];
+  overlay('<div class="ov"><div class="sheet"><h4>消息免打扰</h4>'
+    +'<p class="sp2">该时段内不推送任何提醒，但你仍然可以主动打开查看。</p>'
+    +opts.map(function(o){
+      return '<label class="rrow"><input type="radio" name="qq" value="'+esc(o)+'" '+(S.quiet===o?'checked':'')+'>'+esc(o)+'</label>';
+    }).join('')
+    +'<div class="acts"><button class="btn ghost" data-act="close-ov">取消</button>'
+    +'<button class="btn primary" data-act="save-quiet">保存</button></div></div></div>');
+}
+function openLogout(){
+  overlay('<div class="ov center"><div class="dialog"><h4>退出登录？</h4>'
+    +'<p>退出后需要重新用邀请码申请，之前填过的资料不会自动带过来。</p>'
+    +'<div class="acts"><button class="btn ghost" data-act="close-ov">取消</button>'
+    +'<button class="btn primary" data-act="do-logout">退出</button></div></div></div>');
+}
+
+/* ===== 事件 ===== */
+dev.addEventListener('click',function(ev){
+  var t=ev.target;
+  if(t.classList&&t.classList.contains('ov')){closeOv();return;}
+
+  var nav=t.closest('[data-nav]');
+  if(nav){go(nav.getAttribute('data-nav'),collect(nav));return;}
+
+  var bk=t.closest('[data-back]');
+  if(bk){back();return;}
+
+  var tb=t.closest('[data-tab]');
+  if(tb){S.atab=tb.getAttribute('data-tab');render();return;}
+
+  var fl=t.closest('[data-filter]');
+  if(fl){var fv=fl.getAttribute('data-filter');S.filter=(fv==='全部'?'all':fv);render();return;}
+
+  var an=t.closest('[data-anon]');
+  if(an){
+    var ct=document.getElementById('cp-t');if(ct){S.draft.t=ct.value;}
+    var cb=document.getElementById('cp-b');if(cb){S.draft.b=cb.value;}
+    S.draft.anon=an.getAttribute('data-anon')==='1';
+    render();return;
+  }
+
+  var da=t.closest('[data-defanon]');
+  if(da){S.anon=da.getAttribute('data-defanon')==='1';render();return;}
+
+  var act=t.closest('[data-act]');
+  if(act){handle(act);return;}
+});
+
+dev.addEventListener('change',function(ev){
+  if(ev.target.id==='sw-stranger'){
+    S.strangerDM=ev.target.checked;
+    toast(S.strangerDM?'已允许陌生人私信':'已关闭陌生人私信');
+  }
+});
+
+function handle(el){
+  var a=el.getAttribute('data-act'),id=el.getAttribute('data-id');
+
+  if(a==='apply'){
+    var code=document.getElementById('g-code'),nick=document.getElementById('g-nick'),agree=document.getElementById('g-agree');
+    if(!code.value.trim()){toast('请填写邀请码');return;}
+    if(!nick.value.trim()){toast('请填写你想用的昵称');return;}
+    if(!agree.checked){toast('请先勾选社群公约');return;}
+    S.nick=nick.value.trim();
+    go('gateOk');return;
+  }
+  if(a==='pass'){go('home');toast('已通过审核，欢迎进入无名树');return;}
+  if(a==='publish'){
+    var pt=document.getElementById('cp-t'),pb=document.getElementById('cp-b');
+    if(!pt.value.trim()){toast('给这件事一个名字');return;}
+    if(!pb.value.trim()){toast('写一点此刻的感受');return;}
+    var nid='p'+Date.now();
+    var was=S.draft.anon;
+    DATA.posts.unshift({id:nid,t:pt.value.trim(),b:pb.value.trim(),anon:was,who:was?'':S.nick,time:'刚刚',n:0,mine:true});
+    DATA.replies[nid]=[];
+    S.draft={t:'',b:'',anon:was};
+    go('hollow');
+    toast(was?'已匿名发布':'已发布');
+    return;
+  }
+  if(a==='reply'){
+    var rb=document.getElementById('rp-b');
+    if(!rb||!rb.value.trim()){toast('写一句回应');return;}
+    if(!DATA.replies[id]){DATA.replies[id]=[];}
+    DATA.replies[id].push({who:S.nick,anon:S.anon,time:'刚刚',tx:rb.value.trim(),lv:1});
+    var pp=findPost(id);
+    if(pp){pp.n=pp.n+1;}
+    render();
+    toast(S.anon?'已匿名回应':'已回应');
+    return;
+  }
+  if(a==='report'){openReport();return;}
+  if(a==='send-report'){
+    var sel=document.querySelector('input[name="rp"]:checked');
+    closeOv();
+    toast('已提交举报'+(sel?'：'+sel.value:''));
+    return;
+  }
+  if(a==='close-ov'){closeOv();return;}
+  if(a==='waitlist'){toast('已加入等待名单，有名额会按顺序通知');return;}
+  if(a==='submit-enroll'){
+    var n=document.getElementById('e-name'),ag=document.getElementById('e-age'),ph=document.getElementById('e-phone');
+    if(!n.value.trim()){toast('请填写孩子姓名');return;}
+    if(!ag.value.trim()){toast('请填写孩子年龄');return;}
+    if(ph.value.replace(/\D/g,'').length<11){toast('请填写 11 位手机号');return;}
+    S.enrolled[id]={child:n.value.trim(),age:ag.value.trim(),phone:ph.value,note:(document.getElementById('e-note')||{}).value||''};
+    go('enrollOk',{id:id});return;
+  }
+  if(a==='jump-archive'){S.atab='archive';render();return;}
+  if(a==='quiet'){openQuiet();return;}
+  if(a==='save-quiet'){
+    var q=document.querySelector('input[name="qq"]:checked');
+    if(q){S.quiet=q.value;}
+    closeOv();render();toast('免打扰时段已更新');return;
+  }
+  if(a==='nick'){
+    overlay('<div class="ov center"><div class="dialog"><h4>修改昵称</h4>'
+      +'<input class="in" id="nk" value="'+esc(S.nick)+'" style="margin-bottom:18px" autocomplete="off">'
+      +'<div class="acts"><button class="btn ghost" data-act="close-ov">取消</button>'
+      +'<button class="btn primary" data-act="save-nick">保存</button></div></div></div>');
+    return;
+  }
+  if(a==='save-nick'){
+    var nk=document.getElementById('nk');
+    if(nk&&nk.value.trim()){S.nick=nk.value.trim();}
+    closeOv();render();toast('昵称已更新');return;
+  }
+  if(a==='logout'){openLogout();return;}
+  if(a==='do-logout'){
+    closeOv();
+    S.view='gate';S.params={};S.enrolled={};S.atab='detail';hist=[];
+    render();toast('已退出登录');return;
+  }
+  if(a==='send-dm'){
+    var dmb=document.getElementById('dm-b');
+    if(!dmb||!dmb.value.trim()){toast('写一条消息');return;}
+    DATA.dm[0].msgs.push({me:true,tx:dmb.value.trim(),time:'刚刚'});
+    render();toast('已发送');return;
+  }
+  if(a==='search'){toast('原型里检索还没做，只能按文件夹找');return;}
+  if(a==='file'){toast('原型里文件预览还没做');return;}
+}
+
+/* 导览跳转 */
+Array.prototype.forEach.call(document.querySelectorAll('[data-go]'),function(g){
+  g.addEventListener('click',function(e){
+    e.preventDefault();
+    hist=[];
+    go(g.getAttribute('data-go'));
+  });
+});
+
+render();
+</script>
+</body>
+</html>
