@@ -3,1202 +3,1668 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>无名树 · 产品原型</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%234F7C55'/%3E%3Ccircle cx='23' cy='9' r='4' fill='%23F2C14E'/%3E%3Cpath d='M4 24c6-4 10-3 12-6 2 3 6 5 12 6' stroke='%23FBFAF5' stroke-width='2.4' fill='none'/%3E%3C/svg%3E">
+<title>无名树 App · 明亮活泼版原型</title>
+<meta name="description" content="无名树 App 全新视觉原型：明亮、圆润、有手绘感的家长陪伴社群。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23FFC63D'/%3E%3Cpath d='M16 26V14M16 18l-5-4M16 20l5-5' stroke='%231C3428' stroke-width='2.4' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
 <style>
-*{box-sizing:border-box}
+
+/* ================================================================
+   无名树 App · 明亮活泼版
+   视觉关键词：太阳黄 / 嫩叶绿 / 天空蓝 / 珊瑚橙 · 圆润 · 手绘感
+   ================================================================ */
 :root{
-  --paper:#FBFAF5;--card:#FFFFFF;
-  --ink:#22302A;--ink-2:#5C6A61;--ink-3:#9AA69D;
-  --line:#ECE6D8;--line-2:#F4F0E4;
-  --green:#4F7C55;--green-2:#3B6042;--green-soft:#E7F1E2;
-  --yellow:#E8B03F;--yellow-soft:#FBEFCF;
-  --blue:#6FA8C7;--blue-soft:#E5F0F6;
-  --red:#D2705E;--red-soft:#F9E4DE;
-  --violet:#A98BB5;--violet-soft:#EFE7F2;
-  --round:"Yuanti SC","YouYuan","STYuanti","PingFang SC","Microsoft YaHei",sans-serif;
-  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
-  --sh:0 1px 2px rgba(34,48,42,.05),0 10px 22px -14px rgba(34,48,42,.3);
-  --sh-s:0 1px 3px rgba(34,48,42,.07);
+  --paper:#FFFBF0;
+  --paper-2:#FFF6E2;
+  --card:#FFFFFF;
+  --ink:#1C3428;
+  --ink-2:#5B7468;
+  --ink-3:#94A79B;
+  --line:#F2E8D3;
+  --line-2:#EADFC6;
+  --leaf:#12A566;
+  --leaf-d:#0B7A4A;
+  --leaf-l:#E2F8EB;
+  --sun:#FFC63D;
+  --sun-d:#E5A31A;
+  --sun-l:#FFF3CC;
+  --coral:#FF7A5C;
+  --coral-d:#E85B3E;
+  --coral-l:#FFE9E2;
+  --sky:#3AA9F0;
+  --sky-d:#1E85C8;
+  --sky-l:#E1F4FF;
+  --grape:#8A7BE6;
+  --grape-d:#6E5FD0;
+  --grape-l:#ECE8FD;
+  --r-sm:12px;--r-md:18px;--r-lg:24px;--r-xl:30px;
+  --shadow:0 6px 18px rgba(28,52,40,.08);
+  --shadow-pop:0 10px 26px rgba(28,52,40,.12);
+  --f:"PingFang SC","Microsoft YaHei","Source Han Sans SC","Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
-body{margin:0;font-family:var(--sans);color:var(--ink);background:#EDEBE1;-webkit-font-smoothing:antialiased}
-button{font-family:inherit;color:inherit}
-*:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+body{
+  margin:0;font-family:var(--f);color:var(--ink);background:var(--paper);
+  font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+button,input,textarea{font-family:inherit}
+button{cursor:pointer}
 
-/* ---------- 桌面外壳 ---------- */
-.shell{min-height:100vh;display:flex;gap:56px;align-items:flex-start;justify-content:center;padding:34px 40px}
-.guide{width:248px;flex:0 0 248px;padding-top:4px}
-.gm{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.gmsvg{color:var(--green);display:flex}
-.gm h1{font-family:var(--round);font-size:19px;font-weight:400;letter-spacing:.06em;margin:0}
-.gcap{font-size:10.5px;letter-spacing:.08em;color:#8B9389;margin:0 0 28px 32px}
-.gl{display:flex;align-items:baseline;justify-content:space-between;gap:12px;width:100%;text-align:left;background:none;border:0;border-top:1px solid #DAD5C8;padding:13px 0;cursor:pointer;font-size:13px;color:#3A453E;transition:color .18s}
-.gl b{font-weight:400;font-family:var(--round)}
-.gl span{font-size:10.5px;color:#8B9389;letter-spacing:.03em}
-.gl:hover{color:var(--green)}
-.gnote{font-size:11px;line-height:1.9;color:#7E877F;margin-top:26px;border-top:1px solid #DAD5C8;padding-top:16px}
+/* ---------- 桌面舞台 ---------- */
+.stage{position:fixed;inset:0;z-index:0;overflow:hidden;background:
+  radial-gradient(circle at 16% 8%,#FFF0B8 0%,rgba(255,240,184,0) 32%),
+  radial-gradient(circle at 92% 96%,#BDEFD0 0%,rgba(189,239,208,0) 34%),
+  var(--paper);}
+.stage i{position:absolute;display:block;border-radius:50%}
+.stage .s1{width:360px;height:360px;left:-120px;top:-140px;background:radial-gradient(circle at 35% 35%,#FFE28A,#FFC63D);opacity:.55}
+.stage .s2{width:460px;height:460px;right:-150px;bottom:-200px;background:radial-gradient(circle at 40% 40%,#B7EBCB,#8FDFB1);opacity:.5}
+.stage .s3{width:150px;height:150px;right:10%;top:-40px;background:#BFE7FF;opacity:.55}
+.stage .s4{width:64px;height:64px;left:7%;bottom:14%;background:#FFB9A8;opacity:.5}
+.stage .s5{width:22px;height:22px;left:44%;top:12%;background:#FFC63D;opacity:.6}
+.stage svg.leafdoodle{position:absolute;right:6%;bottom:9%;width:120px;opacity:.35}
 
-/* ---------- 设备 ---------- */
-.device{position:relative;width:390px;flex:0 0 390px;height:min(844px,calc(100vh - 68px));background:var(--paper);border-radius:26px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 2px rgba(34,48,42,.08),0 30px 70px -16px rgba(34,48,42,.3)}
-.sbar{height:26px;flex:0 0 26px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:10.5px;letter-spacing:.03em;color:var(--ink-2);background:var(--paper)}
-.sbar .sg{display:flex;gap:4px;align-items:center;color:var(--ink-3)}
-.screen{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;-webkit-overflow-scrolling:touch}
+/* ---------- 左侧说明卡 ---------- */
+.side{
+  position:relative;z-index:1;width:302px;flex:0 0 302px;margin-right:44px;
+  background:rgba(255,255,255,.82);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border:1.5px solid #fff;border-radius:28px;padding:22px;
+  box-shadow:0 18px 46px rgba(28,52,40,.1);
+  max-height:calc(100vh - 72px);overflow-y:auto;
+}
+.side::-webkit-scrollbar{width:0}
+.brandline{display:flex;align-items:center;gap:9px}
+.brandline .mark{width:30px;height:30px;flex:0 0 30px}
+.brandline b{font-size:14px;font-weight:700;letter-spacing:-.01em}
+.side .kicker{font-size:10px;letter-spacing:.12em;color:var(--ink-3);font-weight:600;margin-top:20px}
+.side h2{margin:7px 0 8px;font-size:23px;line-height:1.3;font-weight:800;letter-spacing:-.02em}
+.side h2 em{font-style:normal;color:var(--leaf)}
+.side .desc{margin:0;font-size:12.5px;line-height:1.75;color:var(--ink-2)}
+.palette{display:flex;gap:8px;margin:14px 0 10px}
+.palette i{width:32px;height:32px;border-radius:11px;display:block;box-shadow:inset 0 0 0 2px rgba(255,255,255,.6)}
+.palette .c1{background:var(--sun)}
+.palette .c2{background:var(--leaf)}
+.palette .c3{background:var(--sky)}
+.palette .c4{background:var(--coral)}
+.palette .c5{background:var(--grape)}
+.kw{display:flex;flex-wrap:wrap;gap:6px}
+.kw span{font-size:11px;font-weight:600;padding:5px 9px;border-radius:999px;background:var(--paper-2);color:var(--ink-2);border:1px solid var(--line)}
+.side .divider{height:1px;background:var(--line);margin:18px 0 4px}
+.side .gh{display:flex;align-items:center;justify-content:space-between;margin:14px 0 6px}
+.side .gh b{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--ink-3)}
+.side ol{list-style:none;margin:0;padding:0}
+.side li{border-top:1px dashed var(--line-2)}
+.side li:last-child{border-bottom:1px dashed var(--line-2)}
+.side li a{display:flex;gap:10px;align-items:flex-start;min-height:44px;padding:9px 2px;text-decoration:none;color:var(--ink-2)}
+.side li a:hover{color:var(--leaf)}
+.side li .num{
+  flex:0 0 20px;height:20px;border-radius:7px;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;color:#fff;background:var(--leaf);
+}
+.side li:nth-child(2) .num{background:var(--sun);color:#4A3400}
+.side li:nth-child(3) .num{background:var(--coral)}
+.side li:nth-child(4) .num{background:var(--sky)}
+.side li:nth-child(5) .num{background:var(--grape)}
+.side li:nth-child(6) .num{background:var(--leaf)}
+.side li:nth-child(7) .num{background:var(--sun);color:#4A3400}
+.side li .tx{min-width:0}
+.side li .tx b{display:block;font-size:12.5px;font-weight:600;line-height:1.4;color:var(--ink)}
+.side li a.on .tx b{color:var(--leaf-d)}
+.side li .tx i{display:block;font-style:normal;font-size:10.5px;color:var(--ink-3);line-height:1.5;margin-top:1px}
+.side .foot{margin-top:12px;font-size:10.5px;line-height:1.7;color:var(--ink-3)}
+
+/* ---------- 手机 ---------- */
+.shell{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px 28px}
+.device{
+  position:relative;width:392px;flex:0 0 392px;height:min(848px,calc(100vh - 48px));
+  background:var(--paper);border:10px solid #fff;border-radius:46px;
+  box-shadow:0 34px 74px rgba(28,52,40,.2),0 0 0 1px rgba(28,52,40,.06);
+  overflow:hidden;display:flex;flex-direction:column;
+}
+.statusbar{height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font-size:13px;font-weight:600;position:relative;z-index:2}
+.statusbar .isl{position:absolute;left:50%;top:11px;transform:translateX(-50%);width:94px;height:22px;background:var(--ink);border-radius:999px}
+.statusbar .r{display:flex;gap:5px;align-items:center}
+.statusbar .r svg{width:15px;height:15px;opacity:.75}
+.screen{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;position:relative;scroll-behavior:smooth}
 .screen::-webkit-scrollbar{width:0}
-.dockwrap{flex:0 0 auto;background:var(--paper)}
-
-/* ---------- 顶部 ---------- */
-.hd{height:56px;display:flex;align-items:center;gap:4px;padding:0 14px;position:sticky;top:0;background:var(--paper);z-index:20}
-.hd .bk{width:38px;height:38px;flex:0 0 38px;display:flex;align-items:center;justify-content:center;background:#fff;border:0;cursor:pointer;color:var(--ink);border-radius:50%;box-shadow:var(--sh-s)}
-.hd .tt{font-family:var(--round);font-size:17px;letter-spacing:.03em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:6px}
-.hd .rt{display:flex;align-items:center;gap:4px;flex:0 0 auto}
-.hd .rt button{width:38px;height:38px;background:#fff;border:0;cursor:pointer;color:var(--green);display:flex;align-items:center;justify-content:center;border-radius:50%;box-shadow:var(--sh-s);padding:0}
 
 /* ---------- 通用 ---------- */
-.pad{padding:0 20px}
-.cd{background:var(--card);border-radius:18px;box-shadow:var(--sh);padding:16px}
-.sec-h{font-family:var(--round);font-size:13.5px;color:var(--ink);margin:26px 0 10px;display:flex;align-items:center;gap:8px}
-.sec-h::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);flex:0 0 7px}
-.rise{animation:rise .34s cubic-bezier(.2,.8,.2,1) both}
-@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.pad{padding-left:18px;padding-right:18px}
+.rise{animation:rise .26s cubic-bezier(.22,.61,.36,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.fadein{animation:fa .18s ease-out both}
+@keyframes fa{from{opacity:0}to{opacity:1}}
+.hd{display:flex;align-items:center;gap:8px;height:56px;padding:0 12px}
+.hd.noBack{padding-left:18px}
+.hd .bk{
+  width:40px;height:40px;flex:0 0 40px;border:1.5px solid var(--line);background:#fff;
+  border-radius:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;
+}
+.hd .bk:active{transform:translateY(1px)}
+.hd .bk svg{width:19px;height:19px}
+.hd .tt{font-size:18px;font-weight:800;letter-spacing:-.02em;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hd .sp{flex:1}
+.hd .act{
+  height:38px;padding:0 13px;border:0;background:var(--leaf-l);color:var(--leaf-d);
+  border-radius:999px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px;
+}
+.hd .act:active{transform:translateY(1px)}
+.hd .act svg{width:17px;height:17px}
+.hd .act.ghost{background:transparent;color:var(--ink-2);padding:0 6px}
+.lead{font-size:27px;line-height:1.28;font-weight:800;letter-spacing:-.03em;margin:4px 0 0}
+.lead em{font-style:normal;color:var(--leaf)}
+.sub{font-size:13.5px;line-height:1.6;color:var(--ink-2);margin:6px 0 0}
+.section{display:flex;align-items:center;justify-content:space-between;padding:0 18px;margin:14px 0 9px}
+.section h2{margin:0;font-size:17px;font-weight:800;letter-spacing:-.02em}
+.section button{border:0;background:transparent;color:var(--leaf-d);font-size:12px;font-weight:600;display:flex;align-items:center;gap:2px;padding:4px 0}
+.section button svg{width:14px;height:14px}
+.sec-label{font-size:11px;letter-spacing:.1em;color:var(--ink-3);font-weight:700;margin:0 18px 8px}
 
-.btn{border:0;font-size:15px;font-weight:500;height:48px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;transition:transform .12s,background .18s}
-.btn:active{transform:scale(.98)}
-.btn.primary{background:var(--green);color:#fff;width:100%}
-.btn.primary:active{background:var(--green-2)}
-.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line);width:100%}
-.btn.text{background:none;color:var(--ink-2);font-size:12.5px;height:auto;padding:8px 6px}
+/* 标签 / 药丸 */
+.pill{display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 10px;border-radius:999px;font-size:11.5px;font-weight:600;line-height:1;white-space:nowrap}
+.pill svg{width:12px;height:12px}
+.p-sun{background:var(--sun-l);color:#7A5400}
+.p-leaf{background:var(--leaf-l);color:var(--leaf-d)}
+.p-sky{background:var(--sky-l);color:var(--sky-d)}
+.p-coral{background:var(--coral-l);color:var(--coral-d)}
+.p-grape{background:var(--grape-l);color:var(--grape-d)}
+.p-plain{background:var(--paper-2);color:var(--ink-2)}
+.sticker{
+  display:inline-flex;align-items:center;gap:3px;height:24px;padding:0 9px;border-radius:8px;
+  font-size:11px;font-weight:700;background:var(--sun);color:#4A3400;transform:rotate(-2deg);
+  box-shadow:0 2px 0 rgba(28,52,40,.08);
+}
+.sticker svg{width:12px;height:12px;flex:0 0 12px}
+.sticker.coral{background:var(--coral);color:#fff}
+.sticker.leaf{background:var(--leaf);color:#fff}
+.avatar-sm{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;border:2px solid #fff}
 
-.pill{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;padding:3px 9px;border-radius:999px;line-height:1.55;white-space:nowrap;font-weight:500}
-.pill.green{background:var(--green-soft);color:var(--green-2)}
-.pill.yellow{background:var(--yellow-soft);color:#8A6420}
-.pill.blue{background:var(--blue-soft);color:#336A86}
-.pill.red{background:var(--red-soft);color:#A25445}
-.pill.gray{background:#F1EEE5;color:var(--ink-2)}
-.pill.line{background:#fff;border:1.5px solid var(--line);color:var(--ink-2);font-weight:400}
+/* 按钮 */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  height:52px;padding:0 22px;border:0;border-radius:17px;
+  font-size:16px;font-weight:700;letter-spacing:.01em;transition:transform .12s;
+}
+.btn:active{transform:translateY(2px)}
+.btn svg{width:19px;height:19px}
+.btn.primary{background:var(--leaf);color:#fff;box-shadow:0 5px 0 #0A6D42}
+.btn.primary:active{box-shadow:0 3px 0 #0A6D42}
+.btn.sun{background:var(--sun);color:#4A3400;box-shadow:0 5px 0 #D99A17}
+.btn.coral{background:var(--coral);color:#fff;box-shadow:0 5px 0 #CE4D32}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line-2)}
+.btn.block{width:100%}
+.btn.small{height:42px;border-radius:14px;font-size:14px;padding:0 16px}
+.btn.text{height:auto;background:transparent;color:var(--leaf-d);font-size:14px;padding:8px}
 
-.li{display:flex;align-items:center;gap:13px;width:100%;background:none;border:0;padding:14px 0;text-align:left;cursor:pointer;min-height:56px;border-bottom:1px solid var(--line-2)}
-.li:last-child{border-bottom:0}
-.li .ic{flex:0 0 36px;width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:var(--green-soft);color:var(--green-2)}
-.li .mai{flex:1;min-width:0}
-.li b{font-size:14.5px;font-weight:500;display:block;line-height:1.5}
-.li p{font-size:11.5px;color:var(--ink-3);margin:3px 0 0;line-height:1.6}
-.li .rt{flex:0 0 auto;color:var(--ink-3);display:flex;align-items:center;gap:7px;font-size:11px}
+/* 输入 */
+.field{margin-bottom:14px}
+.field .lb{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--ink-2);margin-bottom:7px}
+.field .lb i{font-style:normal;color:var(--coral-d)}
+.in{
+  width:100%;height:50px;border-radius:15px;border:1.5px solid var(--line-2);background:#FFFDF7;
+  padding:0 14px;font-size:15px;color:var(--ink);outline:none;display:block;transition:border-color .15s,box-shadow .15s;
+}
+textarea.in{height:88px;padding:13px 14px;line-height:1.55;resize:none}
+.in::placeholder{color:#B4C2B8;font-size:13.5px}
+.in:focus{border-color:var(--leaf);box-shadow:0 0 0 4px rgba(18,165,102,.12)}
+.field .hint{display:flex;align-items:center;gap:5px;margin-top:7px;font-size:11.5px;line-height:1.5;color:var(--ink-3)}
+.hint{display:flex;align-items:flex-start;gap:6px;font-size:11.5px;line-height:1.6;color:var(--ink-3)}
+.hint svg{width:14px;height:14px;flex:0 0 14px;margin-top:2px}
+.field .hint svg{width:13px;height:13px}
+.seg{display:inline-flex;background:var(--paper-2);border-radius:999px;padding:4px;gap:3px}
+.seg button{height:34px;padding:0 16px;border:0;border-radius:999px;background:transparent;font-size:13px;color:var(--ink-2);font-weight:600}
+.seg button.on{background:#fff;color:var(--leaf-d);box-shadow:0 2px 8px rgba(28,52,40,.1)}
+.sw{position:relative;display:inline-block;width:48px;height:28px;flex:0 0 auto}
+.sw input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;z-index:2}
+.sw .tr{position:absolute;inset:0;background:#E6DCC6;border-radius:999px;transition:background .18s}
+.sw .kn{position:absolute;top:3px;left:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:transform .18s;box-shadow:0 1px 3px rgba(28,52,40,.2)}
+.sw input:checked + .tr{background:var(--leaf)}
+.sw input:checked ~ .kn{transform:translateX(20px)}
+.checkline{display:flex;gap:10px;align-items:flex-start;padding:4px 0;font-size:12.5px;line-height:1.6;color:var(--ink-2)}
+.checkline input{
+  appearance:none;-webkit-appearance:none;width:18px;height:18px;flex:0 0 18px;margin:1px 0 0;
+  border-radius:6px;border:1.5px solid #DCE8DF;background:#FCFEFC;position:relative;cursor:pointer;
+}
+.checkline input:checked{background:var(--leaf);border-color:var(--leaf)}
+.checkline input:checked::after{
+  content:"";position:absolute;left:5px;top:2px;width:5px;height:9px;
+  border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);
+}
 
-.field{margin-bottom:18px}
-.field .lb{display:block;font-size:12px;font-weight:500;color:var(--ink-2);margin-bottom:7px}
-.field .lb i{font-style:normal;color:var(--red);margin-left:3px}
-.in{width:100%;border:1.5px solid var(--line);border-radius:12px;background:#fff;padding:12px 14px;font-size:15px;font-family:inherit;color:var(--ink);outline:none;transition:border-color .18s}
-.in::placeholder{color:#B6BDB4}
-.in:focus{border-color:var(--green)}
-textarea.in{resize:none;line-height:1.75}
-.hint{display:flex;align-items:flex-start;gap:6px;font-size:11px;color:var(--ink-3);margin-top:8px;line-height:1.7}
-.hint svg{flex:0 0 13px;margin-top:2px}
+/* 提示条 */
+.risk{
+  display:flex;gap:8px;align-items:flex-start;background:#FFF6DE;border:1px solid #F6E4AE;
+  border-radius:14px;padding:10px 12px;font-size:11.5px;line-height:1.6;color:#82631A;
+}
+.risk svg{width:15px;height:15px;flex:0 0 auto;margin-top:1px}
+.risk.soft{background:var(--sky-l);border-color:#CFEAFB;color:#216B92}
+.risk.warm{background:var(--coral-l);border-color:#FFD6CC;color:#A94731}
 
-.risk{display:flex;gap:9px;font-size:11.5px;line-height:1.75;color:var(--ink-2);background:#FFFBF0;border:1px solid #F2E4C2;border-radius:12px;padding:11px 13px}
-.risk b{font-weight:500;color:var(--ink)}
-.risk svg{flex:0 0 auto;margin-top:1px}
-
-.kv{display:flex;justify-content:space-between;gap:18px;padding:11px 0;border-bottom:1px solid var(--line-2)}
-.kv:last-child{border-bottom:0}
-.kv b{font-weight:400;font-size:11.5px;color:var(--ink-3);flex:0 0 auto}
-.kv span{font-size:13.5px;text-align:right;line-height:1.6}
-
-.sw{position:relative;display:inline-block;width:44px;height:26px;flex:0 0 44px}
-.sw input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;z-index:2}
-.sw .tr{position:absolute;inset:0;background:#DDD8C8;border-radius:999px;transition:background .2s}
-.sw .kn{position:absolute;top:3px;left:3px;width:20px;height:20px;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.16);transition:transform .22s cubic-bezier(.2,.8,.2,1)}
-.sw input:checked+.tr{background:var(--green)}
-.sw input:checked~.kn{transform:translateX(18px)}
-
-.seg{display:flex;gap:6px;background:#F0EDE2;padding:4px;border-radius:999px}
-.seg button{flex:1;background:none;border:0;padding:9px;font-size:13px;color:var(--ink-2);cursor:pointer;border-radius:999px;transition:background .18s,color .18s;min-height:40px}
-.seg button.on{background:#fff;color:var(--green-2);font-weight:500;box-shadow:var(--sh-s)}
+/* ---------- 顶部导航 / 底部 tab ---------- */
+.tabbar{
+  flex:0 0 auto;display:flex;gap:5px;padding:8px 12px calc(9px + env(safe-area-inset-bottom));
+  background:rgba(255,251,240,.96);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  border-top:1.5px solid #F6ECD8;
+}
+.tabbar.hide{display:none}
+.tabbar button{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  border:0;background:transparent;padding:8px 0 6px;border-radius:16px;
+  color:var(--ink-3);font-size:10.5px;font-weight:600;line-height:1.3;
+}
+.tabbar button svg{width:23px;height:23px;stroke:currentColor}
+.tabbar button.on{background:var(--leaf-l);color:var(--leaf-d)}
+.tabbar button.on[data-go="hollow"]{background:var(--coral-l);color:var(--coral-d)}
+.tabbar button.on[data-go="activities"]{background:var(--sun-l);color:#8A5C00}
+.tabbar button.on[data-go="me"]{background:var(--sky-l);color:var(--sky-d)}
+.tabbar .dotn{position:absolute;margin-left:15px;margin-top:-3px;width:7px;height:7px;border-radius:50%;background:var(--coral);border:1.5px solid var(--paper)}
+.riskstrip{display:none;flex:0 0 auto;padding:6px 18px;background:#FFF6DE;border-top:1px solid #F6E4AE;color:#82631A;font-size:10.5px;line-height:1.45;text-align:center}
+.riskstrip.show{display:block}
 
 /* ---------- 首页 ---------- */
-.hero-card{position:relative;border-radius:22px;background:var(--green-soft);padding:20px 20px 0;min-height:230px;overflow:hidden}
-.hero-card .hk{font-size:10.5px;letter-spacing:.08em;color:#5D7A60;margin-bottom:12px}
-.hero-card .ht{font-family:var(--round);font-size:24px;font-weight:400;line-height:1.5;letter-spacing:.03em;margin:0;color:#2C4A33;position:relative;z-index:2}
-.hero-card .hs{position:absolute;right:-10px;bottom:-8px;pointer-events:none}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.tile{display:flex;flex-direction:column;justify-content:space-between;text-align:left;border:0;border-radius:18px;padding:14px;min-height:112px;cursor:pointer;transition:transform .14s}
-.tile:active{transform:scale(.98)}
-.tile .ti{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.72);display:flex;align-items:center;justify-content:center}
-.tile .tn{display:block;font-family:var(--round);font-size:14.5px;font-weight:400;letter-spacing:.03em;line-height:1.4;margin-top:14px}
-.tile .ts{display:block;font-size:10.5px;color:var(--ink-2);margin-top:3px;line-height:1.5}
-.tile.g{background:var(--green-soft);color:#2C4A33}
-.tile.y{background:var(--yellow-soft);color:#7A5A18}
-.tile.b{background:var(--blue-soft);color:#2F6480}
-.tile.v{background:var(--violet-soft);color:#7A5F88}
-.annocard{display:flex;gap:12px;align-items:flex-start;background:#fff;border-radius:18px;padding:15px;box-shadow:var(--sh);margin-top:12px;cursor:pointer;text-align:left;border:0;width:100%}
-.annocard .ad{width:38px;height:38px;flex:0 0 38px;border-radius:11px;background:var(--yellow-soft);display:flex;align-items:center;justify-content:center;color:#A57B22}
-.annocard .ab{flex:1;min-width:0}
-.annocard b{font-family:var(--round);font-size:14.5px;font-weight:400;display:block;line-height:1.5}
-.annocard p{font-size:11px;color:var(--ink-3);margin:4px 0 0;line-height:1.6}
-.footq{font-family:var(--round);font-size:12.5px;line-height:1.9;color:var(--ink-3);text-align:center;margin:22px 0 28px}
+.home-top{display:flex;align-items:center;justify-content:space-between;padding:2px 18px 12px}
+.home-top .date{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink-2)}
+.home-top .date svg{width:16px;height:16px}
+.home-top .avatar{
+  width:42px;height:42px;border-radius:15px;border:0;background:linear-gradient(140deg,#FFE39B,#FFC63D);
+  color:#4A3400;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 0 rgba(28,52,40,.08);transform:rotate(3deg);
+}
+.hero{
+  position:relative;margin:0 18px;border-radius:26px;overflow:hidden;min-height:208px;
+  background:linear-gradient(155deg,#D8F2FF 0%,#EAFBEF 52%,#FFF6D9 100%);
+  box-shadow:0 12px 26px rgba(58,169,240,.16);padding:18px 18px 16px;
+}
+.hero .kicker{display:inline-flex;align-items:center;gap:5px;height:26px;padding:0 10px;border-radius:999px;background:rgba(255,255,255,.75);font-size:11px;font-weight:700;color:var(--sky-d);backdrop-filter:blur(4px);white-space:nowrap}
+.hero h1{position:relative;z-index:2;margin:8px 0 0;max-width:64%;font-size:27px;line-height:1.3;font-weight:800;letter-spacing:-.03em;color:var(--ink)}
+.hero p{position:relative;z-index:2;margin:5px 0 0;max-width:62%;font-size:12px;line-height:1.65;color:var(--ink-2)}
+.hero .hero-cta{
+  position:relative;z-index:2;margin-top:10px;display:inline-flex;align-items:center;gap:5px;
+  height:38px;padding:0 14px;border:0;border-radius:999px;background:var(--sun);color:#4A3400;
+  font-size:13px;font-weight:700;box-shadow:0 4px 0 #D99A17;
+}
+.hero .hero-cta:active{transform:translateY(2px);box-shadow:0 2px 0 #D99A17}
+.hero .hero-cta svg{width:15px;height:15px}
+.hero .hero-art{position:absolute;right:-14px;bottom:-8px;width:62%;z-index:1;animation:floaty 6s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.hero .spark{position:absolute;width:8px;height:8px;border-radius:50%;background:#fff;opacity:.8}
+.hero .sp2{position:absolute;width:6px;height:6px;border-radius:50%;background:var(--coral);opacity:.7}
+.hero .bird{position:absolute;z-index:1;animation:floaty 5s ease-in-out infinite}
+
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 18px 0}
+.tile{
+  position:relative;border:0;border-radius:20px;padding:13px 12px 12px;text-align:left;
+  min-height:100px;display:flex;flex-direction:column;justify-content:space-between;
+  box-shadow:0 4px 0 rgba(28,52,40,.05);transition:transform .12s;
+}
+.tile:active{transform:translateY(2px)}
+.tile .icw{width:38px;height:38px;border-radius:13px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(28,52,40,.06)}
+.tile .icw svg{width:21px;height:21px}
+.tile b{display:block;margin-top:9px;font-size:15.5px;font-weight:800;letter-spacing:-.02em;line-height:1.3}
+.tile .ts{display:block;margin-top:2px;font-size:10.5px;line-height:1.45;color:var(--ink-2);padding-right:16px}
+.tile .badge{position:absolute;right:10px;top:10px;height:20px;min-width:20px;padding:0 6px;border-radius:7px;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.tile .go{position:absolute;right:9px;bottom:9px;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center}
+.tile .go svg{width:12px;height:12px}
+.t-sun{background:var(--sun-l)}
+.t-sun b{color:#5F4300}
+.t-sun .badge{background:var(--sun);color:#4A3400}
+.t-coral{background:var(--coral-l)}
+.t-coral b{color:#7C2E1D}
+.t-coral .badge{background:var(--coral);color:#fff}
+.t-sky{background:var(--sky-l)}
+.t-sky b{color:#0E4E74}
+.t-leaf{background:var(--leaf-l)}
+.t-leaf b{color:#07532F}
+
+.event-card{
+  display:flex;gap:12px;align-items:center;width:100%;text-align:left;border:0;padding:9px;
+  margin:0 18px;width:calc(100% - 36px);background:#fff;border-radius:20px;
+  box-shadow:var(--shadow);border:1.5px solid #FBF2DF;
+}
+.event-card:active{transform:translateY(1px)}
+.event-card .ec-art{width:66px;height:66px;flex:0 0 66px;border-radius:12px;overflow:hidden;position:relative}
+.event-card .ec-tx{min-width:0;flex:1}
+.event-card .ec-tx h3{margin:0 0 5px;font-size:15px;line-height:1.4;font-weight:700;letter-spacing:-.01em}
+.event-card .ec-meta{display:flex;gap:7px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--ink-3)}
+.event-card .ec-go{flex:0 0 auto;width:26px;height:26px;border-radius:50%;background:var(--paper-2);display:flex;align-items:center;justify-content:center}
+
+/* ---------- 自然封面 ---------- */
+.art{position:relative;overflow:hidden;background:#EAF6EE;width:100%;height:100%}
+.art .a-sun{pointer-events:none}
+.art .cloud{fill:#FFFFFF;opacity:.85}
+.art svg.a-hills{position:absolute;left:0;right:0;bottom:0;width:100%;height:100%;display:block}
+.art .a-kv{position:absolute;left:8px;bottom:7px;font-size:10px;font-weight:600;color:#fff;background:rgba(28,52,40,.32);padding:3px 7px;border-radius:6px;line-height:1.4}
+.scene{display:block;width:100%;height:auto}
+.art.leaf{background:linear-gradient(160deg,#E7F9EE,#D6F3E4)}
+.art.leaf .h1{fill:#A5E6C1}
+.art.leaf .h2{fill:#63CE96}
+.art.leaf .a-sun{fill:#FFD968}
+.art.sun{background:linear-gradient(160deg,#FFF6D6,#FFEAB0)}
+.art.sun .h1{fill:#D9EFA6}
+.art.sun .h2{fill:#A8D97C}
+.art.sun .a-sun{fill:#FFC63D}
+.art.sky{background:linear-gradient(160deg,#E4F6FF,#CFF0FF)}
+.art.sky .h1{fill:#BCE8F8}
+.art.sky .h2{fill:#84D2EE}
+.art.sky .a-sun{fill:#FFD968}
+.art.grape{background:linear-gradient(160deg,#F0ECFD,#E0D9FB)}
+.art.grape .h1{fill:#D4CBF8}
+.art.grape .h2{fill:#B3A6F0}
+.art.grape .a-sun{fill:#FFE9A8}
+.art.coral{background:linear-gradient(160deg,#FFEFE9,#FFDCD2)}
+.art.coral .h1{fill:#FFD0C2}
+.art.coral .h2{fill:#FFAC94}
+.art.coral .a-sun{fill:#FFF0B8}
+.cover-top{position:absolute;left:10px;right:10px;top:10px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px;z-index:2}
+.cover-top .ac-quota{position:static;box-shadow:0 3px 0 rgba(28,52,40,.10)}
+.cover-top .sticker{background:#fff;color:var(--ink);box-shadow:0 3px 0 rgba(28,52,40,.10)}
+.cover-top .ac-quota.p-sun{background:var(--sun);color:#4A3400}
+.cover-top .ac-quota.p-leaf{background:var(--leaf);color:#fff}
+.cover-top .ac-quota.p-coral{background:var(--coral);color:#fff}
 
 /* ---------- 树洞 ---------- */
-.postcard{background:#fff;border-radius:18px;padding:16px;box-shadow:var(--sh);margin-bottom:10px;cursor:pointer}
-.postcard h3{font-family:var(--round);font-size:16.5px;line-height:1.55;font-weight:400;letter-spacing:.02em;margin:0 0 8px}
-.postcard .bd{font-size:13px;line-height:1.8;color:var(--ink-2);margin:0 0 12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.postcard .ft{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:10.5px;color:var(--ink-3)}
-.postcard .ft .l{display:flex;align-items:center;gap:7px}
-.cnt{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;color:var(--ink-3)}
-.fl{display:flex;gap:11px;padding:0 0 18px}
-.fl .fav{width:30px;height:30px;flex:0 0 30px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--green-2);font-family:var(--round)}
-.fl .fbd{flex:1;min-width:0}
-.fl .fh{display:flex;align-items:center;gap:7px;font-size:10.5px;color:var(--ink-3);margin-bottom:6px}
-.fl p{font-size:13.5px;line-height:1.85;margin:0}
-.fl .sub{margin-top:9px;background:#F6F4EA;border-radius:12px;padding:10px 12px;font-size:12.5px;line-height:1.8;color:var(--ink-2)}
+.mood-row{display:flex;flex-wrap:wrap;gap:6px;padding:2px 16px 12px}
+.mood-row::-webkit-scrollbar{display:none}
+.mchip{
+  flex:0 0 auto;height:30px;padding:0 7px;border-radius:999px;border:1.5px solid var(--line-2);
+  background:#fff;color:var(--ink-2);font-size:11.5px;font-weight:600;display:inline-flex;align-items:center;gap:4px;
+}
+.mchip .d{width:5px;height:5px;border-radius:50%;background:var(--ink-3)}
+.mchip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.mchip.on .d{background:var(--sun)}
+.post{
+  display:block;width:100%;text-align:left;background:#fff;border:1.5px solid #FAF1DF;border-radius:20px;
+  padding:15px 15px 13px;margin-bottom:12px;box-shadow:0 4px 0 #F5EBD8;transition:transform .12s;
+}
+.post:active{transform:translateY(2px)}
+.post .ph-top{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.post .ph-top .time{margin-left:auto;font-size:10.5px;color:var(--ink-3)}
+.post h3{margin:0 0 6px;font-size:16.5px;line-height:1.45;font-weight:800;letter-spacing:-.02em}
+.post .bd{margin:0;font-size:13px;line-height:1.65;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.post .ft{display:flex;align-items:center;gap:7px;margin-top:11px;font-size:11px;color:var(--ink-3)}
+.post .ft .avs{display:flex}
+.post .ft .avs i{width:20px;height:20px;border-radius:50%;border:2px solid #fff;margin-left:-6px;display:block}
+.post .ft .avs i:first-child{margin-left:0}
+.post .ft .cnt{margin-left:auto;display:inline-flex;align-items:center;gap:4px;font-weight:600;color:var(--ink-2)}
+.post .ft .cnt svg{width:14px;height:14px}
+.post.featured{border-color:#FFD6CC;box-shadow:0 4px 0 #FFE0D6;background:linear-gradient(180deg,#fff,#FFF9F6)}
+
+/* 发帖 */
+.compose-hero{margin:0 18px 14px;padding:16px;border-radius:24px;background:linear-gradient(150deg,#FFF3CC,#FFE9E2 60%,#E2F8EB);position:relative;overflow:hidden}
+.compose-hero h1{margin:0;font-size:23px;line-height:1.3;font-weight:800;letter-spacing:-.03em}
+.compose-hero p{margin:5px 0 0;font-size:12px;line-height:1.6;color:var(--ink-2);max-width:75%}
+.compose-hero .doodle{position:absolute;right:-6px;bottom:-8px;width:96px;opacity:.85}
+.mood-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 16px}
+.moodbtn{
+  display:flex;align-items:center;gap:9px;height:48px;padding:0 13px;border-radius:15px;
+  border:1.5px solid var(--line-2);background:#fff;font-size:13px;font-weight:600;color:var(--ink-2);
+}
+.moodbtn .d{width:12px;height:12px;border-radius:50%;flex:0 0 12px}
+.moodbtn.on{background:var(--leaf-l);border-color:var(--leaf);color:var(--leaf-d)}
+.anon-card{display:flex;gap:12px;align-items:center;padding:13px 14px;border-radius:18px;background:var(--leaf-l);border:1.5px solid #C9EFD9;margin-bottom:14px}
+.anon-card .tx{flex:1;min-width:0}
+.anon-card b{display:block;font-size:13.5px;font-weight:700;color:var(--leaf-d)}
+.anon-card p{margin:2px 0 0;font-size:11px;line-height:1.5;color:#4C7A62}
+
+/* 楼层 */
+.floor{background:#fff;border-radius:18px;padding:13px 14px;margin-bottom:10px;border:1.5px solid #FAF1DF;position:relative}
+.floor:before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:0 4px 4px 0;background:var(--sun)}
+.floor.lv2{margin-left:16px;border-left:4px solid var(--sky)}
+.floor.lv2:before{display:none}
+.floor .wm{display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--ink-3);margin-bottom:5px}
+.floor .tx{font-size:13.5px;line-height:1.65}
+.floor .ops{display:flex;gap:14px;margin-top:7px}
+.floor .ops button{border:0;background:transparent;color:var(--ink-3);font-size:11px;padding:0}
+.floor .ops button:hover{color:var(--leaf)}
+.react-row{display:flex;gap:8px;margin:14px 0 4px}
+.react{
+  display:inline-flex;align-items:center;gap:5px;height:34px;padding:0 12px;border-radius:999px;
+  border:1.5px solid var(--line-2);background:#fff;font-size:12px;font-weight:600;color:var(--ink-2);
+}
+.react svg{width:15px;height:15px}
+.react.on{background:var(--coral-l);border-color:#FFC7B8;color:var(--coral-d)}
+.react.on2{background:var(--sky-l);border-color:#BBE4FA;color:var(--sky-d)}
+.reply-box{display:flex;gap:9px;align-items:flex-end;padding-top:12px;border-top:1.5px dashed var(--line-2);margin-top:10px}
+.reply-box .in{height:48px;flex:1;border-radius:15px}
+.reply-box .btn{width:52px;height:48px;padding:0;border-radius:15px}
 
 /* ---------- 资源库 ---------- */
-.fd{display:flex;align-items:center;gap:13px;width:100%;background:#fff;border:0;border-radius:16px;padding:14px;text-align:left;cursor:pointer;box-shadow:var(--sh);margin-bottom:9px}
-.fd .fi{flex:0 0 38px;width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--blue-soft);color:#3D7C9B}
-.fd .fm{flex:1;min-width:0}
-.fd b{font-size:14px;font-weight:500;display:block;line-height:1.5}
-.fd p{font-size:11px;color:var(--ink-3);margin:3px 0 0;line-height:1.6}
-.fd .n{flex:0 0 auto;font-size:10.5px;color:var(--ink-3);background:#F1EEE5;border-radius:999px;padding:2px 8px}
+.folder-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 18px}
+.folder{
+  border:0;text-align:left;border-radius:20px;padding:14px 13px 12px;background:#fff;
+  border:1.5px solid #FAF1DF;box-shadow:0 4px 0 #F5EBD8;min-height:132px;display:flex;flex-direction:column;
+}
+.folder:active{transform:translateY(2px)}
+.folder .fi{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center}
+.folder .fi svg{width:23px;height:23px}
+.folder b{display:block;margin-top:9px;font-size:14.5px;font-weight:700;line-height:1.35;letter-spacing:-.01em}
+.folder p{margin:3px 0 0;font-size:10.5px;line-height:1.5;color:var(--ink-3)}
+.folder .fm{margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding-top:8px}
+.folder .fm .cnt{font-size:11px;font-weight:700;color:var(--ink-2)}
+.folder .fm .arrow{width:22px;height:22px;border-radius:50%;background:var(--paper-2);display:flex;align-items:center;justify-content:center}
+.folder.c-leaf .fi{background:var(--leaf-l)}
+.folder.c-sun .fi{background:var(--sun-l)}
+.folder.c-sky .fi{background:var(--sky-l)}
+.folder.c-coral .fi{background:var(--coral-l)}
+.folder.c-grape .fi{background:var(--grape-l)}
+.file-row{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px dashed var(--line-2);padding:13px 0}
+.file-row .fi{width:40px;height:40px;flex:0 0 40px;border-radius:13px;background:var(--sky-l);display:flex;align-items:center;justify-content:center}
+.file-row .fi svg{width:20px;height:20px}
+.file-row .tx{flex:1;min-width:0}
+.file-row b{display:block;font-size:13.5px;line-height:1.45;font-weight:600}
+.file-row p{margin:2px 0 0;font-size:10.5px;color:var(--ink-3)}
 
 /* ---------- 活动 ---------- */
-.chips{display:flex;gap:8px;padding:2px 20px 14px;overflow-x:auto;scrollbar-width:none}
-.chips::-webkit-scrollbar{display:none}
-.chipx{flex:0 0 auto;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:7px 13px;font-size:12px;color:var(--ink-2);cursor:pointer;transition:all .16s}
-.chipx.on{background:var(--green);border-color:var(--green);color:#fff;font-weight:500}
-.actcard{display:block;width:100%;background:#fff;border:0;border-radius:20px;overflow:hidden;box-shadow:var(--sh);margin-bottom:12px;cursor:pointer;text-align:left;padding:0}
-.cover{height:88px;position:relative;display:flex;align-items:center;justify-content:center}
-.cover .dt{position:absolute;left:12px;top:12px;background:rgba(255,255,255,.94);border-radius:999px;font-size:10.5px;padding:3px 9px;color:var(--ink);font-weight:500;letter-spacing:.02em}
-.cover .qt{position:absolute;right:12px;top:12px;background:rgba(255,255,255,.94);border-radius:999px;font-size:10.5px;padding:3px 9px;font-weight:500}
-.ainfo{padding:13px 15px 15px}
-.ainfo h4{font-family:var(--round);font-size:16px;font-weight:400;line-height:1.5;margin:0 0 6px;letter-spacing:.02em}
-.ainfo p{font-size:11px;color:var(--ink-3);margin:0 0 9px;line-height:1.6}
-.ainfo .m{display:flex;align-items:center;gap:7px;font-size:10.5px;color:var(--ink-2)}
-.tabs{display:flex;gap:8px;padding:0 20px 16px}
-.tabs button{background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:7px 14px;font-size:12px;color:var(--ink-2);cursor:pointer}
-.tabs button.on{background:var(--green);border-color:var(--green);color:#fff;font-weight:500}
+.chips{display:flex;flex-wrap:wrap;gap:7px;padding:2px 18px 14px}
+.chipx{flex:0 0 auto;height:34px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line-2);background:#fff;color:var(--ink-2);font-size:12.5px;font-weight:600}
+.chipx.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.actcard{
+  display:block;width:100%;text-align:left;border:0;padding:0;background:#fff;border-radius:22px;
+  overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow);border:1.5px solid #FBF2DF;
+}
+.actcard:active{transform:translateY(2px)}
+.actcard .ac-cover{height:132px;position:relative}
+.actcard .ac-body{padding:13px 14px 14px}
+.actcard h3{margin:0 0 8px;font-size:16.5px;line-height:1.4;font-weight:800;letter-spacing:-.02em}
+.actcard .ac-tags{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.actcard .ac-meta{display:flex;gap:12px;margin-top:9px;font-size:11px;color:var(--ink-3);flex-wrap:wrap}
+.actcard .ac-meta span{display:inline-flex;align-items:center;gap:4px}
+.actcard .ac-meta svg{width:13px;height:13px}
+.actcard .ac-date{position:absolute;left:12px;top:12px;transform:rotate(-2deg)}
+.actcard .ac-quota{position:absolute;right:12px;top:12px}
+
+/* ---------- 活动详情 ---------- */
+.act-hero{margin:0 18px 14px;height:176px;border-radius:24px;overflow:hidden;position:relative;box-shadow:0 10px 24px rgba(28,52,40,.12)}
+.act-hero .art{position:absolute;inset:0}
+.act-hero .date{position:absolute;left:12px;top:12px;transform:rotate(-2deg)}
+.act-hero .quota{position:absolute;right:12px;top:12px}
+.act-title{margin:0 18px 12px;font-size:22px;line-height:1.35;font-weight:800;letter-spacing:-.03em}
+.meta-chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 18px 16px}
+.tabs{display:flex;gap:4px;margin:0 18px 16px;background:var(--paper-2);border-radius:15px;padding:4px}
+.tabs button{flex:1;height:36px;border:0;border-radius:11px;background:transparent;font-size:13px;font-weight:600;color:var(--ink-2)}
+.tabs button.on{background:#fff;color:var(--ink);box-shadow:0 2px 8px rgba(28,52,40,.1)}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 16px}
+.info-cell{border-radius:16px;padding:10px 12px;background:var(--paper-2)}
+.info-cell .k{font-size:10px;color:var(--ink-3);font-weight:600}
+.info-cell .v{margin-top:3px;font-size:12.5px;font-weight:700;line-height:1.4}
+.body-text p{margin:0 0 12px;font-size:14px;line-height:1.8;color:var(--ink)}
+.body-text p:last-child{margin-bottom:0}
+.bul{margin:0;padding-left:20px;font-size:13.5px;line-height:1.9}
+.bul li{margin:3px 0}
+.dock{
+  position:sticky;bottom:0;padding:12px 18px calc(12px + env(safe-area-inset-bottom));
+  background:linear-gradient(to bottom,rgba(255,251,240,0),#FFFBF0 26%,#FFFBF0 100%);
+  margin-top:16px;
+}
+.dock .row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.dock .price{font-size:14px;font-weight:800}
+.dock .price small{font-size:10.5px;font-weight:600;color:var(--ink-3)}
+.dock .left{font-size:11px;color:#8A5C00;background:var(--sun-l);padding:3px 8px;border-radius:999px;font-weight:600}
+
+/* ---------- 我的 ---------- */
+.me-card{
+  margin:2px 18px 14px;border-radius:26px;padding:18px 18px 16px;position:relative;overflow:hidden;
+  background:linear-gradient(145deg,#FFF3CC 0%,#E9F9EF 58%,#DFF4FF 100%);
+}
+.me-card .me-top{display:flex;align-items:center;gap:13px}
+.me-card .me-av{
+  width:58px;height:58px;flex:0 0 58px;border-radius:20px;background:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:17px;font-weight:800;color:var(--leaf-d);box-shadow:0 5px 0 rgba(28,52,40,.07);transform:rotate(-3deg);
+}
+.me-card .me-tx b{font-size:20px;font-weight:800;letter-spacing:-.02em}
+.me-card .me-tx p{margin:3px 0 0;font-size:11px;color:var(--ink-2);display:flex;align-items:center;gap:4px}
+.me-card .me-tx p svg{width:12px;height:12px}
+.me-card .me-leaf{position:absolute;right:-8px;top:-8px;width:92px;opacity:.6}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 18px}
+.stat{border-radius:18px;padding:12px 10px;text-align:center}
+.stat b{display:block;font-size:20px;font-weight:800;line-height:1.2}
+.stat span{font-size:10.5px;color:var(--ink-3)}
+.stat.s1{background:var(--sun-l)}.stat.s1 b{color:#7A5400}
+.stat.s2{background:var(--coral-l)}.stat.s2 b{color:var(--coral-d)}
+.stat.s3{background:var(--sky-l)}.stat.s3 b{color:var(--sky-d)}
+.menu{margin:8px 18px 0;border-top:1px dashed var(--line-2)}
+.menu .row{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;background:transparent;border-bottom:1px dashed var(--line-2);padding:13px 0;min-height:62px}
+.menu .row .mi{width:40px;height:40px;flex:0 0 40px;border-radius:13px;display:flex;align-items:center;justify-content:center}
+.menu .row .mi svg{width:21px;height:21px}
+.menu .row .mt{flex:1;min-width:0}
+.menu .row b{display:block;font-size:14px;font-weight:600}
+.menu .row p{margin:2px 0 0;font-size:10.5px;color:var(--ink-3)}
+.menu .row .arr{width:24px;height:24px;border-radius:50%;background:var(--paper-2);display:flex;align-items:center;justify-content:center}
+.menu .row .arr svg{width:13px;height:13px}
+.menu .row.c-leaf .mi{background:var(--leaf-l)}
+.menu .row.c-sun .mi{background:var(--sun-l)}
+.menu .row.c-coral .mi{background:var(--coral-l)}
+.menu .row.c-sky .mi{background:var(--sky-l)}
+.menu .row.c-grape .mi{background:var(--grape-l)}
 
 /* ---------- 档案 ---------- */
-.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.ph{aspect-ratio:1;border-radius:12px;position:relative;overflow:hidden}
-.ph .mk{position:absolute;left:5px;bottom:5px;font-size:9px;color:#fff;letter-spacing:.02em;background:rgba(0,0,0,.28);padding:1px 5px;border-radius:999px}
-.ph .nb{position:absolute;right:4px;top:4px;font-size:8px;color:#8A4B3E;background:rgba(255,255,255,.92);padding:1px 4px;border-radius:4px;max-width:calc(100% - 8px);line-height:1.5}
-.wk{display:flex;align-items:center;gap:12px;width:100%;background:#fff;border:0;border-radius:14px;padding:11px;text-align:left;cursor:pointer;box-shadow:var(--sh-s);margin-bottom:8px}
-.wk .th{width:42px;height:42px;flex:0 0 42px;border-radius:10px;background:var(--yellow-soft)}
-.wk .wm{flex:1;min-width:0}
-.wk b{font-size:13px;font-weight:500;display:block;line-height:1.5}
-.wk p{font-size:10.5px;color:var(--ink-3);margin:2px 0 0}
-.note{background:#fff;border-radius:16px;padding:14px;box-shadow:var(--sh);margin-bottom:9px;position:relative}
-.note .who{display:flex;align-items:center;gap:7px;font-size:10.5px;color:var(--ink-3);margin-bottom:8px}
-.note .who b{font-weight:500;color:var(--green-2);font-family:var(--round);font-size:12px}
-.note p{font-size:13.5px;line-height:1.9;color:var(--ink);margin:0}
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 18px 16px}
+.stats3 .st{border-radius:16px;padding:10px 8px;text-align:center;background:var(--paper-2)}
+.stats3 .st b{display:block;font-size:18px;font-weight:800}
+.stats3 .st span{font-size:10px;color:var(--ink-3)}
+.snaps{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;padding:2px 18px 4px}
+.snap{background:#fff;border-radius:5px;padding:5px 5px 4px;box-shadow:0 5px 12px rgba(28,52,40,.1);transform:rotate(-1.6deg)}
+.snap:nth-child(even){transform:rotate(1.6deg)}
+.snap .pic{aspect-ratio:1/1;border-radius:3px;position:relative;overflow:hidden}
+.snap .cap{font-size:8.5px;line-height:1.4;color:var(--ink-2);text-align:center;padding:4px 1px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.snap .tag{position:absolute;left:3px;top:3px;height:18px;padding:0 5px;border-radius:5px;font-size:8.5px;font-weight:700;background:rgba(255,255,255,.9);color:var(--ink);display:flex;align-items:center}
+.note-card{background:#fff;border-radius:20px;padding:14px 15px;border:1.5px solid #FAF1DF;box-shadow:0 4px 0 #F5EBD8;margin-bottom:10px;position:relative}
+.note-card .quote{position:absolute;right:14px;top:8px;font-size:34px;line-height:1;color:var(--coral-l);font-weight:800}
+.note-card .nh{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.note-card .nh .av{width:34px;height:34px;border-radius:12px;background:var(--leaf-l);color:var(--leaf-d);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+.note-card .nh b{display:block;font-size:12.5px;font-weight:700}
+.note-card .nh span{font-size:10px;color:var(--ink-3)}
+.note-card p{margin:0;font-size:13px;line-height:1.75;color:var(--ink)}
+.note-card .cy{margin-top:7px;display:inline-block;font-size:10px;color:var(--ink-3)}
+.works{display:grid;grid-template-columns:1fr;gap:9px;padding:0 18px}
+.work{display:flex;align-items:center;gap:11px;background:#fff;border:1.5px solid #FAF1DF;border-radius:16px;padding:9px;text-align:left;width:100%;box-shadow:0 3px 0 #F5EBD8}
+.work .wk{width:58px;height:58px;flex:0 0 58px;border-radius:11px;overflow:hidden}
+.work .wx{flex:1;min-width:0}
+.work b{display:block;font-size:13px;font-weight:700;line-height:1.4}
+.work span{font-size:10.5px;color:var(--ink-3)}
+.work .wa{width:24px;height:24px;border-radius:50%;background:var(--paper-2);display:flex;align-items:center;justify-content:center}
+.ticket{border:1.5px dashed #E3D6BA;background:#fff;border-radius:20px;padding:15px;position:relative}
+.ticket .tk-h{display:flex;align-items:center;gap:9px;padding-bottom:12px;border-bottom:1px dashed #EFE3CC;margin-bottom:11px}
+.ticket .tk-h .av{width:34px;height:34px;border-radius:11px;background:var(--leaf-l);color:var(--leaf-d);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+.ticket .tk-h b{font-size:12.5px}
+.ticket .tk-h span{font-size:10px;color:var(--ink-3);display:block}
+.ticket .tk-row{display:flex;justify-content:space-between;gap:10px;font-size:12px;line-height:1.7}
+.ticket .tk-row .k{color:var(--ink-3);flex:0 0 auto}
+.ticket .tk-row .v{font-weight:600;text-align:right}
 
 /* ---------- 私信 ---------- */
-.msg{max-width:76%;font-size:13.5px;line-height:1.75;padding:10px 13px;margin:7px 0;border-radius:16px}
-.msg.them{background:#fff;box-shadow:var(--sh-s);border-bottom-left-radius:6px;margin-right:auto}
-.msg.me{background:var(--green);color:#fff;border-bottom-right-radius:6px;margin-left:auto}
-.mtime{font-size:10px;color:var(--ink-3);text-align:center;padding:14px 0 4px;letter-spacing:.04em}
+.dm-row{display:flex;align-items:center;gap:11px;width:100%;text-align:left;border:0;background:transparent;border-bottom:1px dashed var(--line-2);padding:13px 0}
+.dm-row .dav{width:44px;height:44px;flex:0 0 44px;border-radius:16px;background:var(--sun-l);color:#7A5400;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;transform:rotate(-2deg)}
+.dm-row .dtx{flex:1;min-width:0}
+.dm-row b{display:block;font-size:14px;font-weight:700}
+.dm-row p{margin:2px 0 0;font-size:11.5px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dm-row .drt{display:flex;flex-direction:column;align-items:flex-end;gap:5px;font-size:10px;color:var(--ink-3)}
+.dm-row .unread{width:8px;height:8px;border-radius:50%;background:var(--coral)}
+.bubble{max-width:76%;padding:10px 13px;border-radius:16px;font-size:13.5px;line-height:1.6;margin:7px 0}
+.bubble.them{background:#fff;border:1.5px solid #FAF1DF;border-bottom-left-radius:5px}
+.bubble.me{background:var(--leaf-l);color:#174C34;margin-left:auto;border-bottom-right-radius:5px}
+.dm-time{text-align:center;font-size:10px;color:var(--ink-3);margin:14px 0 4px}
+.quick-replies{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px}
+.quick-replies button{height:30px;padding:0 11px;border-radius:999px;border:1.5px solid var(--line-2);background:#fff;font-size:11.5px;color:var(--ink-2)}
 
-/* ---------- 底栏 ---------- */
-.tb{display:flex;background:var(--paper);border-top:1px solid var(--line);padding-bottom:2px}
-.tb button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;padding:9px 0 8px;font-size:9.5px;letter-spacing:.05em;color:var(--ink-3);cursor:pointer}
-.tb button.on{color:var(--green-2);font-weight:500}
-.tb button svg{width:21px;height:21px}
-.dock{padding:12px 20px 14px;background:var(--paper);border-top:1px solid var(--line)}
-.dockrow{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
-.dockrow .pr{font-family:var(--round);font-size:17px;color:var(--ink)}
-.dockrow .lo{font-size:11px;color:var(--ink-3)}
-
-/* ---------- 弹层 ---------- */
-.ov{position:absolute;inset:0;background:rgba(34,48,42,.36);display:flex;align-items:flex-end;z-index:50;animation:fade .18s ease}
-.ov.center{align-items:center;justify-content:center}
-@keyframes fade{from{opacity:0}to{opacity:1}}
-.sheet{width:100%;background:var(--paper);border-radius:22px 22px 0 0;padding:20px 20px 24px;animation:up .26s cubic-bezier(.2,.8,.2,1);max-height:82%;overflow:auto}
-@keyframes up{from{transform:translateY(22px)}to{transform:none}}
-.sheet h4{font-family:var(--round);font-size:17px;font-weight:400;margin:0 0 6px}
-.sheet .sp2{font-size:11.5px;color:var(--ink-2);line-height:1.7;margin:0 0 8px}
-.dialog{width:304px;background:var(--paper);border-radius:20px;padding:22px}
-.dialog h4{font-family:var(--round);font-size:16.5px;font-weight:400;margin:0 0 8px}
-.dialog p{font-size:12.5px;line-height:1.8;color:var(--ink-2);margin:0}
-.acts{display:flex;gap:9px;margin-top:20px}
-.acts .btn{flex:1}
-.rrow{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line-2);font-size:13.5px;cursor:pointer;min-height:46px}
-.rrow:last-child{border-bottom:0}
-.rrow input{accent-color:var(--green);width:17px;height:17px}
-.toast{position:absolute;left:50%;bottom:118px;transform:translate(-50%,8px);background:#22302A;color:#FBFAF5;font-size:12px;padding:9px 15px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:60;max-width:78%;text-align:center;line-height:1.5}
-.toast.show{opacity:1;transform:translate(-50%,0)}
-.empty{text-align:center;padding:56px 10px;color:var(--ink-3)}
-.empty svg{margin-bottom:10px;color:#CFD6CB}
-.empty p{font-size:12.5px;line-height:1.8;margin:0}
-.body p{font-size:14px;line-height:1.9;margin:0 0 13px;color:var(--ink)}
-.body p:last-child{margin-bottom:0}
-.body .lead{font-family:var(--round);font-size:15.5px;line-height:1.95;color:var(--ink);letter-spacing:.02em}
-.bul{margin:0 0 12px;padding-left:0;list-style:none;font-size:13.5px;line-height:1.9}
-.bul li{display:flex;gap:9px;margin:5px 0}
-.bul li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);margin-top:11px;flex:0 0 6px}
-
-@media (max-width:480px){
-  .shell{padding:0;gap:0;display:block;min-height:100dvh}
-  .guide{display:none}
-  .device{width:100vw;height:100dvh;border-radius:0;box-shadow:none}
-  .sbar{height:12px;flex-basis:12px}
-  .sbar .sg,.sbar .st{display:none}
+/* ---------- 弹层 / toast ---------- */
+.ov{position:absolute;inset:0;background:rgba(28,52,40,.4);z-index:8;display:flex;align-items:flex-end;justify-content:center;animation:fa .18s both}
+.ov.center{align-items:center;padding:0 30px}
+.sheet{width:100%;background:#fff;border-radius:26px 26px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom));animation:up .24s cubic-bezier(.22,.61,.36,1) both}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+.dialog{width:100%;background:#fff;border-radius:24px;padding:22px;animation:pop .2s cubic-bezier(.22,.61,.36,1) both}
+@keyframes pop{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.sheet h4,.dialog h4{margin:0 0 6px;font-size:18px;font-weight:800}
+.dialog p{margin:0 0 16px;font-size:13px;line-height:1.65;color:var(--ink-2)}
+.radiorow{display:flex;align-items:center;gap:10px;min-height:48px;border-bottom:1px dashed var(--line-2);font-size:14px;width:100%;text-align:left;background:transparent;border-left:0;border-right:0;border-top:0}
+.radiorow input{width:19px;height:19px;margin:0;accent-color:var(--leaf)}
+.dlg-actions{display:flex;gap:9px;margin-top:16px}
+.dlg-actions .btn{flex:1;height:46px;font-size:14.5px}
+.toast{
+  position:absolute;left:50%;bottom:118px;transform:translate(-50%,10px);
+  background:rgba(28,52,40,.92);color:#fff;padding:10px 17px;border-radius:999px;
+  font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:12;
+  white-space:nowrap;max-width:86%;text-align:center;
 }
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.empty{text-align:center;padding:54px 0 40px;color:var(--ink-3)}
+.empty svg{width:34px;height:34px;margin:0 auto 10px;display:block}
+.empty p{margin:0;font-size:13px}
+
+/* ---------- 响应式 ---------- */
+@media (max-width:1120px){
+  .side{display:none}
+  .shell{padding:0}
+  .device{margin:0}
+}
+@media (max-width:480px){
+  body{overflow:auto}
+  .stage{display:none}
+  .shell{display:block;padding:0;min-height:0}
+  .device{width:100vw;height:100vh;height:100dvh;border:0;border-radius:0;box-shadow:none}
+  .statusbar{height:calc(30px + env(safe-area-inset-top));flex-basis:calc(30px + env(safe-area-inset-top));padding-top:env(safe-area-inset-top)}
+  .statusbar .isl{display:none}
+}
+
 </style>
 </head>
 <body>
+
+<div class="stage" aria-hidden="true">
+  <i class="s1"></i><i class="s2"></i><i class="s3"></i><i class="s4"></i><i class="s5"></i>
+  <svg class="leafdoodle" viewBox="0 0 100 100" fill="none">
+    <path d="M50 88V30" stroke="#12A566" stroke-width="3" stroke-linecap="round"/>
+    <path d="M50 54c-16 2-26-10-26-24 16-2 26 8 26 24z" fill="#12A566" opacity=".9"/>
+    <path d="M50 44c14 0 22-10 22-22-14 0-22 8-22 22z" fill="#FFC63D"/>
+  </svg>
+</div>
+
 <div class="shell">
-  <aside class="guide" aria-label="原型导览">
-    <div class="gm"><span class="gmsvg"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 19c4-3 7-2.4 8.5-4.6 1.6 2.4 4.6 3.6 8.5 4.6"/><circle cx="16.6" cy="7" r="2.6"/></svg></span><h1>无名树</h1></div>
-    <p class="gcap">产品原型 · 2026 秋</p>
-    <button class="gl" data-go="gate"><b>01　入群与审核</b><span>邀请码</span></button>
-    <button class="gl" data-go="home"><b>02　首页与四个入口</b><span>今日</span></button>
-    <button class="gl" data-go="hollow"><b>03　树洞发帖与回应</b><span>匿名</span></button>
-    <button class="gl" data-go="activities"><b>04　活动报名与档案</b><span>5 场</span></button>
-    <button class="gl" data-go="settings"><b>05　我的与隐私设置</b><span>免打扰</span></button>
-    <p class="gnote">点任意一项可直接跳到该流程。发帖、回应、报名都会真的写进数据。</p>
+  <aside class="side">
+    <div class="brandline">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+        <circle cx="16" cy="16" r="16" fill="#FFC63D"/>
+        <path d="M16 27V14" stroke="#1C3428" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M16 19c-5 0-8-3-8-8 5 0 8 3 8 8z" fill="#12A566"/>
+        <path d="M16 17c5 0 8-3 8-8-5 0-8 3-8 8z" fill="#0B7A4A"/>
+      </svg>
+      <b>无名树 · 明亮版</b>
+    </div>
+
+    <div class="kicker">DESIGN DIRECTION / 视觉方向</div>
+    <h2>明亮、圆润，<br><em>有手绘感</em></h2>
+    <p class="desc">把“自然基地”画成看得见的颜色：晴天、草地、树影和一点点糖。信息仍然好读，但第一眼要有精神。</p>
+    <div class="palette" aria-hidden="true">
+      <i class="c1"></i><i class="c2"></i><i class="c3"></i><i class="c4"></i><i class="c5"></i>
+    </div>
+    <div class="kw">
+      <span>太阳黄</span><span>嫩叶绿</span><span>天空蓝</span><span>珊瑚橙</span><span>贴纸标签</span><span>大圆角</span>
+    </div>
+
+    <div class="divider"></div>
+    <div class="gh"><b>屏幕地图 / SCREENS</b></div>
+    <ol>
+      <li><a href="#" data-go="gate"><span class="num">01</span><span class="tx"><b>邀请进入</b><i>邀请码 · 审核状态</i></span></a></li>
+      <li><a href="#" data-go="home"><span class="num">02</span><span class="tx"><b>首页</b><i>今日 · 四个入口 · 本周在基地</i></span></a></li>
+      <li><a href="#" data-go="notice"><span class="num">03</span><span class="tx"><b>公告板</b><i>单向通知 · 不可评论</i></span></a></li>
+      <li><a href="#" data-go="hollow"><span class="num">04</span><span class="tx"><b>树洞互助</b><i>匿名倾诉 · 楼层回应</i></span></a></li>
+      <li><a href="#" data-go="library"><span class="num">05</span><span class="tx"><b>经验资源库</b><i>长期归档 · 成员可见</i></span></a></li>
+      <li><a href="#" data-go="activities"><span class="num">06</span><span class="tx"><b>活动专区</b><i>野外 · PBL · 戏剧 · 文化</i></span></a></li>
+      <li><a href="#" data-go="activity" data-id="a1"><span class="num">07</span><span class="tx"><b>活动详情与档案</b><i>报名后解锁 · 相册 / 作品 / 手记</i></span></a></li>
+      <li><a href="#" data-go="me"><span class="num">08</span><span class="tx"><b>我的与设置</b><i>默认匿名 · 免打扰 · 私信</i></span></a></li>
+    </ol>
+    <div class="foot">左侧条目可直接跳转。手机内按真实路径操作：报名、发帖、回应都会留下状态，刷新复位。全部数据为虚构演示。</div>
   </aside>
+
   <div class="device">
-    <div class="sbar"><span class="st">9:41</span><span class="sg"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 18V9M8 18V6M13 18V8M18 18V4"/></svg><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="9" width="15" height="8" rx="2"/><path d="M20 11v4"/></svg></span></div>
-    <div class="screen" id="screen"></div>
-    <div class="dockwrap" id="dockwrap"></div>
-    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="statusbar">
+      <span>9:41</span>
+      <span class="isl" aria-hidden="true"></span>
+      <span class="r" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1C3428" stroke-width="2"><path d="M3 10c5-5 13-5 18 0M6.5 13.5c3.2-3.2 7.8-3.2 11 0M10 17c1.2-1.2 2.8-1.2 4 0"/><circle cx="12" cy="20" r="1.2" fill="#1C3428"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1C3428" stroke-width="2"><path d="M4 8h9v8H4zM15 10c2 0 3 1 3 2s-1 2-3 2"/></svg>
+      </span>
+    </div>
+    <div id="screen" class="screen"></div>
+    <div id="riskstrip" class="riskstrip">同伴互助不能替代专业医疗或心理支持，紧急情况请及时就医</div>
+    <nav id="tabbar" class="tabbar">
+      <button data-go="home" aria-label="首页">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 11.5 12 5l8 6.5V20h-5.5v-6h-5v6H4z"/></svg>
+        <span>首页</span>
+      </button>
+      <button data-go="hollow" aria-label="树洞">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><circle cx="12" cy="8.5" r="4.5"/><path d="M12 13v7M12 16.5c-2.6 0-4.4-1.3-4.4-3.4 2.6 0 4.4 1.3 4.4 3.4zM12 18c2.6 0 4.4-1.3 4.4-3.4-2.6 0-4.4 1.3-4.4 3.4z"/></svg>
+        <span>树洞</span><span class="dotn"></span>
+      </button>
+      <button data-go="activities" aria-label="活动">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 4 3.5 20h17L12 4z"/><path d="M12 10v6"/></svg>
+        <span>活动</span>
+      </button>
+      <button data-go="me" aria-label="我的">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.4-5.4 7-5.4s6.2 1.8 7 5.4"/></svg>
+        <span>我的</span>
+      </button>
+    </nav>
+    <div id="toast" class="toast" role="status"></div>
   </div>
 </div>
+
 <script>
-/* ===== 图标（1.6px 圆一点） ===== */
-var I={};
-(function(){
-  var P={
-    back:'<path d="M20 12H5M11 6l-6 6 6 6"/>',
-    arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
-    lock:'<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8.5 11V8.5a3.5 3.5 0 0 1 7 0V11"/>',
-    chat:'<path d="M20 6H4v11h5v3.6l4-3.6h7z"/>',
-    art:'<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 16l4.5-4.5 3.5 3.5 3-3 5 5"/><circle cx="8.5" cy="9.5" r="1.4"/>',
-    cal:'<rect x="4" y="6" width="16" height="15" rx="2"/><path d="M4 10.5h16M9 3v4M15 3v4"/>',
-    gear:'<circle cx="12" cy="12" r="3.3"/><path d="M12 3.5v2.8M12 17.7v2.8M3.5 12h2.8M17.7 12h2.8M6 6l2 2M16 16l2 2M18 6l-2 2M8 16l-2 2"/>',
-    user:'<circle cx="12" cy="8" r="3.4"/><path d="M4.6 20c1.2-4 4-6 7.4-6s6.2 2 7.4 6"/>',
-    send:'<path d="M21.5 2.5L10.5 13.5"/><path d="M21.5 2.5l-8.5 19-2.5-8-8-2.5z"/>',
-    check:'<path d="M4.5 12.5l4.5 4.5L19.5 6"/>',
-    clock:'<circle cx="12" cy="12" r="8.4"/><path d="M12 7v5.2l3.8 2"/>',
-    close:'<path d="M6 6l12 12M18 6L6 18"/>',
-    book:'<path d="M12 6.5c-2-1.6-5-2.1-8-1.6v14c3-.5 6 .1 8 1.6 2-1.5 5-2.1 8-1.6v-14c-3-.5-6 0-8 1.6z"/><path d="M12 6.5v14"/>',
-    folder:'<path d="M3.5 6.5h6.5l2 2.5h8.5v10.5h-17z"/>',
-    search:'<circle cx="10.5" cy="10.5" r="6.4"/><path d="M15.4 15.4L21 21"/>',
-    plus:'<path d="M12 4.5v15M4.5 12h15"/>',
-    bell:'<path d="M6.5 17V11a5.5 5.5 0 0 1 11 0v6M4.5 17h15M9.8 20a2.3 2.3 0 0 0 4.4 0"/>',
-    leaf:'<path d="M5 19c0-7 5-12 14-13-1 9-6 13-14 13z"/><path d="M5 19l7-7"/>',
-    heart:'<path d="M12 20.4S4.8 15.8 4.8 10.8A3.7 3.7 0 0 1 12 8.4a3.7 3.7 0 0 1 7.2 2.4c0 5-7.2 9.6-7.2 9.6z"/>',
-    home:'<path d="M4 11l8-7 8 7"/><path d="M6.5 10v10h11v-10"/>'
-  };
-  Object.keys(P).forEach(function(k){
-    I[k]=function(o){o=o||20;return '<svg viewBox="0 0 24 24" width="'+o+'" height="'+o+'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+P[k]+'</svg>';};
-  });
-  I.dots=function(o){o=o||19;return '<svg viewBox="0 0 24 24" width="'+o+'" height="'+o+'" fill="currentColor" aria-hidden="true"><circle cx="5.5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="18.5" cy="12" r="1.6"/></svg>';};
-})();
 
-/* ===== 状态 ===== */
-var S={
-  view:'gate',params:{},
-  anon:true,strangerDM:false,quiet:'22:00–07:00',nick:'LU',
-  enrolled:{},filter:'all',atab:'detail',
-  draft:{t:'',b:'',anon:true}
+/* ================================================================
+   无名树 · 明亮活泼版 — 视图层 1
+   ================================================================ */
+var ICONS = {
+  home:'<path d="M4 11.5 12 5l8 6.5V20h-5.5v-6h-5v6H4z"/>',
+  tree:'<circle cx="12" cy="8" r="4.4"/><path d="M12 12.4V21M12 16c-2.6 0-4.4-1.4-4.4-3.6 2.6 0 4.4 1.4 4.4 3.6zM12 18c2.6 0 4.4-1.4 4.4-3.6-2.6 0-4.4 1.4-4.4 3.6z"/>',
+  tent:'<path d="M12 4 3.5 20h17L12 4z"/><path d="M12 11v9"/>',
+  user:'<circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.4-5.4 7-5.4s6.2 1.8 7 5.4"/>',
+  back:'<path d="M15 5l-7 7 7 7"/>',
+  arrow:'<path d="M9 5l7 7-7 7"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  note:'<rect x="5" y="4" width="14" height="16" rx="2.5"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4"/>',
+  book:'<path d="M4.5 5.5c3-1.4 5.8-1.4 8 0v14c-2.2-1.4-5-1.4-8 0v-14zM11.5 5.5c2.2-1.4 5-1.4 8 0v14c-3-1.4-5.8-1.4-8 0"/>',
+  lock:'<rect x="5" y="10" width="14" height="10" rx="3"/><path d="M8 10V8a4 4 0 0 1 8 0v2"/>',
+  heart:'<path d="M12 20s-7-4.4-7-8.8A3.9 3.9 0 0 1 12 9a3.9 3.9 0 0 1 7 2.2c0 4.4-7 8.8-7 8.8z"/>',
+  chat:'<path d="M4.5 6h15v9h-9l-4 4v-4h-2z"/>',
+  clock:'<circle cx="12" cy="12" r="7.5"/><path d="M12 8v4.5l3 2"/>',
+  pin:'<path d="M12 21s7-5.6 7-11a7 7 0 0 0-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/>',
+  shield:'<path d="M12 3.5l7 2.8v5.6c0 5-3.4 8.2-7 9.4-3.6-1.2-7-4.4-7-9.4V6.3z"/><path d="M9 12l2 2 4-4"/>',
+  check:'<path d="M5 12l5 5 9-10"/>',
+  x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  more:'<circle cx="5.5" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="18.5" cy="12" r="1.5" fill="currentColor" stroke="none"/>',
+  users:'<circle cx="9" cy="9" r="3.4"/><path d="M3 19c.7-3.2 3-4.8 6-4.8s5.3 1.6 6 4.8"/><circle cx="17.5" cy="10" r="2.4"/><path d="M15.6 19c.5-2.2 1.7-3.4 3.8-3.4 1.8 0 3 1 3.6 2.4"/>',
+  leaf:'<path d="M12 21V11"/><path d="M12 14c-4 0-6-2.4-6-6 4 0 6 2.4 6 6zM12 13c4 0 6-2.4 6-6-4 0-6 2.4-6 6z"/>',
+  sun:'<circle cx="12" cy="12" r="4.6"/><path d="M12 3.5v2M12 18.5v2M3.5 12h2M18.5 12h2M5.9 5.9L7.3 7.3M16.7 16.7l1.4 1.4M18.1 5.9 16.7 7.3M7.3 16.7 5.9 18.1"/>',
+  bell:'<path d="M6 16c1-1 1.4-2 1.4-4V9a4.6 4.6 0 0 1 9.2 0v3c0 2 .4 3 1.4 4z"/><path d="M10 19a2 2 0 0 0 4 0"/>',
+  moon:'<path d="M19 13.5A7.5 7.5 0 1 1 10.5 5a6 6 0 0 0 8.5 8.5z"/>',
+  help:'<circle cx="12" cy="12" r="8"/><path d="M9.6 9.5a2.5 2.5 0 0 1 4.6 1.3c0 1.5-2.2 1.8-2.2 3.2M12 16.8h.01"/>',
+  logout:'<path d="M10 5H6v14h4M15 8l4 4-4 4M19 12H9"/>',
+  edit:'<path d="M5 19l1-4 9.5-9.5a2 2 0 0 1 3 3L8 18z"/>',
+  image:'<rect x="4" y="5" width="16" height="14" rx="2.5"/><path d="M4 15l4.5-4 4 3.5 3-2.5L20 16"/><circle cx="15.5" cy="9.5" r="1.3"/>',
+  file:'<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/>',
+  send:'<path d="M21 4L3 11l7 3 3 7z"/><path d="M21 4l-11 10"/>',
+  calendar:'<rect x="4" y="6" width="16" height="14" rx="2.5"/><path d="M4 10h16M8 4v4M16 4v4"/>',
+  camera:'<path d="M4 8h4l2-3h4l2 3h4v11H4z"/><circle cx="12" cy="13" r="3.4"/>',
+  spark:'<path d="M12 3l1.8 5.8L20 12l-6.2 3.2L12 21l-1.8-5.8L4 12l6.2-3.2z"/>',
+  flag:'<path d="M6 21V4M6 5h12l-2.5 4 2.5 4H6"/>',
+  tag:'<path d="M4 12V5h7l9 9-7 7z"/><circle cx="8" cy="9" r="1.2"/>'
 };
-var hist=[];
+function ic(n,c,w){
+  var d=ICONS[n]||ICONS.spark;
+  return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="'+(c||'#5B7468')+'" stroke-width="'+(w||2)+'" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+d+'</svg>';
+}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 
-/* ===== 数据（全部虚构示例） ===== */
-var DATA={
-  posts:[
-    {id:'p1',t:'孩子今天第一次愿意爬上那棵树',b:'在基地东边那棵歪脖子树，他在下面站了差不多二十分钟，一直摸树皮。最后爬上去两米，没敢再高。下来的时候手在抖，但他自己在笑。',anon:true,time:'2 小时前',n:12,mine:false},
-    {id:'p2',t:'昨天他爸说了一句「你就是惯的」',b:'我没吵。回了房间，坐在地上哭了一会儿。今天早上起来，还是我送他去的基地。有些话我没办法跟身边的人说，只能说在这里。',anon:true,time:'昨天 21:40',n:23,mine:false},
-    {id:'p3',t:'一到周一就说肚子疼，去医院查了两次',b:'各项指标都正常。医生说是压力性腹痛。我不知道该松手还是该推一把，这两件事每天都在我脑子里打架。',anon:true,time:'昨天 09:12',n:31,mine:false},
-    {id:'p4',t:'今天没去学校，我们在河边坐了一下午',b:'他捡了一堆石头，一个一个往水里扔，说听声音。回家路上他说想吃上次那个面。我没提学校的事。',anon:false,who:'青禾',time:'前天',n:8,mine:false}
+/* ---------- 虚构数据 ---------- */
+var DATA = {
+  acts:[
+    {id:'a1',t:'小小野外生存家 · 秋季营',type:'野外生存',date:'11.14',day:'周六',time:'08:00–16:30',place:'无名树基地 · 山谷营地',age:'7–12 岁',quota:'剩 3 位',price:'会员免费',art:'leaf',left:3,kids:12,
+     intro:'一天里不赶路、不列队、不比赛。孩子们一起认方向、搭庇护所、生一小堆火，中午在树下吃饭。',
+     points:['认识三种可辨认的树与地形','两人一组搭一个能挡风的庇护所','用火柴和干草生一堆小火','结束前把营地恢复成原来的样子'],
+     bring:'水壶、耐脏的长裤、一顿不会坏掉的午饭。基地备有急救包与备用雨衣。',
+     photos:[{cap:'出发前 · 基地入口',tag:'集体',art:'leaf'},{cap:'山腰的转弯处',tag:'集体',art:'sun'},{cap:'午后的空地',tag:'集体',art:'sky'},{cap:'在树下蹲了很久',tag:'我的孩子',art:'leaf'},{cap:'第一次摸到树皮',tag:'我的孩子',art:'sun'},{cap:'下山路上',tag:'我的孩子',art:'coral'}],
+     works:[{t:'基地东侧动线草图',who:'小满',art:'sky'},{t:'庇护所结构图',who:'阿柚',art:'leaf'},{t:'一片叶子的拓印',who:'小满',art:'sun'}],
+     notes:[{who:'林老师',role:'营地带队',date:'11.14',text:'小满今天没有第一个冲出去，他站在队伍最后，先看别人怎么走。走到山腰时他开始自己找路。下山前他问我：下次还能来吗。'},{who:'周老师',role:'随队观察',date:'11.14',text:'午饭时大家很自然地分成两桌，没有人被落下。有个孩子把最后一块饼干掰成两半，分给了旁边的人。'}]},
+    {id:'a2',t:'公共标识系统 PBL 共建',type:'PBL 共建',date:'11.21',day:'周六',time:'09:00–16:00',place:'豆蔻镇 · 社区中心',age:'9–14 岁',quota:'剩 8 位',price:'¥280',art:'sun',left:8,kids:8,
+     intro:'从“看不懂的指示牌”开始，孩子们走访社区、访谈使用者，最后做出一套真的会被挂上去的标识。',
+     points:['走访三条街道，记录让人迷路的标识','访谈 5 位使用者','画出第一版方案并互相提意见','做出一块 1:1 的样品牌'],
+     bring:'铅笔、速写本、一双走得动路的鞋。',
+     photos:[{cap:'社区中心门口',tag:'集体',art:'sun'},{cap:'第一条街的记录',tag:'集体',art:'sky'},{cap:'方案讨论',tag:'我的孩子',art:'leaf'}],
+     works:[{t:'三版指示牌草图',who:'阿柚',art:'sun'},{t:'访谈记录卡',who:'小满',art:'sky'}],
+     notes:[{who:'周老师',role:'PBL 引导',date:'11.21',text:'有个孩子一开始坚持“箭头越大越好”，走访之后自己把方案改了。他没有被说服，是被看见的现实说服的。'}]},
+    {id:'a3',t:'豆蔻镇戏剧营 · 冬季',type:'文学戏剧',date:'12.05',day:'周六',time:'13:30–20:00',place:'豆蔻镇 · 旧礼堂',age:'8–14 岁',quota:'名额已满',price:'¥360',art:'grape',left:0,kids:16,
+     intro:'不选拔角色。每个人都可以写一句台词、做一件道具，或者只负责在暗场时推一下灯。',
+     points:['共读一个短剧本','决定每个人参与的方式','做道具、排片段','傍晚给家长演 20 分钟'],
+     bring:'一件不怕弄脏的深色衣服。',
+     photos:[{cap:'旧礼堂的下午',tag:'集体',art:'grape'},{cap:'道具桌',tag:'集体',art:'coral'}],
+     works:[{t:'手绘节目单',who:'阿柚',art:'grape'}],
+     notes:[{who:'林老师',role:'戏剧带领',date:'12.05',text:'最安静的那个孩子选择了推灯。暗场时他一次都没有错。'}]},
+    {id:'a4',t:'寻味中国年 · 亲子场',type:'传统文化',date:'01.09',day:'周六',time:'10:00–15:00',place:'无名树基地 · 长桌区',age:'6–12 岁 + 1 位家长',quota:'剩 12 位',price:'¥180',art:'coral',left:12,kids:6,
+     intro:'一起做一顿有年味的饭。和面、写春联、把桌子拼长一点，家长只需要坐在旁边。',
+     points:['和一块面，等它醒','写一副自己的春联','做两道年菜','长桌吃饭'],
+     bring:'围裙、一个空饭盒。',
+     photos:[{cap:'长桌摆好了',tag:'集体',art:'coral'},{cap:'第一次擀面',tag:'我的孩子',art:'sun'}],
+     works:[{t:'今年的春联',who:'小满',art:'coral'}],
+     notes:[{who:'周老师',role:'活动带领',date:'01.09',text:'有个爸爸全程想上手，被孩子按住了三次。最后他坐在旁边剥蒜，剥得很安静。'}]},
+    {id:'a5',t:'家长沙龙 · 休整期的边界',type:'家长沙龙',date:'11.28',day:'周五',time:'20:30–21:30',place:'线上语音 · 40 人',age:'仅家长',quota:'免费',price:'免费',art:'sky',left:20,kids:0,
+     intro:'一个小时的线上语音。不讲课，只把这一周最难的一件事说出来，听听别人是怎么过的。',
+     points:['本周最难的一件事','哪些话说了反而更糟','下一周想试的一件小事'],
+     bring:'一副耳机，和一个安静的房间。',
+     photos:[{cap:'上一次沙龙',tag:'集体',art:'sky'}],
+     works:[],
+     notes:[{who:'林老师',role:'沙龙主持',date:'10.24',text:'有人整场没有开麦，但在结束时打了一句“今天听够了，谢谢”。这也算参加。'}]}
   ],
-  replies:{
-    p1:[
-      {who:'山雀',anon:true,time:'2 小时前',tx:'手抖但是自己在笑，这个画面我能记很久。',lv:1},
-      {who:'LU',anon:true,time:'1 小时前',tx:'我们家也是从两米开始的。不用急。',lv:1},
-      {who:'山雀',anon:true,time:'1 小时前',tx:'谢谢。今天没问他在学校怎么样，忍住了。',lv:2},
-      {who:'青禾',anon:false,time:'40 分钟前',tx:'树皮那个触感对他可能是个很重要的锚点，别急着往上。',lv:1}
-    ],
-    p2:[
-      {who:'小满',anon:true,time:'昨天 22:05',tx:'那句「惯的」我也听过。听的时候不觉得什么，晚上躺下才难受。',lv:1},
-      {who:'LU',anon:true,time:'昨天 22:30',tx:'你没有跟他吵，已经很用力在护着孩子了。',lv:1}
-    ],
-    p3:[
-      {who:'青禾',anon:false,time:'昨天 09:40',tx:'压力性腹痛很常见，别先怀疑自己。先看看周一早上具体是哪个环节让他紧。',lv:1},
-      {who:'山雀',anon:true,time:'昨天 10:02',tx:'我们家的是一到周日晚上就开始。后来发现是书包。',lv:1}
-    ],
-    p4:[]
+  posts:[
+    {id:'p1',mood:'share',title:'孩子今天第一次愿意爬上那棵树',body:'在树下站了很久，我在旁边没有催。他后来自己伸手摸了摸树皮，然后说“明天还来”。这是三个月来第一次听到他主动说明天。',time:'10-27 21:40',replies:5,anon:true,hug:12,me:5},
+    {id:'p2',mood:'tired',title:'开学第三周，我还是没敢跟老师说',body:'每天早上照常出门，绕到河边坐两小时。我知道这样不对，但一想到要跟班主任解释，整个人就僵住。',time:'10-26 09:12',replies:12,anon:true,hug:31,me:18},
+    {id:'p3',mood:'ask',title:'有人试过居家学习一整个学期吗',body:'我们在考虑秋季就不回学校了。想听听真正做过的家庭，是怎么安排一天的，不用鸡汤，就想知道具体的时间表。',time:'10-24 14:03',replies:8,anon:false,hug:6,me:3},
+    {id:'p4',mood:'tired',title:'昨天他爸说了一句“你就是惯的”',body:'之后我整晚没睡。不是气他，是突然觉得自己这些年做的好像都不算数。',time:'10-22 07:35',replies:19,anon:true,hug:44,me:27}
+  ],
+  floors:{
+    p1:[{name:'一位家长',lv:1,time:'21:48',text:'“明天还来”这四个字，比任何计划都珍贵。'},{name:'阿柚',lv:1,time:'22:05',text:'我们家是上个月开始在楼下摸同一棵树，现在他会给那棵树起名字。'},{name:'一位家长',lv:2,time:'22:31',text:'起名字这个好，我今晚也试试。'}],
+    p2:[{name:'一位家长',lv:1,time:'09:30',text:'我也没有跟老师说。后来是写了一张纸条放在她桌上，比开口容易一点。'},{name:'小满妈妈',lv:1,time:'10:02',text:'不用先解释全部，先说“最近有点困难”就够了。'}],
+    p3:[{name:'阿柚',lv:1,time:'14:40',text:'我们居家过一个学期。上午两节、下午一节，其他时间在外面。关键是大人先别慌。'},{name:'一位家长',lv:2,time:'15:12',text:'“大人先别慌”这句我记下了。'}],
+    p4:[{name:'一位家长',lv:1,time:'08:10',text:'他说的是他看见的表面。你做的那些，孩子知道。'},{name:'林老师',lv:1,time:'09:00',text:'这句话很伤人。先照顾自己，今晚早点睡。'}]
   },
   notices:[
-    {id:'n1',t:'秋季四场活动开放预报名',d:'11.01',from:'管理员 · 木',pin:true},
-    {id:'n2',t:'社群公约更新：关于「不评价别人孩子」',d:'10.18',from:'管理员 · 木',pin:false}
+    {id:'n1',pin:true,date:'11-05',title:'11 月活动集合时间与装备清单',body:'11.14 秋季营 08:00 在基地东门集合，请提前 10 分钟到。装备清单见资源库“野外装备清单”。雨天照常，基地备有雨衣。',full:['11.14 秋季营 08:00 在基地东门集合，请提前 10 分钟到，签到后统一进山。','孩子需要带：水壶、耐脏长裤、一顿不易坏的午饭。基地提供急救包、备用雨衣与手套。','接送请在 16:30 到东门。如临时不能来，请提前一天在小程序里取消，把位置留给别的家庭。']},
+    {id:'n2',pin:false,date:'11-02',title:'11 月基地开放日调整',body:'因山谷营地修整，11.09 的开放日顺延到 11.16。已预约的家庭会自动保留名额，无需重新操作。',full:['因山谷营地修整，11.09 的开放日顺延到 11.16。','已预约的家庭会自动保留名额，无需重新操作。','11.16 当天只开放东门，西侧栈道暂不通行。']},
+    {id:'n3',pin:false,date:'10-28',title:'新成员须知：这里不做什么',body:'不排名、不打卡、不比孩子。树洞不评判、不建议，先接住再说。公告板只做单向通知，不开放评论。',full:['这里不排名、不打卡、不比孩子。','树洞是“楼”，不是聊天流。回应可以先接住，不必给建议。','公告板只做单向通知，不开放评论。有事请私信管理员。','所有活动照片只保存在活动档案里，不对外转发。']}
   ],
-  noticeBody:{
-    n1:'<p class="lead">这个秋天，基地备好了落叶、故事和无尽的探索。四场活动已开放预报名，名额有限，按报名顺序确认。</p><p>野外生存（11.14）、PBL 共建（11.21）、家长沙龙（11.28）、戏剧营（12.05，名额已满，可加入等待名单）、家乡推荐官（01.09）。</p><p>每场活动的报名表里都有一个「孩子特殊关照备注」栏，只有本次带队老师能看到，不进入任何社群可见区域。</p><p>如果孩子当天状态不适合上山，随时可以不来，不扣名额。这句话是认真的。</p>',
-    n2:'<p class="lead">公约只有一条被反复强调：不要评价别人的孩子，也不要在别人的帖子里给建议，除非对方明确说了「想听听大家怎么说」。</p><p>这里很多人是在别的地方被评价过太多次，才来到这里的。</p><p>举报入口在每条帖子的右上角。举报人不会被对方知道。</p>'
-  },
   folders:[
-    {id:'f1',t:'入学适应与拒学',n:14,d:'从「不想去」到「不能去」之间的那段路',open:true},
-    {id:'f2',t:'情绪与身体反应',n:11,d:'腹痛、失眠、抽动、躯体化',open:true},
-    {id:'f3',t:'自然教育与户外',n:9,d:'基地活动设计、装备、风险边界',open:true},
-    {id:'f4',t:'本期活动资料',n:6,d:'仅本季报名成员可见',open:false},
-    {id:'f5',t:'家长自荐读物',n:8,d:'成员自己读过、愿意推荐的',open:true}
+    {id:'f1',t:'复学陪伴',n:6,d:'从请假到回校的过渡',art:'leaf'},
+    {id:'f2',t:'居家学习',n:4,d:'一天的节奏与边界',art:'sun'},
+    {id:'f3',t:'就医与咨询资源',n:5,d:'机构、流程与费用',art:'sky'},
+    {id:'f4',t:'豆蔻镇戏剧素材',n:3,d:'仅活动成员可见',art:'grape',member:true},
+    {id:'f5',t:'野外装备清单',n:2,d:'不同季节的清单',art:'coral'}
   ],
-  files:{
-    f1:[
-      {id:'d1',t:'第一次陪他去基地，我在门口站了四十分钟',by:'山雀',d:'10.26',type:'家长笔记'},
-      {id:'d2',t:'和班主任沟通的三种开口方式',by:'青禾',d:'10.20',type:'经验整理'},
-      {id:'d3',t:'「不上学」这件事，家里其他人怎么说',by:'小满',d:'10.12',type:'讨论存档'}
-    ],
-    f2:[
-      {id:'d4',t:'孩子说肚子疼的时候，我试过的四句话',by:'LU',d:'10.28',type:'家长笔记'},
-      {id:'d5',t:'关于躯体化，我们能查到的有限资料',by:'青禾',d:'10.15',type:'资料合集'}
-    ],
-    f4:[
-      {id:'d6',t:'11.14 野外生存 · 装备清单与集合点',by:'管理员 · 木',d:'11.02',type:'活动文件'},
-      {id:'d7',t:'11.21 PBL 共建 · 基地平面图（打印用）',by:'管理员 · 木',d:'11.02',type:'活动文件'}
-    ]
-  }
+  files:[
+    {t:'复学前的 6 周过渡表',m:'PDF · 1.2 MB · 管理员整理',f:'file'},
+    {t:'和班主任沟通的三种说法',m:'文档 · 8 分钟阅读',f:'edit'},
+    {t:'孩子愿意回校的 12 个小信号',m:'文档 · 家长共创',f:'book'},
+    {t:'其他家庭的真实时间表（匿名）',m:'文档 · 4 份',f:'users'},
+    {t:'本地咨询机构与费用参考',m:'表格 · 2026.10 更新',f:'file'}
+  ],
+  dms:[
+    {id:'d1',name:'林老师',role:'营地带队',last:'明天集合前我会在东门等你们。',time:'昨天',unread:true},
+    {id:'d2',name:'主管理员',role:'社群管理员',last:'你的申请已经通过了，欢迎。',time:'10-30',unread:false}
+  ]
 };
 
-/* ===== 工具 ===== */
-function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function findAct(id){for(var i=0;i<DATA.acts.length;i++){if(DATA.acts[i].id===id){return DATA.acts[i];}}return null;}
-function findPost(id){for(var i=0;i<DATA.posts.length;i++){if(DATA.posts[i].id===id){return DATA.posts[i];}}return null;}
-function findFolder(id){for(var i=0;i<DATA.folders.length;i++){if(DATA.folders[i].id===id){return DATA.folders[i];}}return null;}
-function anonTag(){return '<span class="pill gray">匿名</span>';}
-var toastEl=document.getElementById('toast'),toastTimer=null;
-function toast(t){
-  toastEl.textContent=t;
-  toastEl.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(function(){toastEl.classList.remove('show');},2100);
+/* ---------- 状态 ---------- */
+var S = {
+  view:'home', params:{}, tab:'detail', atab:'detail', enrolled:{a1:{child:'小满',age:'10'}},
+  nick:'LU', anon:true, pubMood:'share', filter:'all', typeFilter:'all', draft:'',
+  notice:'n1', folder:'f1', dm:'d1',
+  notify:{notice:true,hollow:true},
+  settings:{anon:true,dnd:true,phone:false},
+  reacts:{}, approved:false, pending:false
+};
+
+/* ---------- 场景插画 ---------- */
+function sceneSvg(){
+  return '<svg class="scene" viewBox="0 0 360 220" fill="none" aria-hidden="true">'
+    +'<circle cx="298" cy="52" r="40" fill="#FFC63D" opacity=".22"/>'
+    +'<circle cx="298" cy="52" r="27" fill="#FFC63D"/>'
+    +'<g fill="#FFFFFF" opacity=".9"><ellipse cx="62" cy="48" rx="26" ry="11"/><ellipse cx="84" cy="44" rx="17" ry="9"/></g>'
+    +'<path d="M0 168c38-36 74-38 112-12 26 19 52 22 84 4 30-18 62-16 96 6 26 17 50 16 68-4v64H0z" fill="#A8E6C0"/>'
+    +'<path d="M0 190c36-18 70-16 104 6 24 14 48 12 70-2 24-13 50-12 74 2 34 14 70 14 112-4v28H0z" fill="#63CE96"/>'
+    +'<path d="M0 206c46-8 92-6 138 4 42 9 86 8 128-2 40-9 80-8 94 2v10H0z" fill="#38B97C"/>'
+    +'<g><rect x="94" y="128" width="7" height="40" rx="3.5" fill="#8A5A34"/>'
+      +'<circle cx="97" cy="112" r="24" fill="#1E9E62"/><circle cx="78" cy="124" r="16" fill="#2FBE7B"/><circle cx="117" cy="122" r="17" fill="#0F8A52"/></g>'
+    +'<g><rect x="250" y="144" width="5" height="30" rx="2.5" fill="#8A5A34"/>'
+      +'<circle cx="252" cy="132" r="17" fill="#2FBE7B"/><circle cx="238" cy="140" r="11" fill="#48CD8C"/><circle cx="266" cy="139" r="12" fill="#1E9E62"/></g>'
+    +'<g transform="translate(190 168)"><circle cx="0" cy="0" r="11" fill="#FFD9B8"/>'
+      +'<path d="M-11 0c0-7 4.5-11 11-11s11 4 11 11c-4-3-7-4-11-4s-7 1-11 4z" fill="#3B2A1F"/>'
+      +'<path d="M-10 9h20l5 16h-30z" fill="#FF7A5C"/><path d="M-7 25v4M7 25v4" stroke="#1C3428" stroke-width="2"/></g>'
+    +'<path d="M46 74c4-4 8-4 12 0M58 69c4-4 8-4 12 0" stroke="#1C3428" stroke-width="2" stroke-linecap="round" opacity=".55"/>'
+    +'<g stroke="#0B7A4A" stroke-width="2" stroke-linecap="round" opacity=".65"><path d="M20 203v-9M26 204v-6M316 199v-8M322 200v-5"/></g>'
+    +'</svg>';
 }
-function hd(t,right){
-  return '<div class="hd"><button class="bk" data-back aria-label="返回">'+I.back(20)+'</button>'
-    +'<div class="tt">'+esc(t)+'</div><div class="rt">'+(right||'')+'</div></div>';
+function artInner(theme,label){
+  return '<div class="art '+(theme||'leaf')+'">'
+    +'<svg class="a-hills" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">'
+    +'<circle class="a-sun" cx="77" cy="20" r="8"/>'
+    +'<path class="h1" d="M0 68c12-14 22-14 34-3 10 9 20 8 30-2 8-8 18-9 36-2V100H0z"/>'
+    +'<path class="h2" d="M0 84c14-8 26-6 40 2 10 6 20 5 30 0 12-5 22-3 30 1V100H0z"/>'
+    +'</svg>'
+    +(label?'<span class="a-kv">'+esc(label)+'</span>':'')
+    +'</div>';
 }
-function bottom(h){return '<!--DOCK-->'+h;}
-function tabbar(){
-  var items=[['home','home','首页'],['hollow','chat','树洞'],['activities','cal','活动'],['library','book','资源'],['me','user','我的']];
-  return '<div class="tb">'+items.map(function(x){
-    var on=(S.view===x[0])||(x[0]==='hollow'&&(S.view==='post'||S.view==='compose'));
-    return '<button data-nav="'+x[0]+'" class="'+(on?'on':'')+'">'+I[x[1]](21)+'<span>'+x[2]+'</span></button>';
-  }).join('')+'</div>';
-}
-/* 首页手绘风景 */
-function scene(){
-  return '<svg viewBox="0 0 210 132" width="196" height="122" aria-hidden="true">'
-    +'<circle cx="170" cy="26" r="14" fill="#F0C153"/>'
-    +'<ellipse cx="40" cy="31" rx="13" ry="9" fill="#FFFFFF"/><ellipse cx="56" cy="34" rx="8" ry="6" fill="#FFFFFF"/>'
-    +'<path d="M92 104L128 66L166 104Z" fill="#7FA47F"/>'
-    +'<path d="M28 104L80 48L134 104Z" fill="#5E8A60"/>'
-    +'<path d="M0 104C58 98 152 98 210 104V132H0Z" fill="#C6D8BE"/>'
-    +'<path d="M162 104V86" stroke="#4F7C55" stroke-width="3"/>'
-    +'<circle cx="162" cy="78" r="9" fill="#7FA47F"/><circle cx="154" cy="84" r="7" fill="#8FB08A"/><circle cx="170" cy="84" r="7" fill="#8FB08A"/>'
-  +'</svg>';
-}
-/* 活动封面图形 */
-function art(kind,size){
-  var w='stroke="#fff" stroke-opacity=".92" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"';
-  var s='<svg viewBox="0 0 120 80" width="'+(size||104)+'" height="'+(size?Math.round(size*0.66):72)+'" aria-hidden="true">';
-  if(kind==='peak'){
-    s+='<circle cx="94" cy="20" r="8" fill="#FBEFCF"/>'
-      +'<path d="M10 64L42 28L72 64" '+w+'/>'
-      +'<path d="M52 64L78 38L104 64" '+w+' fill="#fff" fill-opacity=".26"/>';
-  }else if(kind==='sign'){
-    s+='<rect x="32" y="16" width="56" height="36" rx="5" '+w+' fill="#fff" fill-opacity=".22"/>'
-      +'<path d="M60 52v12" '+w+'/>'
-      +'<path d="M42 28h36M42 38h22" '+w+' stroke-opacity=".7"/>';
-  }else if(kind==='stage'){
-    s+='<path d="M12 8v58c14-3 20-17 20-29s-6-26-20-29z" fill="#fff" fill-opacity=".26" stroke="#fff" stroke-opacity=".8" stroke-width="2"/>'
-      +'<path d="M108 8v58c-14-3-20-17-20-29s6-26 20-29z" fill="#fff" fill-opacity=".26" stroke="#fff" stroke-opacity=".8" stroke-width="2"/>'
-      +'<path d="M60 30l4.5 9 10 1.5-7 7 1.7 10-9.2-4.8-9.2 4.8 1.7-10-7-7 10-1.5z" fill="#FBEFCF"/>';
-  }else if(kind==='lantern'){
-    s+='<path d="M54 12h12M54 58h12" '+w+' stroke-opacity=".75"/>'
-      +'<ellipse cx="60" cy="35" rx="17" ry="21" '+w+' fill="#fff" fill-opacity=".3"/>'
-      +'<path d="M45 35h30" '+w+' stroke-opacity=".55"/>'
-      +'<path d="M60 58v10M54 70h12" '+w+' stroke-opacity=".7"/>';
-  }else{
-    s+='<path d="M18 20h44v26H34l-9 8v-8H18z" '+w+' fill="#fff" fill-opacity=".24"/>'
-      +'<path d="M62 38h38v20H78l-8 7v-7H62z" '+w+'/>';
-  }
-  return s+'</svg>';
+function cover(a){
+  var t=(a&&a.art)||'leaf';
+  return '<div class="art '+t+'">'
+    +'<svg class="a-hills" viewBox="0 0 200 120" preserveAspectRatio="none" aria-hidden="true">'
+    +'<ellipse class="cloud" cx="46" cy="30" rx="22" ry="8"/>'
+    +'<ellipse class="cloud" cx="64" cy="26" rx="14" ry="7"/>'
+    +'<path class="h1" d="M0 84c26-26 50-26 76-8 18 12 34 14 56 2 20-12 44-10 68 4V120H0z"/>'
+    +'<path class="h2" d="M0 100c30-14 56-12 82 4 18 10 34 8 50-2 20-12 40-10 68 4V120H0z"/>'
+    +'<g transform="translate(64 62)"><rect x="-2" y="16" width="4" height="26" rx="2" fill="#8A5A34"/>'
+      +'<circle cx="0" cy="6" r="15" fill="#1E9E62"/><circle cx="-11" cy="14" r="9" fill="#2FBE7B"/><circle cx="12" cy="13" r="10" fill="#0F8A52"/></g>'
+    +'<g transform="translate(148 90)"><path d="M0 0 12 22h-24z" fill="#FF7A5C"/><path d="M0 6l4 15h-8z" fill="#FFFFFF" opacity=".6"/></g>'
+    +'</svg></div>';
 }
 
-/* ===== 视图：入群 ===== */
+/* ---------- 组件 ---------- */
+function hd(title,opts){
+  opts=opts||{};
+  var back=opts.noBack?'':'<button class="bk" data-back aria-label="返回">'+ic('back','#1C3428')+'</button>';
+  return '<div class="hd'+(opts.noBack?' noBack':'')+'">'+back
+    +'<div class="tt">'+esc(title)+'</div><div class="sp"></div>'
+    +(opts.action||'')+'</div>';
+}
+function moodInfo(m){
+  var map={share:{n:'想分享',c:'sun'},tired:{n:'有点累',c:'sky'},ask:{n:'求经验',c:'leaf'},talk:{n:'只是想说说',c:'coral'}};
+  return map[m]||map.share;
+}
+function moodChip(m){var i=moodInfo(m);return '<span class="pill p-'+i.c+'"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block"></span>'+i.n+'</span>'}
+
+/* ---------- 01 邀请进入 ---------- */
 function vGate(){
-  return '<div class="pad" style="padding-top:44px;padding-bottom:24px">'
-    +'<div style="margin-bottom:20px">'+scene()+'</div>'
-    +'<h1 style="font-family:var(--round);font-size:27px;font-weight:400;letter-spacing:.07em;margin:0 0 12px;color:#2C4A33">无名树</h1>'
-    +'<p style="font-size:13px;line-height:1.95;color:var(--ink-2);margin:0 0 34px">一个不评判、不外传的家长社群。<br>只接受已有成员的邀请。</p>'
-    +'<div class="field"><label class="lb" for="g-code">邀请码<i>*</i></label><input class="in" id="g-code" placeholder="6 位，向邀请你的成员索取" autocomplete="off"></div>'
-    +'<div class="field"><label class="lb" for="g-nick">你想用的昵称<i>*</i></label><input class="in" id="g-nick" placeholder="不必用真名" autocomplete="off"><p class="hint" style="margin-top:7px">进群后所有人都只看到这个昵称，手机号不会展示。</p></div>'
-    +'<label class="rrow" style="border-bottom:0;padding:6px 0 2px"><input type="checkbox" id="g-agree"><span style="font-size:12.5px;line-height:1.7;color:var(--ink-2)">我已读过社群公约：不评价别人的孩子，不把这里的话带到外面。</span></label>'
-    +'<div style="height:24px"></div>'
-    +'<button class="btn primary" data-act="apply">提交申请</button>'
-    +'<p style="font-size:11px;line-height:1.9;color:var(--ink-3);margin-top:16px">管理员人工审核，通常 1 天内回复。未通过不会保留你填写的任何内容。</p>'
-    +'</div>';
-}
-function vGateOk(){
-  return '<div class="pad" style="padding-top:78px;text-align:center">'
-    +'<div style="width:64px;height:64px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;color:var(--green)">'+I.check(26)+'</div>'
-    +'<h1 style="font-family:var(--round);font-size:22px;font-weight:400;letter-spacing:.05em;margin:0 0 12px">申请已提交</h1>'
-    +'<p style="font-size:12.5px;line-height:1.95;color:var(--ink-2);margin:0 auto;max-width:270px">管理员会核对邀请码再放行。通过后你只会收到一条通知。</p>'
-    +'<div style="height:32px"></div>'
-    +'<button class="btn ghost" data-act="pass">模拟管理员通过</button>'
-    +'<p style="font-size:11px;line-height:1.9;color:var(--ink-3);margin-top:18px;text-align:left">演示用：真实产品里这一步在后台完成，家长端看不到这个按钮。</p>'
-    +'</div>';
-}
-
-/* ===== 视图：首页 ===== */
-function vHome(){
-  var tiles=[
-    ['hollow','chat','树洞互助','12 条新回应','g'],
-    ['activities','cal','活动专区','秋季 4 场开放','y'],
-    ['library','book','资源库','42 份资料','b'],
-    ['me','user','我的','1 个报名','v']
-  ];
-  return '<div class="pad" style="padding-top:14px">'
-    +'<div class="hero-card rise">'
-      +'<div class="hk">11.07 · 立冬</div>'
-      +'<h1 class="ht">今天不必<br>勉强自己。</h1>'
-      +'<div class="hs">'+scene()+'</div>'
+  return '<div class="rise" style="padding-bottom:20px">'
+    +'<div class="hero" style="margin-top:4px;min-height:216px;padding:18px">'
+      +'<span class="kicker">'+ic('spark','#1E85C8',2)+'邀请制 · 仅限家长</span>'
+      +'<h1 style="max-width:58%;font-size:26px">在树下，<br>慢慢长大</h1>'
+      +'<p style="max-width:55%">一个只对邀请开放的家长陪伴社群，服务正在休整期的孩子与家庭。</p>'
+      +'<div class="hero-art" style="width:60%;right:-16px;bottom:-10px;animation:none">'+sceneSvg()+'</div>'
     +'</div>'
-    +'<div class="grid2" style="margin-top:12px">'
-    +tiles.map(function(t){
-      return '<button class="tile '+t[4]+'" data-nav="'+t[0]+'">'
-        +'<span class="ti">'+I[t[1]](19)+'</span>'
-        +'<span><span class="tn">'+t[2]+'</span><span class="ts">'+t[3]+'</span></span>'
-      +'</button>';
-    }).join('')
+    +'<div style="margin:16px 18px 0;background:#fff;border-radius:22px;padding:17px 16px 16px;border:1.5px solid #FBF2DF;box-shadow:var(--shadow)">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'
+        +'<b style="font-size:15px">先确认你是被邀请的家长</b><span class="pill p-leaf">'+ic('lock','#0B7A4A',2)+'隐私保护</span>'
+      +'</div>'
+      +'<div class="field"><div class="lb">邀请码 <i>*</i></div><input class="in" id="f-code" placeholder="例如 WMT-2026" autocomplete="off"></div>'
+      +'<div class="field"><div class="lb">怎么称呼你 <i>*</i></div><input class="in" id="f-name" placeholder="可以是昵称，之后也能改"></div>'
+      +'<div class="field" style="margin-bottom:8px"><div class="lb">手机号 <i>*</i></div><input class="in" id="f-phone" placeholder="仅管理员可见，家长之间互不可见" inputmode="numeric"></div>'
+      +'<div class="hint" style="display:flex;gap:6px;align-items:flex-start;font-size:11px;color:#94A79B;line-height:1.6;margin-bottom:14px">'+ic('shield','#94A79B',2)+'<span>提交后由管理员人工审核，通常 1–2 天。不会向你推送任何营销信息。</span></div>'
+      +'<button class="btn primary block" id="btn-apply">提交申请 '+ic('arrow','#FFFFFF',2)+'</button>'
     +'</div>'
-    +'<button class="annocard" data-nav="notice">'
-      +'<span class="ad">'+I.bell(19)+'</span>'
-      +'<span class="ab"><b>秋季四场活动开放预报名</b><p>11.01 · 野外生存 / PBL / 沙龙 / 家乡推荐官</p></span>'
-    +'</button>'
-    +'<p class="footq">这里没有排行榜，没有打卡，<br>也没有谁的孩子更厉害。</p>'
+    +'<div style="display:flex;justify-content:center;gap:14px;margin-top:14px;font-size:11px;color:#94A79B">'
+      +'<span>不排名</span><span style="opacity:.4">·</span><span>不打卡</span><span style="opacity:.4">·</span><span>不比孩子</span>'
     +'</div>'
-    +bottom(tabbar());
-}
-
-/* ===== 视图：公告 ===== */
-function vNotice(){
-  return hd('公告')
-    +'<div class="pad rise" style="padding-top:2px">'
-    +DATA.notices.map(function(n){
-      return '<div class="cd" style="margin-bottom:10px;cursor:pointer;display:flex;gap:12px;align-items:flex-start" data-nav="noticeDetail" data-id="'+n.id+'">'
-        +'<span style="width:36px;height:36px;flex:0 0 36px;border-radius:11px;background:var(--yellow-soft);display:flex;align-items:center;justify-content:center;color:#A57B22">'+I.bell(18)+'</span>'
-        +'<span style="flex:1;min-width:0">'
-          +'<span style="display:flex;align-items:center;gap:7px;margin-bottom:5px">'
-            +(n.pin?'<span class="pill green">置顶</span>':'')
-            +'<span style="font-size:10px;color:var(--ink-3)">'+n.d+' · '+esc(n.from)+'</span>'
-          +'</span>'
-          +'<span style="font-family:var(--round);font-size:15px;line-height:1.55;display:block">'+esc(n.t)+'</span>'
-        +'</span>'
-      +'</div>';
-    }).join('')
-    +'<p style="font-size:11px;color:var(--ink-3);line-height:1.8;margin:18px 0 28px">公告不开放评论。有想问的，去树洞里说。</p>'
-    +'</div>'
-    +bottom(tabbar());
-}
-function vNoticeDetail(id){
-  var n=null;
-  DATA.notices.forEach(function(x){if(x.id===id){n=x;}});
-  if(!n){return hd('公告')+'<div class="pad"><div class="empty">'+I.bell(30)+'<p>这条公告已经撤下</p></div></div>';}
-  return hd('公告')
-    +'<div class="pad rise" style="padding-top:4px">'
-    +'<div style="display:flex;align-items:center;gap:7px;margin-bottom:11px">'
-      +(n.pin?'<span class="pill green">置顶</span>':'')
-      +'<span style="font-size:10px;color:var(--ink-3)">'+n.d+' · '+esc(n.from)+'</span>'
-    +'</div>'
-    +'<h1 style="font-family:var(--round);font-size:21px;font-weight:400;line-height:1.55;letter-spacing:.02em;margin:0 0 20px">'+esc(n.t)+'</h1>'
-    +'<div class="body">'+(DATA.noticeBody[id]||'')+'</div>'
-    +'<p style="font-size:11px;color:var(--ink-3);line-height:1.85;margin-top:22px">公告不开放评论。有想问的，去树洞里说。</p>'
-    +'<div style="height:28px"></div></div>';
-}
-
-/* ===== 视图：树洞 ===== */
-function postRow(p){
-  return '<div class="postcard" data-nav="post" data-id="'+p.id+'">'
-    +'<h3>'+esc(p.t)+'</h3>'
-    +'<p class="bd">'+esc(p.b)+'</p>'
-    +'<div class="ft"><span class="l">'+(p.anon?anonTag():'<span style="color:var(--ink-2);font-size:11.5px">'+esc(p.who)+'</span>')+'<span>'+esc(p.time)+'</span></span>'
-      +'<span class="cnt">'+I.chat(13)+'<span>'+p.n+'</span></span></div>'
   +'</div>';
 }
+
+function vGateOk(){
+  var steps='<div style="display:flex;gap:6px;margin:16px 0 4px">'
+    +'<div style="flex:1;height:6px;border-radius:99px;background:#12A566"></div>'
+    +'<div style="flex:1;height:6px;border-radius:99px;background:#FFC63D"></div>'
+    +'<div style="flex:1;height:6px;border-radius:99px;background:#F2E8D3"></div></div>';
+  return '<div class="rise pad" style="text-align:center;padding-top:34px">'
+    +'<div style="width:120px;height:120px;margin:0 auto;position:relative">'
+      +'<div style="position:absolute;inset:0;border-radius:50%;background:linear-gradient(140deg,#FFF3CC,#FFE9E2)"></div>'
+      +'<div style="position:absolute;inset:22px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center">'+ic('check','#12A566',3)+'</div>'
+      +'<span class="sticker" style="position:absolute;right:-8px;top:4px">已收到</span>'
+    +'</div>'
+    +'<h1 class="lead" style="font-size:24px;margin-top:18px">申请已经收到</h1>'
+    +'<p class="sub" style="max-width:270px;margin-left:auto;margin-right:auto">我们会在 1–2 天内人工看一遍。通过后，你会收到一条私信。</p>'
+    +'<div style="background:#fff;border-radius:22px;border:1.5px solid #FBF2DF;padding:16px 16px 6px;margin-top:20px;text-align:left;box-shadow:var(--shadow)">'
+      +steps
+      +'<div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px dashed #F2E8D3">'
+        +'<span style="width:26px;height:26px;border-radius:9px;background:#12A566;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">1</span>'
+        +'<span style="flex:1;font-size:12.5px">提交邀请码与称呼</span><span style="font-size:11px;color:#12A566">已完成</span></div>'
+      +'<div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px dashed #F2E8D3">'
+        +'<span style="width:26px;height:26px;border-radius:9px;background:#FFC63D;color:#4A3400;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">2</span>'
+        +'<span style="flex:1;font-size:12.5px">管理员人工审核</span><span style="font-size:11px;color:#E5A31A">进行中</span></div>'
+      +'<div style="display:flex;align-items:center;gap:10px;padding:11px 0">'
+        +'<span style="width:26px;height:26px;border-radius:9px;background:#F2E8D3;color:#94A79B;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">3</span>'
+        +'<span style="flex:1;font-size:12.5px;color:#94A79B">进入社群，从首页开始</span><span style="font-size:11px;color:#94A79B">待解锁</span></div>'
+    +'</div>'
+    +'<button class="btn primary block" id="btn-approve" style="margin-top:18px">模拟管理员审核通过 '+ic('arrow','#FFFFFF',2)+'</button>'
+    +'<div style="font-size:10.5px;color:#94A79B;margin-top:10px;line-height:1.6">这是演示按钮。真实流程里由管理员在后台操作。</div>'
+  +'</div>';
+}
+
+/* ---------- 02 首页 ---------- */
+function tile(cls,icn,color,title,sub,badge,go){
+  return '<button class="tile '+cls+'" data-go="'+go+'">'
+    +'<span class="icw">'+ic(icn,color,2)+'</span>'
+    +(badge?'<span class="badge">'+badge+'</span>':'')
+    +'<div><b>'+title+'</b><span class="ts">'+sub+'</span></div>'
+    +'<span class="go">'+ic('arrow','#5B7468',2)+'</span>'
+    +'</button>';
+}
+function vHome(){
+  var a=DATA.acts[0];
+  return '<div class="rise">'
+    +'<div class="home-top"><span class="date">'+ic('sun','#E5A31A',2)+'11 月 7 日 · 立冬</span>'
+      +'<button class="avatar" data-go="me" aria-label="我的">'+esc(S.nick)+'</button></div>'
+    +'<div class="hero">'
+      +'<span class="kicker">'+ic('spark','#1E85C8',2)+'本周六 · 秋季营</span>'
+      +'<h1>去树下，<br>坐一会儿</h1>'
+      +'<p>小小野外生存家还剩 3 个位置。不比赛，不列队。</p>'
+      +'<button class="hero-cta" data-nav="activity" data-id="a1">看看活动 '+ic('arrow','#4A3400',2)+'</button>'
+      +'<div class="hero-art">'+sceneSvg()+'</div>'
+      +'<i class="spark" style="left:55%;top:20px"></i><i class="sp2" style="left:48%;top:74px"></i>'
+    +'</div>'
+    +'<div class="quick">'
+      +tile('t-sun','note','#E5A31A','公告板','置顶：11 月集合时间','1','notice')
+      +tile('t-coral','tree','#E85B3E','树洞互助','今天有 4 个人说了话','5','hollow')
+      +tile('t-sky','book','#1E85C8','经验资源库','38 份资料 · 长期留存','','library')
+      +tile('t-leaf','tent','#0B7A4A','活动专区','5 场正在报名与排期','','activities')
+    +'</div>'
+    +'<div class="section"><h2>本周在基地</h2><button data-go="activities">全部活动'+ic('arrow','#0B7A4A',2)+'</button></div>'
+    +'<button class="event-card" data-nav="activity" data-id="'+a.id+'">'
+      +'<span class="ec-art">'+cover(a)+'</span>'
+      +'<span class="ec-tx"><h3>'+esc(a.t)+'</h3>'
+        +'<span class="ec-meta"><span class="sticker leaf" style="height:22px;font-size:10px">'+esc(a.date)+' '+esc(a.day)+'</span><span>'+esc(a.quota)+'</span><span>'+esc(a.price)+'</span></span>'
+      +'</span>'
+      +'<span class="ec-go">'+ic('arrow','#5B7468',2)+'</span>'
+    +'</button>'
+    +'<div style="height:16px"></div>'
+  +'</div>';
+}
+
+/* ---------- 03 公告板 ---------- */
+function vNotice(){
+  var rows=DATA.notices.map(function(n){
+    return '<button class="post'+(n.pin?' featured':'')+'" data-nav="noticeDetail" data-id="'+n.id+'">'
+      +'<div class="ph-top">'+(n.pin?'<span class="sticker">'+ic('pin','#4A3400',2)+'置顶</span>':'<span class="pill p-plain">公告</span>')
+        +'<span class="time">'+esc(n.date)+'</span></div>'
+      +'<h3>'+esc(n.title)+'</h3><p class="bd">'+esc(n.body)+'</p>'
+      +'<div class="ft"><span class="cnt">'+ic('note','#94A79B',2)+'管理员发布 · 不可评论</span>'+ic('arrow','#94A79B',2)+'</div>'
+      +'</button>';
+  }).join('');
+  return hd('公告板',{noBack:false,action:'<span class="pill p-leaf">'+ic('lock','#0B7A4A',2)+'只读</span>'})
+    +'<div class="rise pad" style="padding-top:2px">'
+      +'<p class="sub" style="margin:0 0 6px">只做单向通知。重要的事都在这里，不刷屏。</p>'
+    +'</div>'
+    +'<div class="pad rise" style="padding-top:10px">'+rows+'</div>';
+}
+function vNoticeDetail(){
+  var n=DATA.notices.filter(function(x){return x.id===S.notice})[0]||DATA.notices[0];
+  var ps=n.full.map(function(p,i){return '<p'+(i===0?' style="font-size:14.5px;font-weight:600"':'')+'>'+esc(p)+'</p>'}).join('');
+  return hd('公告详情')
+    +'<div class="rise pad">'
+      +'<div style="margin-top:4px">'+(n.pin?'<span class="sticker">'+ic('pin','#4A3400',2)+'置顶</span>':'<span class="pill p-plain">公告</span>')+'<span style="font-size:11px;color:#94A79B;margin-left:8px">'+esc(n.date)+'</span></div>'
+      +'<h1 class="lead" style="font-size:21px;margin-top:10px">'+esc(n.title)+'</h1>'
+      +'<div style="display:flex;align-items:center;gap:8px;margin:14px 0 16px">'
+        +'<span class="avatar-sm" style="width:30px;height:30px;border-radius:10px;background:#FFF3CC;color:#7A5400">无</span>'
+        +'<div><b style="font-size:12.5px">无名树管理员</b><div style="font-size:10px;color:#94A79B">只发布，不回复</div></div>'
+      +'</div>'
+      +'<div class="body-text" style="background:#fff;border-radius:20px;padding:16px;border:1.5px solid #FBF2DF">'+ps+'</div>'
+      +'<div class="risk soft" style="margin-top:14px">'+ic('chat','#216B92',2)+'<span>公告板不开放评论。有问题请私信管理员，或在树洞另开一楼。</span></div>'
+      +'<div style="height:20px"></div>'
+    +'</div>';
+}
+
+/* ---------- 04 树洞 ---------- */
+function postCard(p){
+  var m=moodInfo(p.mood);
+  return '<button class="post'+(p.id==='p1'?' featured':'')+'" data-nav="post" data-id="'+p.id+'">'
+    +'<div class="ph-top">'+moodChip(p.mood)
+      +'<span class="pill p-plain">'+ic('lock','#5B7468',2)+(p.anon?'匿名':'实名')+'</span>'
+      +'<span class="time">'+esc(p.time)+'</span></div>'
+    +'<h3>'+esc(p.title)+'</h3><p class="bd">'+esc(p.body)+'</p>'
+    +'<div class="ft"><span class="avs"><i style="background:#FFC63D"></i><i style="background:#63CE96"></i><i style="background:#5BB8F5"></i></span>'
+      +'<span class="cnt">'+ic('chat','#5B7468',2)+p.replies+' 个回应</span></div>'
+    +'</button>';
+}
 function vHollow(){
-  return hd('树洞互助','<button data-nav="compose" aria-label="发起倾诉">'+I.plus(19)+'</button>')
-    +'<div class="pad rise" style="padding-top:2px">'
-    +'<div class="risk" style="margin-bottom:14px">'+I.lock(15)+'<span>默认匿名。这里的话不会出现在任何外部平台，也不会被搜索到。</span></div>'
-    +DATA.posts.map(postRow).join('')
-    +'<p style="font-size:11px;color:var(--ink-3);line-height:1.85;text-align:center;margin:18px 0 26px">看到这里了。今天可以只是看看，不用回。</p>'
+  var list=DATA.posts.filter(function(p){return S.filter==='all'||p.mood===S.filter});
+  var chips=[['all','全部'],['share','想分享'],['tired','有点累'],['ask','求经验'],['talk','想说说']].map(function(c){
+    return '<button class="mchip'+(S.filter===c[0]?' on':'')+'" data-filter="'+c[0]+'"><span class="d"></span>'+c[1]+'</button>';
+  }).join('');
+  return '<div class="rise">'
+    +'<div style="padding:4px 18px 10px;display:flex;align-items:flex-end;justify-content:space-between">'
+      +'<div><div style="font-size:10px;letter-spacing:.12em;color:#94A79B;font-weight:700">TREE HOLE</div>'
+        +'<h1 class="lead" style="font-size:26px">说出来，<br>就轻一点</h1></div>'
+      +'<button class="btn sun" style="height:40px;border-radius:999px;font-size:13px;padding:0 14px" data-nav="compose">'+ic('plus','#4A3400',2)+'说说此刻</button>'
     +'</div>'
-    +bottom(tabbar());
+    +'<p class="sub" style="margin:0 18px 12px">不评判、不建议。先接住，再说别的。</p>'
+    +'<div class="mood-row">'+chips+'</div>'
+    +'<div class="pad">'+(list.length?list.map(postCard).join(''):'<div class="empty">'+ic('leaf','#94A79B',2)+'<p>这一类还没有人说话</p></div>')+'</div>'
+    +'<div style="height:12px"></div>'
+  +'</div>';
 }
 
-/* ===== 视图：发布 ===== */
+/* ---------- 05 发帖 ---------- */
 function vCompose(){
-  var anon=S.draft.anon;
-  return hd('发起倾诉')
-    +'<div class="pad rise" style="padding-top:8px">'
-    +'<div class="seg" style="margin-bottom:12px">'
-      +'<button class="'+(anon?'on':'')+'" data-anon="1">匿名发布</button>'
-      +'<button class="'+(anon?'':'on')+'" data-anon="0">实名 · '+esc(S.nick)+'</button>'
-    +'</div>'
-    +'<p style="font-size:11px;line-height:1.85;color:var(--ink-3);margin:0 0 22px">'+(anon?'帖子上不会出现你的昵称和手机号，管理员也看不到发布者。':'帖子上会显示「'+esc(S.nick)+'」，手机号仍然不显示。')+'</p>'
-    +'<div class="field"><label class="lb" for="cp-t">标题</label><input class="in" id="cp-t" placeholder="给这件事一个名字" value="'+esc(S.draft.t)+'" autocomplete="off"></div>'
-    +'<div class="field"><label class="lb" for="cp-b">想说的</label><textarea class="in" id="cp-b" placeholder="写一点此刻的感受。不用完整，也不用有结论" style="height:150px">'+esc(S.draft.b)+'</textarea></div>'
-    +'<p style="font-size:11px;line-height:1.9;color:var(--ink-3)">发布后你可以自己删除。这里不做审核，只做「被看见了就说一声」。</p>'
-    +'<div style="height:16px"></div></div>'
-    +bottom('<div class="dock"><button class="btn primary" data-act="publish">发布</button></div>');
+  var moods=[['share','想分享','#FFC63D'],['tired','有点累','#3AA9F0'],['ask','求经验','#12A566'],['talk','只是想说说','#FF7A5C']].map(function(m){
+    return '<button class="moodbtn'+(S.pubMood===m[0]?' on':'')+'" data-mood="'+m[0]+'"><span class="d" style="background:'+m[2]+'"></span>'+m[1]+'</button>';
+  }).join('');
+  return hd('说说此刻',{action:'<span class="pill p-leaf">'+ic('lock','#0B7A4A',2)+'默认匿名</span>'})
+    +'<div class="rise">'
+      +'<div class="compose-hero"><h1>此刻的你，<br>更像哪一种？</h1><p>选一个心情，不必解释。写多少都可以，写一句也算。</p>'
+        +'<svg class="doodle" viewBox="0 0 100 100" fill="none"><circle cx="72" cy="26" r="14" fill="#FFC63D"/><path d="M0 86c18-18 34-18 52 0 12 12 26 12 40 2" stroke="#12A566" stroke-width="6" stroke-linecap="round" opacity=".5"/><path d="M22 54c6-6 12-6 18 0M40 48c6-6 12-6 18 0" stroke="#FF7A5C" stroke-width="3" stroke-linecap="round"/></svg>'
+      +'</div>'
+      +'<div class="pad">'
+        +'<div class="mood-grid">'+moods+'</div>'
+        +'<div class="field"><div class="lb">想说的那句话 <i>*</i></div><input class="in" id="f-title" value="'+esc(S.draft.title||'')+'" placeholder="一句话就好，比如：今天他愿意出门了"></div>'
+        +'<div class="field"><div class="lb">展开一点（可以不写）</div><textarea class="in" id="f-body" placeholder="发生了什么？你当时是什么感觉？">'+esc(S.draft.body||'')+'</textarea></div>'
+        +'<div class="anon-card"><span style="width:38px;height:38px;border-radius:13px;background:#fff;display:flex;align-items:center;justify-content:center">'+ic('lock','#0B7A4A',2)+'</span>'
+          +'<div class="tx"><b id="anon-t">匿名发布 · 显示“一位家长”</b><p>关掉后，会显示你的昵称，手机号始终不公开。</p></div>'
+          +'<label class="sw"><input type="checkbox" id="sw-anon" '+(S.anon?'checked':'')+'><span class="tr"></span><span class="kn"></span></label>'
+        +'</div>'
+        +'<div class="risk warm" style="margin-bottom:16px">'+ic('heart','#A94731',2)+'<span>这里不评判、不建议。也请不要在帖子里留下孩子学校、住址等可识别信息。</span></div>'
+        +'<button class="btn primary block" id="btn-pub">发布到树洞 '+ic('send','#FFFFFF',2)+'</button>'
+      +'</div>'
+      +'<div style="height:18px"></div>'
+    +'</div>';
 }
 
-/* ===== 视图：帖子 ===== */
-function vPost(id){
-  var p=findPost(id);
-  if(!p){return hd('树洞互助')+'<div class="pad"><div class="empty">'+I.chat(30)+'<p>这条帖子已被发布者删除</p></div></div>';}
-  var rs=DATA.replies[id]||[];
-  var lanes='';
-  rs.forEach(function(r){
-    var av=r.anon?'匿':esc(String(r.who).charAt(0));
-    if(r.lv===2){
-      lanes+='<div class="fl" style="padding-left:41px;padding-bottom:14px">'
-        +'<div class="fbd"><div class="fh"><span>'+(r.anon?'匿名':esc(r.who))+'</span><span>'+esc(r.time)+'</span></div>'
-        +'<div class="sub">'+esc(r.tx)+'</div></div></div>';
-    }else{
-      lanes+='<div class="fl"><div class="fav">'+av+'</div><div class="fbd">'
-        +'<div class="fh"><span>'+(r.anon?'匿名':esc(r.who))+'</span><span>'+esc(r.time)+'</span></div>'
-        +'<p>'+esc(r.tx)+'</p></div></div>';
-    }
-  });
-  return hd('树洞互助','<button data-act="report" aria-label="举报或更多">'+I.dots(19)+'</button>')
-    +'<div class="pad rise" style="padding-top:4px">'
-    +'<h1 style="font-family:var(--round);font-size:21px;font-weight:400;line-height:1.55;letter-spacing:.02em;margin:0 0 13px">'+esc(p.t)+'</h1>'
-    +'<div style="display:flex;align-items:center;gap:8px;font-size:10.5px;color:var(--ink-3);margin-bottom:18px">'
-      +(p.anon?anonTag():'<span style="color:var(--ink-2)">'+esc(p.who)+'</span>')+'<span>'+esc(p.time)+'</span><span>'+p.n+' 条回应</span></div>'
-    +'<div class="cd"><div class="body">'+esc(p.b).replace(/\n/g,'</p><p>')+'</div></div>'
-    +'<div class="sec-h" style="margin-top:24px">回应</div>'
-    +'<div style="padding-top:4px">'+(lanes||'<div class="cd" style="text-align:center;color:var(--ink-3);font-size:12px;line-height:1.8">还没有人回应。第一个说话的人，往往也不确定自己说得对不对。</div>')+'</div>'
-    +'<div style="height:12px"></div></div>'
-    +bottom('<div class="dock" style="display:flex;gap:8px;align-items:flex-end">'
-      +'<textarea class="in" id="rp-b" placeholder="回应一句" style="height:44px;padding:11px 13px;flex:1;border-radius:999px"></textarea>'
-      +'<button class="btn primary" data-act="reply" data-id="'+p.id+'" aria-label="发送回应" style="width:44px;height:44px;flex:0 0 44px;padding:0;border-radius:50%">'+I.send(18)+'</button>'
-    +'</div>');
+/* ---------- 06 帖子与楼层 ---------- */
+function vPost(){
+  var p=DATA.posts.filter(function(x){return x.id===S.params.id})[0]||DATA.posts[0];
+  var fl=(DATA.floors[p.id]||[]).map(function(f){
+    return '<div class="floor'+(f.lv===2?' lv2':'')+'"><div class="wm"><span class="avatar-sm" style="background:'+(f.lv===2?'#E1F4FF':'#FFF3CC')+';color:'+(f.lv===2?'#1E85C8':'#7A5400')+'">'+esc(f.name.slice(0,1))+'</span>'
+      +'<b style="font-size:11.5px;color:#5B7468">'+esc(f.name)+'</b><span>'+esc(f.time)+'</span></div>'
+      +'<div class="tx">'+esc(f.text)+'</div>'
+      +'<div class="ops"><button data-toast="已送出一次抱抱">抱一下</button><button data-toast="已标记为有帮助">有帮助</button></div></div>';
+  }).join('');
+  var hk=(S.reacts[p.id+':hug']||0), mk=(S.reacts[p.id+':me']||0);
+  return hd('树洞',{action:'<button class="act ghost" data-report aria-label="举报">'+ic('more','#5B7468',2)+'</button>'})
+    +'<div class="rise pad">'
+      +'<div style="display:flex;gap:6px;align-items:center;margin:2px 0 9px">'+moodChip(p.mood)+'<span class="pill p-plain">'+ic('lock','#5B7468',2)+(p.anon?'匿名':'实名')+'</span>'
+        +'<span style="margin-left:auto;font-size:11px;color:#94A79B">'+esc(p.time)+'</span></div>'
+      +'<h1 class="lead" style="font-size:22px;line-height:1.4">'+esc(p.title)+'</h1>'
+      +'<p style="font-size:14.5px;line-height:1.85;color:#1C3428;margin:12px 0 0">'+esc(p.body)+'</p>'
+      +'<div class="react-row">'
+        +'<button class="react'+(hk?' on':'')+'" data-react="'+p.id+':hug">'+ic('heart',hk?'#E85B3E':'#5B7468',2)+'抱抱 '+(p.hug+hk)+'</button>'
+        +'<button class="react'+(mk?' on2':'')+'" data-react="'+p.id+':me">'+ic('users',mk?'#1E85C8':'#5B7468',2)+'我也是 '+(p.me+mk)+'</button>'
+        +'<button class="react" data-toast="可以私信管理员补充情况">'+ic('chat','#5B7468',2)+'私信</button>'
+      +'</div>'
+      +'<div style="display:flex;align-items:center;gap:8px;margin:18px 0 10px"><b style="font-size:14px">'+p.replies+' 个回应</b><span style="font-size:11px;color:#94A79B">按楼层从上往下</span></div>'
+      +fl
+      +'<div class="reply-box"><input class="in" id="f-reply" placeholder="先接住，再说话"><button class="btn primary" id="btn-reply">'+ic('send','#FFFFFF',2)+'</button></div>'
+      +'<div class="risk" style="margin-top:14px">'+ic('shield','#82631A',2)+'<span>如果情况涉及自伤、暴力或医疗紧急，请先联系专业机构，而不是等待回应。</span></div>'
+      +'<div style="height:20px"></div>'
+    +'</div>';
 }
 
-/* ===== 视图：资源库 ===== */
+/* ================================================================
+   无名树 · 明亮活泼版 — 视图层 2
+   ================================================================ */
+var FILES = {
+  f1:[{t:'复学前的 6 周过渡表',m:'PDF · 1.2 MB · 管理员整理',f:'file'},{t:'和班主任沟通的三种说法',m:'文档 · 8 分钟阅读',f:'edit'},{t:'孩子愿意回校的 12 个小信号',m:'文档 · 家长共创',f:'book'},{t:'其他家庭的真实时间表（匿名）',m:'文档 · 4 份',f:'users'},{t:'请假与复课的流程',m:'文档 · 2026.09 更新',f:'file'}],
+  f2:[{t:'居家学习的一天（4 份时间表）',m:'文档 · 可直接抄作业',f:'book'},{t:'屏幕与作息的边界',m:'文档 · 家长共创',f:'edit'},{t:'家长自己的时间',m:'音频 · 12 分钟',f:'send'},{t:'一周复盘表',m:'表格 · 可打印',f:'file'}],
+  f3:[{t:'本地咨询机构与费用参考',m:'表格 · 2026.10 更新',f:'file'},{t:'就诊前要准备什么',m:'文档 · 清单',f:'book'},{t:'医保与报销',m:'文档 · 流程',f:'file'},{t:'咨询师匹配清单',m:'文档 · 7 个问题',f:'edit'},{t:'紧急联系方式',m:'卡片 · 存下来',f:'shield'}],
+  f4:[{t:'剧本《豆蔻镇》片段',m:'文档 · 仅成员',f:'book'},{t:'道具与服装清单',m:'表格 · 仅成员',f:'file'},{t:'灯光与音效提示',m:'文档 · 仅成员',f:'edit'}],
+  f5:[{t:'秋季装备清单',m:'清单 · 11 月适用',f:'file'},{t:'雨季与冬季补充',m:'清单 · 12 月适用',f:'book'}]
+};
+function filesFor(id){return FILES[id]||FILES.f1}
+function actById(id){return DATA.acts.filter(function(a){return a.id===id})[0]||DATA.acts[0]}
+function folderById(id){return DATA.folders.filter(function(f){return f.id===id})[0]||DATA.folders[0]}
+
+/* ---------- 07 资源库 ---------- */
 function vLibrary(){
-  return hd('资源库','<button data-act="search" aria-label="检索">'+I.search(19)+'</button>')
-    +'<div class="pad rise" style="padding-top:2px">'
-    +'<p style="font-size:11px;line-height:1.85;color:var(--ink-3);margin:0 0 14px">成员自己写的，不搬运网上的文章。没有阅读量，也没有收藏数。</p>'
-    +DATA.folders.map(function(f){
-      return '<button class="fd" data-nav="folder" data-id="'+f.id+'">'
-        +'<span class="fi">'+I.folder(19)+'</span>'
-        +'<span class="fm"><b>'+esc(f.t)+(f.open?'':' <span class="pill gray" style="font-size:9.5px;padding:2px 7px">仅活动成员</span>')+'</b><p>'+esc(f.d)+'</p></span>'
-        +'<span class="n">'+f.n+'</span>'
+  var cards=DATA.folders.map(function(f){
+    var lockd=f.member&&!S.enrolled.a3;
+    return '<button class="folder c-'+f.art+'" data-nav="folder" data-id="'+f.id+'">'
+      +'<span class="fi">'+ic(f.art==='leaf'?'book':f.art==='sun'?'sun':f.art==='sky'?'help':f.art==='grape'?'image':'flag',f.art==='leaf'?'#0B7A4A':f.art==='sun'?'#E5A31A':f.art==='sky'?'#1E85C8':f.art==='grape'?'#6E5FD0':'#E85B3E',2)+'</span>'
+      +'<b>'+esc(f.t)+'</b><p>'+esc(f.d)+'</p>'
+      +'<div class="fm"><span class="cnt">'+f.n+' 份'+(f.member?' · 仅成员':'')+'</span><span class="arrow"'+(lockd?' style="background:#FFE9E2"':'')+'>'+ic(lockd?'lock':'arrow',lockd?'#E85B3E':'#5B7468',2)+'</span></div>'
       +'</button>';
-    }).join('')
-    +'<div style="height:24px"></div></div>'
-    +bottom(tabbar());
+  }).join('');
+  return hd('经验资源库',{action:'<span class="pill p-leaf">'+ic('book','#0B7A4A',2)+'长期归档</span>'})
+    +'<div class="rise">'
+      +'<div class="pad"><h1 class="lead" style="font-size:23px">不是聊天记录，<br>是能留下来的经验</h1>'
+        +'<p class="sub">按主题归档，不随消息消失。每一份都标了来源和更新时间。</p></div>'
+      +'<div class="folder-grid" style="margin-top:14px">'+cards+'</div>'
+      +'<div class="pad" style="margin-top:16px"><div class="risk soft">'+ic('shield','#216B92',2)+'<span>涉及医疗与用药的内容只做经验参考，具体请遵医嘱。</span></div></div>'
+      +'<div style="height:16px"></div>'
+    +'</div>';
 }
-function vFolder(id){
-  var f=findFolder(id);
-  if(!f){return hd('资源库')+'<div class="pad"><div class="empty">'+I.folder(30)+'<p>这个文件夹不存在</p></div></div>';}
-  var locked=(!f.open && Object.keys(S.enrolled).length===0);
+function vFolder(){
+  var f=folderById(S.folder);
+  var locked=f.member && !S.enrolled.a3;
+  var head=hd(f.t,{action:'<span class="pill p-plain">'+f.n+' 份</span>'});
   if(locked){
-    return hd(f.t)
-      +'<div class="pad rise" style="padding-top:2px">'
-      +'<div class="empty" style="padding-top:50px">'+I.lock(30)+'<p>这个文件夹只对本季活动报名成员开放。<br>报名任意一场后自动解锁。</p>'
-      +'<button class="btn text" data-nav="activities" style="margin-top:6px">去看活动</button></div></div>'
-      +bottom(tabbar());
+    return head+'<div class="rise" style="text-align:center;padding:34px 24px">'
+      +'<div style="width:110px;height:110px;margin:0 auto;border-radius:36px;background:linear-gradient(145deg,#ECE8FD,#E1F4FF);display:flex;align-items:center;justify-content:center">'+ic('lock','#6E5FD0',2)+'</div>'
+      +'<h2 style="font-size:20px;margin:16px 0 6px;font-weight:800">仅活动成员可见</h2>'
+      +'<p class="sub" style="max-width:250px;margin:0 auto">这份资料属于「豆蔻镇戏剧营」。报名后会自动解锁，不需要额外申请。</p>'
+      +'<button class="btn primary" style="margin-top:18px" data-nav="activity" data-id="a3">去看看戏剧营 '+ic('arrow','#FFFFFF',2)+'</button>'
+      +'<div style="height:10px"></div></div>';
   }
-  var fs=DATA.files[id]||[];
-  return hd(f.t)
-    +'<div class="pad rise" style="padding-top:2px">'
-    +'<p style="font-size:11px;color:var(--ink-3);line-height:1.85;margin:0 0 12px">'+esc(f.d)+'</p>'
-    +(fs.length?fs.map(function(x){
-      return '<button class="li" style="background:#fff;border-radius:14px;padding:13px 14px;margin-bottom:8px;box-shadow:var(--sh-s);border-bottom:0;align-items:flex-start" data-act="file" data-id="'+esc(x.t)+'">'
-        +'<span class="mai"><b style="font-family:var(--round);font-size:14.5px;font-weight:400;line-height:1.55">'+esc(x.t)+'</b>'
-        +'<p>'+esc(x.by)+' · '+esc(x.d)+' · '+esc(x.type)+'</p></span>'
-        +'<span class="rt">'+I.arrow(15)+'</span>'
-      +'</button>';
-    }).join(''):'<div class="empty">'+I.book(30)+'<p>这个文件夹还是空的<br>成员陆续会往里放东西</p></div>')
-    +'<div style="height:24px"></div></div>'
-    +bottom(tabbar());
+  var rows=filesFor(f.id).map(function(x,i){
+    var colors=[['#E1F4FF','#1E85C8'],['#FFF3CC','#7A5400'],['#E2F8EB','#0B7A4A'],['#FFE9E2','#E85B3E'],['#ECE8FD','#6E5FD0']][i%5];
+    return '<button class="file-row" data-toast="演示稿：真实版本会直接打开文件">'
+      +'<span class="fi" style="background:'+colors[0]+'">'+ic(x.f,colors[1],2)+'</span>'
+      +'<span class="tx"><b>'+esc(x.t)+'</b><p>'+esc(x.m)+'</p></span>'
+      +ic('arrow','#94A79B',2)+'</button>';
+  }).join('');
+  return head+'<div class="rise pad" style="padding-top:2px">'
+    +'<p class="sub" style="margin:0 0 4px">'+esc(f.d)+'。资料长期留存，成员可以随时回来查。</p>'
+    +'<div style="margin-top:10px">'+rows+'</div>'
+    +'<div class="risk" style="margin-top:14px">'+ic('shield','#82631A',2)+'<span>请勿把包含孩子正脸或姓名的资料转发到群外。</span></div>'
+    +'<div style="height:18px"></div></div>';
 }
 
-/* ===== 活动与档案数据 ===== */
-DATA.acts=[
-  {id:'a1',t:'小小野外生存家',type:'野外生存',date:'11.14',dow:'周六',place:'基地 · 东侧山径',age:'7–12 岁',quota:'剩 6 位',price:'¥480',full:false,kind:'peak',bg:'#5E8A60'},
-  {id:'a2',t:'共建无名树 · 公共标识系统',type:'PBL 共建',date:'11.21',dow:'周六',place:'基地 · 全区域',age:'8–13 岁',quota:'剩 9 位',price:'¥420',full:false,kind:'sign',bg:'#4E8AA8'},
-  {id:'a3',t:'豆蔻镇的居民与强盗 · 戏剧营',type:'文学戏剧',date:'12.05',dow:'周六',place:'基地剧场 · 林间舞台',age:'7–12 岁',quota:'名额已满',price:'¥560',full:true,kind:'stage',bg:'#B8615A'},
-  {id:'a4',t:'寻味中国年 · 家乡推荐官',type:'传统文化',date:'01.09',dow:'周六',place:'基地食堂 · 长桌',age:'6–12 岁',quota:'剩 15 位',price:'¥380',full:false,kind:'lantern',bg:'#C99A3E'},
-  {id:'a5',t:'家长沙龙 · 这个冬天怎么过',type:'家长沙龙',date:'11.28',dow:'周五',place:'线上 · 语音',age:'家长本人',quota:'不限',price:'免费',full:false,kind:'chat',bg:'#8A6A99'}
-];
-DATA.actBody={
-  a1:'<p class="lead">在真正的自然里，身体是最好的老师。从基础徒步攀爬，到核心力量的平衡训练，再到勇敢向上的爬树挑战。</p><p>我们鼓励孩子用双手触摸粗糙的树皮，用双脚感受泥土的起伏。在一次次攀爬与跨越中，克服恐惧、突破自我，建立起与荒野最原始、最深刻的连接。</p><p>带队老师全程在视线范围内，不做保护性干预，只在孩子主动求助时靠近。这是这项活动最难的部分，也是它真正有价值的部分。</p>',
-  a2:'<p class="lead">几十亩的基地，该如何被认识与记忆？这一次，主导权完全交给孩子。</p><p>这是一个融合美术、数学与个人回忆的跨学科项目。孩子会先规划游览动线与功能分区，再把对这片土地的情感注入标识设计里。从线路图到功能牌命名，每一处标识都是孩子与基地的对话。</p><p>结营时，孩子做的标识会真的装到基地里，用一整个冬天。</p>',
-  a3:'<p class="lead">把经典文学搬进大自然。孩子在徒步中找故事线索，在自然手工里做道具，最后在搭起来的舞台上，演一场自己的秋日大戏。</p><p>这是每年秋季的保留节目，报名通常在开放当天满员。名额已满后可以加入等待名单，有人退出会按顺序通知。</p>',
-  a4:'<p class="lead">孩子做「家乡推荐官」，带着对故土的眷恋，分享各地的春节习俗与地道美食。</p><p>从北方的饺子到南方的年糕，从贴春联的讲究到守岁的故事。最后会一起在长桌上做一顿各家的年饭。</p>',
-  a5:'<p class="lead">给家长自己的活动，孩子不用来。线上语音，两小时，聊这个冬天怎么过。</p><p>没有讲师，没有课程表。有人带一个具体的问题来，其他人说说自己试过什么。不需要准备，也可以全程只听。</p>'
-};
-DATA.talk={
-  a1:[
-    {t:'七岁孩子可以参加吗，会不会跟不上',b:'他平时不太运动，走路半小时就喊累。想报但怕拖大家后腿。',anon:true,who:'',time:'11.03'},
-    {t:'爬山那天的鞋有具体要求吗',b:'家里只有一双普通的运动鞋，需要专门买徒步鞋吗？',anon:true,who:'',time:'11.02'}
-  ],
-  a2:[{t:'孩子说想画一只猫当标识，可以吗',b:'他不太想按分区功能牌来，只想画自己记得的东西。',anon:true,who:'',time:'11.01'}]
-};
-DATA.archive={
-  a1:{
-    notes:[
-      {who:'山',name:'阿山 · 带队',time:'11.14 15:20',tx:'今天最明显的是他在树上待了很久没有往下看。中间有两次想下来，手放到下面又收回去。最后是自己数着「一、二、三」跳下来的，落地的时候摔了一下，但马上站起来了，没哭，也没看我。'},
-      {who:'叶',name:'小叶 · 协作',time:'11.14 16:05',tx:'午饭他吃了两碗。吃完自己把碗拿去洗了，之前从来没做过。没有表扬他，只是说了句「放那儿就行」。'}
-    ],
-    works:[
-      {t:'我的树（树皮拓印）',by:'作品 · 11.14'},
-      {t:'下山路线图',by:'作品 · 11.14'},
-      {t:'一块石头的记录',by:'作品 · 11.14'}
-    ]
-  }
-};
-DATA.dm=[
-  {id:'d1',who:'林老师',role:'带队老师 · 野外生存',last:'他今天爬到了两米，手抖但自己在笑。',time:'16:20',unread:true,
-    msgs:[
-      {me:false,tx:'今天下山的时候他走在我旁边，主动说了句「那个树皮好粗」。',time:'15:50'},
-      {me:true,tx:'他在家很少主动说基地的事，谢谢您告诉我。',time:'16:02'},
-      {me:false,tx:'他今天爬到了两米，手抖但自己在笑。',time:'16:20'}
-    ]}
-];
-
-/* ===== 视图：活动列表 ===== */
-var TYPES=['全部','野外生存','PBL 共建','文学戏剧','传统文化','家长沙龙'];
-function actCard(a){
-  var qc=a.full?'#A25445':(a.quota.indexOf('剩')>=0?'#3B6042':'#5C6A61');
-  return '<button class="actcard" data-nav="activity" data-id="'+a.id+'">'
-    +'<div class="cover" style="background:'+a.bg+'">'
-      +'<span class="dt">'+esc(a.date)+' · '+esc(a.dow)+'</span>'
-      +'<span class="qt" style="color:'+qc+'">'+esc(a.quota)+'</span>'
-      +art(a.kind)
-    +'</div>'
-    +'<div class="ainfo"><h4>'+esc(a.t)+'</h4><p>'+esc(a.place)+' · 适合 '+esc(a.age)+'</p>'
-      +'<div class="m"><span class="pill line" style="font-size:10px;padding:2px 8px">'+esc(a.type)+'</span>'
-      +'<span>'+esc(a.price)+'</span></div></div>'
-  +'</button>';
+/* ---------- 08 活动列表 ---------- */
+function quotaTag(a){
+  if(S.enrolled[a.id]) return '<span class="pill p-leaf ac-quota">'+ic('check','#FFFFFF',2)+'已报名</span>';
+  if(a.left===0) return '<span class="pill p-coral ac-quota">名额已满</span>';
+  return '<span class="pill p-sun ac-quota">'+esc(a.quota)+'</span>';
 }
 function vActivities(){
-  var chips=TYPES.map(function(t){
-    var on=(S.filter==='all'&&t==='全部')||(S.filter===t);
-    return '<button class="chipx'+(on?' on':'')+'" data-filter="'+esc(t)+'">'+esc(t)+'</button>';
+  var types=['all','野外生存','PBL 共建','文学戏剧','传统文化','家长沙龙'];
+  var chips=types.map(function(t){
+    var on=(S.typeFilter||'all')===t;
+    return '<button class="chipx'+(on?' on':'')+'" data-type="'+t+'">'+(t==='all'?'全部':t)+'</button>';
   }).join('');
-  var list=DATA.acts.filter(function(a){return S.filter==='all'||a.type===S.filter;}).map(actCard).join('');
-  if(!list){list='<div class="empty">'+I.cal(30)+'<p>这个类别暂时没有排期</p></div>';}
-  return hd('活动专区')
-    +'<div class="chips rise">'+chips+'</div>'
-    +'<div class="pad rise" style="padding-top:2px">'+list
-    +'<p style="font-size:11px;line-height:1.85;color:var(--ink-3);margin:14px 0 26px">名额按报名顺序确认。已满的场次可以加入等待名单，有人退出会按顺序通知。</p>'
-    +'</div>'
-    +bottom(tabbar());
+  var list=DATA.acts.filter(function(a){return !S.typeFilter||S.typeFilter==='all'||a.type===S.typeFilter});
+  var cards=list.map(function(a){
+    return '<button class="actcard" data-nav="activity" data-id="'+a.id+'">'
+      +'<div class="ac-cover">'+cover(a)
+        +'<div class="cover-top"><span class="sticker">'+esc(a.date)+' '+esc(a.day)+'</span>'+quotaTag(a)+'</div>'
+      +'</div>'
+      +'<div class="ac-body"><h3>'+esc(a.t)+'</h3>'
+        +'<div class="ac-tags"><span class="pill p-leaf">'+esc(a.type)+'</span><span class="pill p-plain">'+esc(a.age)+'</span><span class="pill p-sun">'+esc(a.price)+'</span></div>'
+        +'<div class="ac-meta"><span>'+ic('clock','#94A79B',2)+esc(a.time)+'</span><span>'+ic('pin','#94A79B',2)+esc(a.place)+'</span></div>'
+      +'</div></button>';
+  }).join('');
+  return '<div class="rise">'
+    +'<div class="pad" style="padding-top:2px"><div style="font-size:10px;letter-spacing:.12em;color:#94A79B;font-weight:700">ACTIVITIES</div>'
+      +'<h1 class="lead" style="font-size:26px">去野外，<br>也去人群里</h1>'
+      +'<p class="sub">五类活动，按孩子的状态挑，不按年龄抢跑。</p></div>'
+    +'<div class="chips" style="padding-top:12px">'+chips+'</div>'
+    +'<div class="pad">'+cards+'</div>'
+    +'<div class="pad" style="margin-bottom:18px"><div class="risk">'+ic('users','#82631A',2)+'<span>活动由带队老师全程陪同，师生比不高于 1:6。报名前可以私信带队老师。</span></div></div>'
+  +'</div>';
 }
 
-/* ===== 视图：活动详情 ===== */
+/* ---------- 09 活动详情 ---------- */
 function vActivity(){
-  var a=findAct(S.params.id)||DATA.acts[0];
-  var enrolled=!!S.enrolled[a.id];
+  var a=actById(S.params.id||'a1');
   var tab=S.atab||'detail';
-  var tabs='<div class="tabs">'
-    +'<button data-tab="detail" class="'+(tab==='detail'?'on':'')+'">详情</button>'
-    +'<button data-tab="talk" class="'+(tab==='talk'?'on':'')+'">讨论区</button>'
-    +(enrolled?'<button data-tab="archive" class="'+(tab==='archive'?'on':'')+'">活动档案</button>':'')
-    +'</div>';
-  var btn;
-  if(enrolled){btn='<button class="btn primary" data-act="jump-archive">已报名 · 查看活动档案</button>';}
-  else if(a.full){btn='<button class="btn ghost" data-act="waitlist">名额已满 · 加入等待名单</button>';}
-  else{btn='<button class="btn primary" data-nav="enroll" data-id="'+a.id+'">立即报名</button>';}
-  return hd(a.t)
-    +'<div class="rise">'
-    +'<div class="cover" style="background:'+a.bg+';height:158px;border-radius:22px;margin:0 20px 16px">'
-      +'<span class="dt">'+esc(a.date)+' · '+esc(a.dow)+'</span>'
-      +'<span class="qt" style="color:'+(a.full?'#A25445':'#3B6042')+'">'+esc(a.quota)+'</span>'
-      +art(a.kind,152)
-    +'</div>'
-    +'<div class="pad">'
-      +'<h1 style="font-family:var(--round);font-size:22px;font-weight:400;line-height:1.55;letter-spacing:.02em;margin:0 0 8px">'+esc(a.t)+'</h1>'
-      +'<p style="font-size:11.5px;color:var(--ink-3);margin:0 0 12px">'+esc(a.place)+' · '+esc(a.age)+'</p>'
-      +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'
-        +'<span class="pill green">'+esc(a.type)+'</span>'
-        +'<span class="pill yellow">'+esc(a.price)+'</span>'
+  var enrolled=!!S.enrolled[a.id];
+  var head=hd('活动详情',{action:'<button class="act ghost" data-toast="已生成一张分享卡片">'+ic('send','#5B7468',2)+'分享</button>'});
+  var title='<h1 class="act-title">'+esc(a.t)+'</h1>'
+    +'<div class="meta-chips"><span class="pill p-leaf">'+esc(a.type)+'</span><span class="pill p-plain">'+esc(a.age)+'</span><span class="pill p-sun">'+esc(a.price)+'</span>'
+    +(enrolled?'<span class="pill p-coral">'+ic('check','#E85B3E',2)+'已报名</span>':'')+'</div>';
+  var tabs=[['detail','详情'],['talk','讨论区'],['archive','活动档案']].map(function(t){
+    return '<button class="'+(tab===t[0]?'on':'')+'" data-tab="'+t[0]+'">'+t[1]+'</button>';
+  }).join('');
+  var body='';
+  if(tab==='detail'){
+    body='<div class="pad">'
+      +'<p class="body-text" style="font-size:14px;line-height:1.8;margin:0 0 14px">'+esc(a.intro)+'</p>'
+      +'<div class="info-grid">'
+        +'<div class="info-cell" style="background:#FFF3CC"><div class="k">时间</div><div class="v">'+esc(a.date)+' '+esc(a.day)+'<br>'+esc(a.time)+'</div></div>'
+        +'<div class="info-cell" style="background:#E1F4FF"><div class="k">集合</div><div class="v">'+esc(a.place)+'</div></div>'
+        +'<div class="info-cell" style="background:#E2F8EB"><div class="k">适合</div><div class="v">'+esc(a.age)+'</div></div>'
+        +'<div class="info-cell" style="background:#FFE9E2"><div class="k">费用</div><div class="v">'+esc(a.price)+'</div></div>'
       +'</div>'
-    +'</div>'
-    +'<div style="height:18px"></div>'
-    +tabs
-    +'<div class="pad">'+actTab(a,tab,enrolled)+'</div>'
-    +'</div>'
-    +bottom('<div class="dock"><div class="dockrow"><span class="pr">'+esc(a.price)+'</span><span class="lo">'+esc(a.quota)+'</span></div>'+btn+'</div>');
-}
-function actTab(a,tab,enrolled){
-  if(tab==='talk'){
-    var ts=DATA.talk[a.id]||[];
-    if(!ts.length){return '<div class="empty">'+I.chat(30)+'<p>还没有人提问<br>你可以是第一个</p></div>';}
-    return '<div class="risk" style="margin:0 0 16px"><span>活动进行中可自由提问，结束两周后转为只读归档。</span></div>'
-      +ts.map(function(x){
-        return '<div class="postcard" style="cursor:default;margin-bottom:9px">'
-          +'<h3 style="font-size:15.5px">'+esc(x.t)+'</h3>'
-          +'<p class="bd" style="-webkit-line-clamp:3;margin-bottom:10px">'+esc(x.b)+'</p>'
-          +'<div class="ft"><span class="l">'+(x.anon?anonTag():'<span>'+esc(x.who)+'</span>')+'<span>'+esc(x.time)+'</span></span></div>'
-        +'</div>';
-      }).join('');
-  }
-  if(tab==='archive'){
-    if(!enrolled){return '<div class="empty">'+I.lock(30)+'<p>报名后才能看到本期档案</p></div>';}
-    var ar=DATA.archive[a.id];
-    if(!ar){return '<div class="empty">'+I.art(30)+'<p>本期档案将在活动当天开启<br>结束后转为只读归档</p></div>';}
-    var tones=['var(--yellow-soft)','var(--blue-soft)','var(--green-soft)','var(--violet-soft)','var(--red-soft)'];
-    var gal='';
-    for(var i=0;i<9;i++){
-      gal+='<div class="ph" style="background:'+tones[i%5]+'">'+(i<3?'<span class="mk">集体</span>':'')+((i===4||i===6)?'<span class="nb">禁止保存转发</span>':'')+'</div>';
+      +'<div class="sec-label">会做什么</div>'
+      +'<ul class="bul">'+(a.points||[]).map(function(p){return '<li>'+esc(p)+'</li>'}).join('')+'</ul>'
+      +'<div class="risk soft" style="margin-top:14px">'+ic('leaf','#216B92',2)+'<span>带什么：'+esc(a.bring)+'</span></div>'
+      +'<div style="height:8px"></div></div>';
+  }else if(tab==='talk'){
+    body='<div class="pad">'
+      +'<div class="floor"><div class="wm"><span class="avatar-sm" style="background:#FFF3CC;color:#7A5400">林</span><b style="font-size:11.5px;color:#5B7468">林老师</b><span>昨天 18:20</span></div><div class="tx">集合点在东门，门口有一棵很大的樟树。早到了可以先在树下等。</div></div>'
+      +'<div class="floor" style="border-left-color:#FF7A5C"><div class="wm"><span class="avatar-sm" style="background:#FFE9E2;color:#E85B3E">阿</span><b style="font-size:11.5px;color:#5B7468">阿柚</b><span>昨天 19:05</span></div><div class="tx">第一次参加，孩子有点紧张，需要提前跟老师打个招呼吗？</div></div>'
+      +'<div class="floor lv2"><div class="wm"><span class="avatar-sm" style="background:#E1F4FF;color:#1E85C8">林</span><b style="font-size:11.5px;color:#5B7468">林老师</b><span>昨天 19:20</span></div><div class="tx">可以。到的时候让他自己说一句“我是新来的”，我在旁边接住就行。</div></div>'
+      +'<div class="reply-box"><input class="in" id="f-actreply" placeholder="问一句，或者留一句给带队老师"><button class="btn primary" data-toast="讨论区回应已发出">'+ic('send','#FFFFFF',2)+'</button></div>'
+      +'<div class="risk" style="margin-top:14px">'+ic('chat','#82631A',2)+'<span>讨论区只聊这场活动的事。孩子的具体情况，请走私信。</span></div>'
+      +'<div style="height:10px"></div></div>';
+  }else{
+    if(!enrolled){
+      body='<div style="text-align:center;padding:26px 24px">'
+        +'<div style="width:112px;height:112px;margin:0 auto;border-radius:38px;background:linear-gradient(145deg,#FFF3CC,#E2F8EB);display:flex;align-items:center;justify-content:center">'+ic('lock','#0B7A4A',2)+'</div>'
+        +'<h2 style="font-size:20px;margin:16px 0 6px;font-weight:800">报名后才会出现</h2>'
+        +'<p class="sub" style="max-width:260px;margin:0 auto">这里会有当天的合照、孩子的作品和老师手记。只对报名家庭开放，也不对外开放转发。</p>'
+        +'<button class="btn primary" style="margin-top:18px" data-nav="enroll" data-id="'+a.id+'">报名参加 '+ic('arrow','#FFFFFF',2)+'</button>'
+        +'<div style="font-size:10.5px;color:#94A79B;margin-top:10px">未报名时，这个 Tab 在真实产品里直接隐藏</div></div>';
+    }else{
+      var photos=a.photos||[], works=a.works||[], notes=a.notes||[];
+      body='<div class="pad">'
+        +'<div class="stats3" style="margin:0 0 14px">'
+          +'<div class="st" style="background:#FFF3CC"><b style="color:#7A5400">'+photos.length+'</b><span>张照片</span></div>'
+          +'<div class="st" style="background:#E2F8EB"><b style="color:#0B7A4A">'+works.length+'</b><span>件作品</span></div>'
+          +'<div class="st" style="background:#E1F4FF"><b style="color:#1E85C8">'+notes.length+'</b><span>篇手记</span></div>'
+        +'</div>'
+        +'<div class="risk soft" style="margin:0 0 14px">'+ic('image','#216B92',2)+'<span>相册只显示集体合照与你孩子本人的照片，禁止保存与转发。</span></div>'
+        +'<div class="sec-label" style="margin:0 0 8px">相册 · '+photos.length+' 张</div>'
+        +'<div class="snaps" style="padding:2px 0 4px">'+photos.map(function(ph){
+          return '<div class="snap"><div class="pic">'+cover({art:ph.art})+'<span class="tag">'+esc(ph.tag)+'</span></div><div class="cap">'+esc(ph.cap)+'</div></div>';
+        }).join('')+'</div>'
+        +'<div class="sec-label" style="margin:20px 0 8px">孩子的作品</div>'
+        +'<div class="works" style="padding:0">'+(works.length?works.map(function(w){
+          return '<div class="work"><span class="wk">'+cover({art:w.art})+'</span><span class="wx"><b>'+esc(w.t)+'</b><span>'+esc(w.who)+' · 活动当天完成</span></span><span class="wa">'+ic('arrow','#5B7468',2)+'</span></div>';
+        }).join(''):'<div class="empty" style="padding:20px 0">'+ic('image','#94A79B',2)+'<p>这次还没有留下作品</p></div>')+'</div>'
+        +'<div class="sec-label" style="margin:20px 0 8px">老师手记 · 不打分，不评级</div>'
+        +notes.map(function(n){
+          return '<div class="note-card"><span class="quote">”</span><div class="nh"><span class="av">'+esc(n.who.slice(0,1))+'</span><div><b>'+esc(n.who)+'</b><span>'+esc(n.role)+' · '+esc(n.date)+'</span></div></div><p>'+esc(n.text)+'</p><span class="cy">只记录发生了什么</span></div>';
+        }).join('')
+        +'<div class="risk" style="margin-top:12px">'+ic('shield','#82631A',2)+'<span>档案在活动结束 30 天后转为只读归档，不会出现在公开页面。</span></div>'
+        +'<div style="height:16px"></div></div>';
     }
-    return '<div class="risk" style="margin:0 0 20px"><span>相册只显示集体合照与你孩子本人的照片。老师手记只记录发生了什么，不打分、不评级。</span></div>'
-      +'<div class="sec-h" style="margin-top:0">相册</div>'
-      +'<div class="gal" style="margin-top:10px">'+gal+'</div>'
-      +'<div class="sec-h">作品</div>'
-      +ar.works.map(function(w){
-        return '<button class="wk" data-act="file" data-id="'+esc(w.t)+'"><div class="th"></div>'
-          +'<div class="wm"><b>'+esc(w.t)+'</b><p>'+esc(w.by)+'</p></div><span style="color:var(--ink-3);display:flex">'+I.arrow(15)+'</span></button>';
-      }).join('')
-      +'<div class="sec-h">老师手记</div>'
-      +ar.notes.map(function(n){
-        return '<div class="note"><div class="who"><span style="width:20px;height:20px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-family:var(--round);color:var(--green-2);font-size:10.5px">'+esc(n.who)+'</span><b>'+esc(n.name)+'</b><span>'+esc(n.time)+'</span></div>'
-          +'<p>'+esc(n.tx)+'</p></div>';
-      }).join('')
-      +'<div style="height:18px"></div>';
   }
-  return '<div class="cd"><div class="body">'+(DATA.actBody[a.id]||DATA.actBody.a1)+'</div></div>'
-    +'<div class="sec-h">时间与地点</div>'
-    +'<div class="cd" style="padding:4px 16px">'
-      +kv('时间',a.date+' '+a.dow)+kv('集合',a.place)+kv('适合',a.age)+kv('名额',a.quota)+kv('费用',a.price)
+  var dock='';
+  if(tab==='detail'){
+    var cta='';
+    if(enrolled){ cta='<button class="btn primary" data-tab="archive" style="flex:0 0 auto;min-width:150px">查看活动档案 '+ic('arrow','#FFFFFF',2)+'</button>'; }
+    else if(a.left===0){ cta='<button class="btn ghost" disabled style="flex:0 0 auto;min-width:130px;opacity:.55">名额已满</button>'; }
+    else { cta='<button class="btn primary" data-nav="enroll" data-id="'+a.id+'" style="flex:0 0 auto;min-width:138px">报名参加 '+ic('arrow','#FFFFFF',2)+'</button>'; }
+    dock='<div class="dock"><div style="display:flex;align-items:center;gap:12px">'
+      +'<div style="flex:1;min-width:0"><div class="price">'+esc(a.price)+'</div>'
+        +'<div style="font-size:10.5px;color:#94A79B;margin-top:2px">'+(enrolled?'已报名 · '+esc((S.enrolled[a.id]||{}).child||'')+' 的家庭':'师生比 1:6 · 含保险')+'</div></div>'
+      +cta+'</div></div>';
+  }
+  return '<div class="rise">'+head
+    +'<div class="act-hero">'+cover(a)
+      +'<div class="cover-top"><span class="sticker">'+esc(a.date)+' '+esc(a.day)+'</span>'+quotaTag(a)+'</div>'
     +'</div>'
-    +'<div class="sec-h">装备清单</div>'
-    +'<ul class="bul"><li>速干长裤，不要牛仔裤</li><li>抓地力好的运动鞋，另备一双干袜</li><li>轻便雨衣，山上风大不用伞</li><li>500ml 水壶，午餐自备</li></ul>'
-    +'<div class="risk" style="margin:16px 0 4px"><span>如果孩子当天状态不适合上山，<b>随时可以不来，不扣名额</b>。这句话是认真的。</span></div>'
-    +'<div style="height:12px"></div>';
-}
-function kv(k,v){
-  return '<div class="kv"><b>'+esc(k)+'</b><span>'+esc(v)+'</span></div>';
-}
-
-/* ===== 视图：报名 ===== */
-function vEnroll(){
-  var a=findAct(S.params.id)||DATA.acts[0];
-  return hd('报名')
-    +'<div class="pad rise" style="padding-top:2px">'
-    +'<div class="cd" style="display:flex;gap:12px;margin-bottom:22px;padding:12px">'
-      +'<div style="width:52px;height:52px;flex:0 0 52px;border-radius:14px;background:'+a.bg+';display:flex;align-items:center;justify-content:center;overflow:hidden">'+art(a.kind,44)+'</div>'
-      +'<div style="flex:1;min-width:0">'
-        +'<div style="font-size:10px;color:var(--ink-3);margin-bottom:3px">'+esc(a.date)+' · '+esc(a.place)+'</div>'
-        +'<div style="font-family:var(--round);font-size:14.5px;line-height:1.45">'+esc(a.t)+'</div>'
-      +'</div>'
-    +'</div>'
-    +'<div class="field"><label class="lb" for="e-name">孩子姓名<i>*</i></label><input class="in" id="e-name" placeholder="请输入" autocomplete="off"></div>'
-    +'<div class="field"><label class="lb" for="e-age">孩子年龄<i>*</i></label><input class="in" id="e-age" placeholder="例如 9" inputmode="numeric" autocomplete="off"></div>'
-    +'<div class="field"><label class="lb" for="e-phone">紧急联系人电话<i>*</i></label><input class="in" id="e-phone" placeholder="11 位手机号" inputmode="numeric" autocomplete="off"></div>'
-    +'<div class="field"><label class="lb" for="e-note">孩子特殊关照备注</label>'
-      +'<textarea class="in" id="e-note" placeholder="感官敏感、怕高、情绪特点、需要特别照顾的地方" style="height:92px"></textarea>'
-      +'<div class="hint">'+I.lock(13)+'<span>仅本次带队老师可见。单独加密存储，不进入社群任何可见区域，管理员也看不到。</span></div></div>'
-    +'<p style="font-size:11px;line-height:1.9;color:var(--ink-3);margin:2px 0 22px">报名后如果来不了，随时取消，不扣名额，也不会有任何追问。</p>'
-    +'</div>'
-    +bottom('<div class="dock"><button class="btn primary" data-act="submit-enroll" data-id="'+a.id+'">提交报名</button></div>');
-}
-function vEnrollOk(){
-  var a=findAct(S.params.id)||DATA.acts[0];
-  return '<div class="pad rise" style="padding-top:64px;text-align:center">'
-    +'<div style="width:68px;height:68px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;color:var(--green)">'+I.check(28)+'</div>'
-    +'<h1 style="font-family:var(--round);font-size:22px;font-weight:400;letter-spacing:.06em;margin:0 0 12px">报名成功</h1>'
-    +'<p style="font-family:var(--round);font-size:14.5px;line-height:1.7;color:var(--ink-2);margin:0 auto 10px;max-width:290px">'+esc(a.t)+'</p>'
-    +'<p style="font-size:11.5px;line-height:1.9;color:var(--ink-3);margin:0 auto;max-width:280px">活动前一天会推送集合点与装备清单。档案在活动当天开启。</p>'
-    +'<div style="height:30px"></div>'
-    +'<button class="btn primary" data-nav="activity" data-id="'+a.id+'" data-tab="archive">前往活动档案</button>'
-    +'<div style="height:4px"></div>'
-    +'<button class="btn text" data-nav="activities">返回活动专区</button>'
+    +title
+    +'<div class="tabs">'+tabs+'</div>'
+    +body+dock
     +'</div>';
 }
 
-/* ===== 视图：我的 ===== */
-function vMe(){
-  var rows=[
-    ['mySignups','cal','我的报名',Object.keys(S.enrolled).length+' 个活动','var(--green-soft)','var(--green-2)'],
-    ['myPosts','chat','我的帖子',DATA.posts.filter(function(p){return p.mine;}).length+' 条','var(--yellow-soft)','#A57B22'],
-    ['myWorks','art','我的作品','3 件 · 来自活动档案','var(--blue-soft)','#3D7C9B'],
-    ['dm','user','私信','1 条未读','var(--violet-soft)','#7A5F88'],
-    ['settings','gear','设置','匿名默认 · 免打扰 '+S.quiet,'#F1EEE5','var(--ink-2)']
-  ];
-  return '<div class="pad rise" style="padding-top:30px">'
-    +'<div style="font-family:var(--round);font-size:13px;color:var(--ink-3);margin-bottom:16px">我的</div>'
-    +'<div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">'
-      +'<div style="width:58px;height:58px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-family:var(--round);font-size:19px;color:var(--green-2);flex:0 0 58px">'+esc(S.nick.slice(0,2))+'</div>'
-      +'<div style="flex:1;min-width:0">'
-        +'<div style="font-family:var(--round);font-size:18px;letter-spacing:.03em">'+esc(S.nick)+'</div>'
-        +'<div style="font-size:10.5px;color:var(--ink-3);margin-top:5px;display:flex;align-items:center;gap:5px">'+I.lock(12)+'<span>匿名默认开启 · 主页不对外公开</span></div>'
+/* ---------- 10 报名 ---------- */
+function vEnroll(){
+  var a=actById(S.params.id||'a2');
+  return hd('报名信息')
+    +'<div class="rise">'
+      +'<div class="pad" style="padding-top:2px">'
+        +'<div style="display:flex;gap:12px;align-items:center;background:#fff;border:1.5px solid #FBF2DF;border-radius:20px;padding:10px;box-shadow:var(--shadow)">'
+          +'<span style="width:72px;height:72px;flex:0 0 72px;border-radius:14px;overflow:hidden">'+cover(a)+'</span>'
+          +'<div style="min-width:0"><b style="font-size:14.5px;display:block;line-height:1.4">'+esc(a.t)+'</b>'
+            +'<div style="font-size:11px;color:#94A79B;margin-top:4px">'+esc(a.date)+' '+esc(a.day)+' · '+esc(a.time)+'</div>'
+            +'<div style="font-size:11px;color:#94A79B;margin-top:2px">'+esc(a.place)+'</div></div>'
+        +'</div>'
+        +'<div style="display:flex;align-items:center;gap:6px;margin:12px 0 10px"><span class="sticker coral">还差 3 步</span><span style="font-size:11px;color:#94A79B">填完就能占住位置</span></div>'
+        +'<div class="field"><div class="lb">孩子的称呼 <i>*</i></div><input class="in" id="f-child" value="'+esc((S.enrolled[a.id]||{}).child||'')+'" placeholder="小名就可以"></div>'
+        +'<div class="field"><div class="lb">年龄 <i>*</i></div><input class="in" id="f-age" value="'+esc((S.enrolled[a.id]||{}).age||'')+'" placeholder="例如 9 岁" inputmode="numeric"></div>'
+        +'<div class="field"><div class="lb">家长手机号</div><input class="in" id="f-tel" value="138****6721" readonly style="background:#F7F1E1;color:#5B7468"></div>'
+        +'<div class="field"><div class="lb">想提前告诉老师的事（可不填）</div><textarea class="in" id="f-note" placeholder="怕吵、需要多喝水、第一次参加……"></textarea></div>'
+        +'<label class="checkline" style="margin-bottom:6px"><input type="checkbox" id="c1"><span>我会准时接送，并和孩子一起遵守营地的安全规则。</span></label>'
+        +'<label class="checkline" style="margin-bottom:12px"><input type="checkbox" id="c2"><span>我同意活动照片只保存在内部档案里，不对外转发。</span></label>'
+        +'<div class="risk warm" style="margin-bottom:12px">'+ic('heart','#A94731',2)+'<span>如果孩子当天状态不好，可以随时取消，不扣名额、不需要解释。</span></div>'
+        +'<button class="btn primary block" id="btn-enroll">确认报名 '+ic('arrow','#FFFFFF',2)+'</button>'
+        +'<div style="text-align:center;font-size:10.5px;color:#94A79B;margin-top:10px">提交即占位，活动前一天会收到提醒</div>'
+      +'</div><div style="height:18px"></div>'
+    +'</div>';
+}
+
+function vEnrollOk(){
+  var a=actById(S.params.id||'a2');
+  var en=S.enrolled[a.id]||{child:'小满'};
+  var confetti='<svg viewBox="0 0 220 110" style="width:200px;height:100px;display:block;margin:0 auto" aria-hidden="true">'
+    +'<circle cx="24" cy="30" r="6" fill="#FFC63D"/><circle cx="196" cy="22" r="5" fill="#FF7A5C"/><circle cx="180" cy="72" r="4" fill="#3AA9F0"/>'
+    +'<rect x="44" y="12" width="7" height="14" rx="2" fill="#12A566" transform="rotate(18 47 19)"/>'
+    +'<rect x="176" y="46" width="6" height="12" rx="2" fill="#8A7BE6" transform="rotate(-22 179 52)"/>'
+    +'<path d="M12 62l7-7M28 74l6-6M198 88l7-7" stroke="#FFC63D" stroke-width="3" stroke-linecap="round"/>'
+    +'<path d="M0 96c40-26 80-26 120 0 36 24 72 24 100 0" stroke="#12A566" stroke-width="6" fill="none" stroke-linecap="round" opacity=".35"/>'
+  +'</svg>';
+  return '<div class="rise" style="text-align:center;padding-top:18px">'
+    +confetti
+    +'<span class="sticker leaf" style="transform:rotate(-3deg)">报名成功</span>'
+    +'<h1 class="lead" style="font-size:25px;margin-top:10px">位置已经占住了</h1>'
+    +'<p class="sub" style="max-width:280px;margin:6px auto 0">'+esc(en.child)+' 会出现在 '+esc(a.date)+' 的名单里。活动前一天，我们会在这里提醒你。</p>'
+    +'<div class="pad" style="margin-top:18px;text-align:left">'
+      +'<div class="ticket">'
+        +'<div class="tk-h"><span class="av">'+esc(a.type.slice(0,1))+'</span><div><b>'+esc(a.t)+'</b><span>'+esc(a.type)+' · '+esc(a.price)+'</span></div></div>'
+        +'<div class="tk-row"><span class="k">时间</span><span class="v">'+esc(a.date)+' '+esc(a.day)+' '+esc(a.time)+'</span></div>'
+        +'<div class="tk-row"><span class="k">集合</span><span class="v">'+esc(a.place)+'</span></div>'
+        +'<div class="tk-row"><span class="k">孩子</span><span class="v">'+esc(en.child)+'</span></div>'
+        +'<div class="tk-row"><span class="k">带队</span><span class="v">林老师 · 周老师</span></div>'
       +'</div>'
-    +'</div>'
-    +'<div class="cd" style="padding:2px 15px">'
-    +rows.map(function(r){
-      return '<button class="li" data-nav="'+r[0]+'"><span class="ic" style="background:'+r[4]+';color:'+r[5]+'">'+I[r[1]](19)+'</span>'
-        +'<span class="mai"><b>'+r[2]+'</b><p>'+r[3]+'</p></span>'
-        +'<span class="rt">'+I.arrow(15)+'</span></button>';
-    }).join('')
-    +'</div>'
-    +'<p style="font-size:11px;line-height:1.9;color:var(--ink-3);margin:18px 0 26px">手机号对其他家长不可见。孩子的特殊关照备注单独存储，仅带队老师可读。</p>'
-    +'</div>'
-    +bottom(tabbar());
+      +'<button class="btn primary block" style="margin-top:14px" data-nav="activity" data-id="'+a.id+'" data-tab="archive">看看活动档案 '+ic('arrow','#FFFFFF',2)+'</button>'
+      +'<button class="btn ghost block" style="margin-top:9px" data-go="home">回到首页</button>'
+      +'<div class="risk soft" style="margin-top:14px">'+ic('help','#216B92',2)+'<span>临时来不了？在“我的报名”里取消，不需要说明原因。</span></div>'
+    +'</div><div style="height:20px"></div>'
+  +'</div>';
+}
+
+/* ---------- 11 我的 ---------- */
+function vMe(){
+  var signups=Object.keys(S.enrolled).length;
+  var worksCount=0;
+  Object.keys(S.enrolled).forEach(function(id){worksCount+=(actById(id).works||[]).length});
+  return hd('我的',{noBack:true,action:'<button class="act ghost" data-go="settings" aria-label="设置">'+ic('more','#5B7468',2)+'</button>'})
+    +'<div class="rise">'
+      +'<div class="me-card">'
+        +'<div class="me-top"><div class="me-av">'+esc(S.nick)+'</div>'
+          +'<div class="me-tx"><b>'+esc(S.nick)+'</b><p>'+ic('lock','#5B7468',2)+'默认匿名 · 手机号不公开</p></div></div>'
+        +'<div style="display:flex;gap:6px;margin-top:13px;position:relative;z-index:2">'
+          +'<span class="pill p-leaf">'+ic('leaf','#0B7A4A',2)+'已加入 6 天</span>'
+          +'<span class="pill p-sun">'+ic('users','#7A5400',2)+'小满的家长</span>'
+        +'</div>'
+        +'<svg class="me-leaf" viewBox="0 0 100 100" fill="none"><path d="M52 90V38" stroke="#12A566" stroke-width="4" stroke-linecap="round"/><path d="M52 58c-16 1-24-9-24-22 16-1 24 8 24 22z" fill="#12A566" opacity=".55"/><path d="M52 48c13 0 20-8 20-19-13 0-20 7-20 19z" fill="#FFC63D" opacity=".8"/></svg>'
+      +'</div>'
+      +'<div class="stats">'
+        +'<div class="stat s1"><b>'+signups+'</b><span>场报名</span></div>'
+        +'<div class="stat s2"><b>2</b><span>条树洞</span></div>'
+        +'<div class="stat s3"><b>'+worksCount+'</b><span>件作品</span></div>'
+      +'</div>'
+      +'<div class="menu">'
+        +'<button class="row c-sun" data-go="mySignups"><span class="mi">'+ic('calendar','#E5A31A',2)+'</span><span class="mt"><b>我的报名</b><p>查看场次、取消或转到档案</p></span><span class="arr">'+ic('arrow','#5B7468',2)+'</span></button>'
+        +'<button class="row c-coral" data-go="myPosts"><span class="mi">'+ic('chat','#E85B3E',2)+'</span><span class="mt"><b>我的树洞</b><p>发过的帖子与收到的回应</p></span><span class="arr">'+ic('arrow','#5B7468',2)+'</span></button>'
+        +'<button class="row c-grape" data-go="myWorks"><span class="mi">'+ic('image','#6E5FD0',2)+'</span><span class="mt"><b>孩子的作品</b><p>只保存在活动档案里</p></span><span class="arr">'+ic('arrow','#5B7468',2)+'</span></button>'
+        +'<button class="row c-sky" data-go="dm"><span class="mi">'+ic('send','#1E85C8',2)+'</span><span class="mt"><b>私信</b><p>林老师、主管理员</p></span><span class="arr">'+ic('arrow','#5B7468',2)+'</span></button>'
+        +'<button class="row c-leaf" data-go="settings"><span class="mi">'+ic('shield','#0B7A4A',2)+'</span><span class="mt"><b>设置</b><p>匿名、免打扰、手机号可见性</p></span><span class="arr">'+ic('arrow','#5B7468',2)+'</span></button>'
+      +'</div>'
+      +'<div style="text-align:center;font-size:10.5px;color:#94A79B;padding:22px 18px 18px;line-height:1.7">无名树 · 只对邀请开放的家长陪伴社群<br>不排名 · 不打卡 · 不比孩子</div>'
+    +'</div>';
 }
 function vMySignups(){
-  var keys=Object.keys(S.enrolled);
+  var ids=Object.keys(S.enrolled);
   var head=hd('我的报名');
-  if(!keys.length){
-    return head+'<div class="pad rise"><div class="empty" style="padding-top:54px">'+I.cal(30)+'<p>还没有报名记录</p>'
-      +'<button class="btn text" data-nav="activities" style="margin-top:4px">去活动专区</button></div></div>';
+  if(!ids.length){
+    return head+'<div class="rise" style="text-align:center;padding:44px 24px">'
+      +'<div style="width:96px;height:96px;margin:0 auto;border-radius:32px;background:#FFF3CC;display:flex;align-items:center;justify-content:center">'+ic('calendar','#7A5400',2)+'</div>'
+      +'<h2 style="font-size:19px;margin:14px 0 5px;font-weight:800">还没有报名</h2><p class="sub">去看看这周在基地有什么。</p>'
+      +'<button class="btn primary" style="margin-top:16px" data-go="activities">去活动专区 '+ic('arrow','#FFFFFF',2)+'</button></div>';
   }
-  return head+'<div class="pad rise" style="padding-top:2px">'
-    +'<p style="font-size:11px;line-height:1.85;color:var(--ink-3);margin:0 0 14px">点开可以直接看相册、作品和老师手记。</p>'
-    +keys.map(function(id){
-      var a=findAct(id);if(!a){return '';}
-      return '<button class="actcard" data-nav="activity" data-id="'+a.id+'" data-tab="archive">'
-        +'<div class="cover" style="background:'+a.bg+';height:66px">'
-          +'<span class="dt">'+esc(a.date)+'</span><span class="qt" style="color:#3B6042">已报名</span>'
-          +art(a.kind,80)
-        +'</div>'
-        +'<div class="ainfo" style="padding:12px 15px"><h4 style="font-size:14.5px">'+esc(a.t)+'</h4>'
-          +'<p style="margin:0">'+esc(a.place)+'</p></div>'
-      +'</button>';
-    }).join('')
-    +'<p style="font-size:11px;line-height:1.9;color:var(--ink-3);margin:14px 0 26px">活动结束后会转入归档，但相册、作品与手记永久保留。</p>'
-    +'</div>';
+  var cards=ids.map(function(id){
+    var a=actById(id), en=S.enrolled[id];
+    return '<button class="event-card" style="margin:0 0 12px;width:100%" data-nav="activity" data-id="'+id+'" data-tab="archive">'
+      +'<span class="ec-art">'+cover(a)+'</span>'
+      +'<span class="ec-tx"><h3>'+esc(a.t)+'</h3><span class="ec-meta"><span class="pill p-leaf">已报名</span><span>'+esc(en.child)+'</span><span>'+esc(a.date)+'</span></span></span>'
+      +'<span class="ec-go">'+ic('arrow','#5B7468',2)+'</span></button>';
+  }).join('');
+  return head+'<div class="rise pad">'+cards
+    +'<div class="risk soft" style="margin-top:6px">'+ic('help','#216B92',2)+'<span>临时来不了，直接在活动详情里取消，不需要说明原因。</span></div>'
+    +'<div style="margin-top:18px;text-align:center;padding:24px 20px;background:#FFF7E6;border-radius:24px;border:1.5px dashed #EFDCB4">'
+      +'<div style="font-size:13.5px;font-weight:800;color:#5B7468">这个月还有 4 场可以报名</div>'
+      +'<p style="font-size:11.5px;color:#94A79B;margin:5px 0 12px">按孩子的状态挑，不按年龄抢跑。</p>'
+      +'<button class="btn sun small" data-go="activities">去活动专区 '+ic('arrow','#4A3400',2)+'</button>'
+    +'</div>'
+    +'<div style="height:18px"></div></div>';
 }
 function vMyPosts(){
-  var mine=DATA.posts.filter(function(p){return p.mine;});
-  return hd('我的帖子')+'<div class="pad rise" style="padding-top:2px">'
-    +(mine.length?mine.map(postRow).join(''):'<div class="empty" style="padding-top:50px">'+I.chat(30)+'<p>你还没有发过帖子<br>发过的帖子会一直留在这里，除非你自己删掉</p>'
-      +'<button class="btn text" data-nav="compose" style="margin-top:4px">发起倾诉</button></div>')
-    +'<div style="height:24px"></div></div>';
+  var mine=DATA.posts.filter(function(p){return p.id==='p1'||p.id==='p4'});
+  return hd('我的树洞')+'<div class="rise pad" style="padding-top:4px">'
+    +'<p class="sub" style="margin:0 0 12px">匿名帖也只在这里显示为你自己的记录。</p>'
+    +mine.map(postCard).join('')
+    +'<div class="risk soft">'+ic('lock','#216B92',2)+'<span>删帖后，回应会一起消失。这里不做“已读”统计。</span></div>'
+    +'<div style="height:18px"></div></div>';
 }
 function vMyWorks(){
-  var ar=DATA.archive.a1;
-  return hd('我的作品')+'<div class="pad rise" style="padding-top:2px">'
-    +'<p style="font-size:11px;color:var(--ink-3);line-height:1.85;margin:0 0 12px">来自 11.14 野外生存活动。作品由孩子自己完成，老师只做记录，不做评比。</p>'
-    +ar.works.map(function(w){
-      return '<button class="wk" data-act="file" data-id="'+esc(w.t)+'"><div class="th"></div>'
-        +'<div class="wm"><b>'+esc(w.t)+'</b><p>'+esc(w.by)+'</p></div><span style="color:var(--ink-3);display:flex">'+I.arrow(15)+'</span></button>';
-    }).join('')
-    +'<div style="height:24px"></div></div>';
+  var ids=Object.keys(S.enrolled);
+  var works=[];
+  ids.forEach(function(id){var a=actById(id);(a.works||[]).forEach(function(w){works.push({w:w,a:a})})});
+  var head=hd('孩子的作品');
+  if(!works.length){
+    return head+'<div class="rise" style="text-align:center;padding:46px 24px"><div style="width:96px;height:96px;margin:0 auto;border-radius:32px;background:#ECE8FD;display:flex;align-items:center;justify-content:center">'+ic('image','#6E5FD0',2)+'</div><h2 style="font-size:19px;margin:14px 0 5px;font-weight:800">还没有作品</h2><p class="sub">参加活动后，作品会收在这里。</p><button class="btn primary" style="margin-top:16px" data-go="activities">去活动专区 '+ic('arrow','#FFFFFF',2)+'</button></div>';
+  }
+  return head+'<div class="rise pad" style="padding-top:4px">'
+    +'<p class="sub" style="margin:0 0 12px">作品只保存在内部档案里，不进入公开页面，也不做评比。</p>'
+    +'<div class="works">'+works.map(function(x){
+      return '<div class="work"><span class="wk">'+cover({art:x.w.art})+'</span><span class="wx"><b>'+esc(x.w.t)+'</b><span>'+esc(x.w.who)+' · '+esc(x.a.t)+'</span></span><span class="wa">'+ic('arrow','#5B7468',2)+'</span></div>';
+    }).join('')+'</div>'
+    +'<div style="height:18px"></div></div>';
 }
 
-/* ===== 视图：设置 ===== */
+/* ---------- 12 设置 ---------- */
+function setRow(cls,icon,color,title,sub,right){
+  return '<div class="row c-'+cls+'"><span class="mi">'+ic(icon,color,2)+'</span><span class="mt"><b>'+title+'</b><p>'+sub+'</p></span>'+(right||'')+'</div>';
+}
 function vSettings(){
   return hd('设置')
-    +'<div class="pad rise" style="padding-top:2px">'
-    +'<div class="sec-h" style="margin-top:10px">发帖与隐私</div>'
-    +'<div class="cd" style="padding:15px;margin-bottom:14px">'
-      +'<div style="font-size:13.5px;font-weight:500;margin-bottom:10px">默认发帖模式</div>'
-      +'<div class="seg"><button class="'+(S.anon?'on':'')+'" data-defanon="1">匿名</button>'
-      +'<button class="'+(S.anon?'':'on')+'" data-defanon="0">实名 · '+esc(S.nick)+'</button></div>'
-      +'<p style="font-size:11px;line-height:1.85;color:var(--ink-3);margin:10px 0 0">切到实名后只在帖子上显示昵称，手机号始终不显示。</p>'
-    +'</div>'
-    +'<div class="cd" style="padding:2px 15px;margin-bottom:14px">'
-      +'<div class="li" style="cursor:default"><span class="ic" style="background:var(--blue-soft);color:#3D7C9B">'+I.user(19)+'</span>'
-        +'<span class="mai"><b>接收陌生人私信</b><p>关闭后只有同活动组员与管理员能私信你</p></span>'
-        +'<span class="sw"><input type="checkbox" id="sw-stranger" '+(S.strangerDM?'checked':'')+' aria-label="接收陌生人私信"><span class="tr"></span><span class="kn"></span></span>'
+    +'<div class="rise pad" style="padding-top:4px">'
+      +'<div class="sec-label" style="margin:10px 0 2px">账号</div>'
+      +'<div class="menu" style="margin:0">'
+        +'<button class="row c-sun" data-nick><span class="mi">'+ic('edit','#E5A31A',2)+'</span><span class="mt"><b>昵称</b><p>其他人看到的名字</p></span><span style="font-size:12px;color:#94A79B">'+esc(S.nick)+'</span></button>'
+        +setRow('sky','lock','#1E85C8','手机号','只对管理员可见，家长之间互不可见','<span style="font-size:11px;color:#94A79B">138****6721</span>')
       +'</div>'
-      +'<button class="li" data-act="quiet"><span class="ic" style="background:var(--yellow-soft);color:#A57B22">'+I.clock(19)+'</span>'
-        +'<span class="mai"><b>消息免打扰</b><p>该时段内所有推送静默</p></span>'
-        +'<span class="rt"><span>'+esc(S.quiet)+'</span>'+I.arrow(14)+'</span></button>'
-    +'</div>'
-    +'<div class="sec-h">账号</div>'
-    +'<div class="cd" style="padding:2px 15px">'
-      +'<button class="li" data-act="nick"><span class="ic">'+I.leaf(19)+'</span>'
-        +'<span class="mai"><b>修改昵称</b><p>当前：'+esc(S.nick)+'</p></span>'
-        +'<span class="rt">'+I.arrow(15)+'</span></button>'
-      +'<button class="li" data-act="logout"><span class="ic" style="background:var(--red-soft);color:#A25445">'+I.close(19)+'</span>'
-        +'<span class="mai"><b style="color:#A25445">退出登录</b><p>需要重新用邀请码申请</p></span>'
-        +'<span class="rt">'+I.arrow(15)+'</span></button>'
-    +'</div>'
-    +'<div style="height:30px"></div></div>';
-}
-
-/* ===== 视图：私信 ===== */
-function vDm(){
-  return hd('私信')
-    +'<div class="pad rise" style="padding-top:2px">'
-    +'<p style="font-size:11px;color:var(--ink-3);line-height:1.8;margin:0 0 14px">只出现同活动组员与管理员，不会有陌生人。</p>'
-    +DATA.dm.map(function(d){
-      return '<button class="li" style="background:#fff;border-radius:16px;padding:13px;margin-bottom:9px;box-shadow:var(--sh-s);border-bottom:0" data-nav="dmDetail" data-id="'+d.id+'">'
-        +'<span class="ic" style="flex:0 0 44px;width:44px;height:44px;border-radius:50%;background:var(--green-soft);color:var(--green-2);font-family:var(--round);font-size:16px">'+esc(d.who.charAt(0))+'</span>'
-        +'<span class="mai"><b>'+esc(d.who)+'</b><p>'+esc(d.last)+'</p></span>'
-        +'<span class="rt" style="flex-direction:column;align-items:flex-end;gap:6px"><span style="font-size:10px">'+esc(d.time)+'</span>'
-          +(d.unread?'<span style="width:7px;height:7px;border-radius:50%;background:var(--red)"></span>':'')+'</span>'
-      +'</button>';
-    }).join('')
-    +'<p style="font-size:11px;line-height:1.85;color:var(--ink-3);margin:16px 0 26px">一对一私信只有双方可见，管理员也看不到内容。</p>'
+      +'<div class="sec-label" style="margin:18px 0 2px">隐私</div>'
+      +'<div class="menu" style="margin:0">'
+        +'<div class="row c-leaf"><span class="mi">'+ic('lock','#0B7A4A',2)+'</span><span class="mt"><b>默认匿名</b><p>发帖时默认显示“一位家长”</p></span><label class="sw"><input type="checkbox" data-set="anon" '+(S.settings.anon?'checked':'')+'><span class="tr"></span><span class="kn"></span></label></div>'
+        +'<div class="row c-grape"><span class="mi">'+ic('moon','#6E5FD0',2)+'</span><span class="mt"><b>免打扰</b><p>22:00–08:00 不提醒</p></span><label class="sw"><input type="checkbox" data-set="dnd" '+(S.settings.dnd?'checked':'')+'><span class="tr"></span><span class="kn"></span></label></div>'
+        +'<div class="row c-coral"><span class="mi">'+ic('bell','#E85B3E',2)+'</span><span class="mt"><b>公告板提醒</b><p>只有管理员发新公告时</p></span><label class="sw"><input type="checkbox" data-notice="notice" '+(S.notify.notice?'checked':'')+'><span class="tr"></span><span class="kn"></span></label></div>'
+        +'<div class="row c-sky"><span class="mi">'+ic('chat','#1E85C8',2)+'</span><span class="mt"><b>树洞回复提醒</b><p>有人回应你的帖子时</p></span><label class="sw"><input type="checkbox" data-notice="hollow" '+(S.notify.hollow?'checked':'')+'><span class="tr"></span><span class="kn"></span></label></div>'
+      +'</div>'
+      +'<div class="sec-label" style="margin:18px 0 2px">关于</div>'
+      +'<div class="menu" style="margin:0">'
+        +setRow('leaf','shield','#0B7A4A','隐私与安全','我们如何保存照片与联系方式','<span style="font-size:11px;color:#94A79B">查看</span>')
+        +setRow('sun','help','#E5A31A','遇到困难','联系管理员或查看求助渠道','<span style="font-size:11px;color:#94A79B">1–2 天</span>')
+      +'</div>'
+      +'<button class="btn ghost block" id="btn-exit" style="margin-top:22px;color:#E85B3E;border-color:#FFD6CC">退出演示账号</button>'
+      +'<div style="text-align:center;font-size:10px;color:#94A79B;margin:12px 0 18px">无名树 v0.3 · 演示原型</div>'
     +'</div>';
 }
-function vDmDetail(){
-  var d=DATA.dm[0];
-  var body=d.msgs.map(function(m){
-    return '<div class="msg '+(m.me?'me':'them')+'">'+esc(m.tx)+'</div>';
+
+/* ---------- 13 私信 ---------- */
+function vDm(){
+  var rows=DATA.dms.map(function(d){
+    return '<button class="dm-row" data-nav="dmDetail" data-id="'+d.id+'">'
+      +'<span class="dav" style="background:'+(d.id==='d1'?'#FFF3CC':'#E2F8EB')+';color:'+(d.id==='d1'?'#7A5400':'#0B7A4A')+'">'+esc(d.name.slice(0,1))+'</span>'
+      +'<span class="dtx"><b>'+esc(d.name)+'</b><p>'+esc(d.last)+'</p></span>'
+      +'<span class="drt"><span>'+esc(d.time)+'</span>'+(d.unread?'<i class="unread"></i>':'')+'</span></button>';
   }).join('');
-  return hd(d.who)
-    +'<div class="pad rise" style="padding-top:4px">'
-    +'<div style="text-align:center;font-size:10.5px;color:var(--ink-3);padding:6px 0 4px">'+esc(d.role)+'</div>'
-    +'<div class="mtime">昨天</div>'
-    +body
-    +'<div style="height:24px"></div></div>'
-    +bottom('<div class="dock" style="display:flex;gap:8px;align-items:flex-end">'
-      +'<textarea class="in" id="dm-b" placeholder="写一条消息" style="height:44px;padding:11px 13px;flex:1;border-radius:999px"></textarea>'
-      +'<button class="btn primary" data-act="send-dm" aria-label="发送" style="width:44px;height:44px;flex:0 0 44px;padding:0;border-radius:50%">'+I.send(18)+'</button>'
-    +'</div>');
+  return hd('私信',{action:'<span class="pill p-leaf">'+ic('lock','#0B7A4A',2)+'不公开手机号</span>'})
+    +'<div class="rise pad" style="padding-top:4px">'
+      +'<p class="sub" style="margin:0 0 10px">只和带队老师、管理员联系。家长之间想聊天，请去树洞。</p>'
+      +rows
+      +'<div class="risk soft" style="margin-top:16px">'+ic('shield','#216B92',2)+'<span>私信不会被其他家长看到，也不会出现在公开页面。</span></div>'
+      +'<div style="height:18px"></div></div>';
+}
+function vDmDetail(){
+  var d=DATA.dms.filter(function(x){return x.id===S.dm})[0]||DATA.dms[0];
+  var msgs=d.id==='d1'?[
+    {who:'them',t:'明天 08:00 我在东门等你们。门口有一棵很大的樟树。'},
+    {who:'them',t:'孩子的鞋最好防滑，山里早上有露水。'},
+    {who:'me',t:'好的，他会自己背水壶。'},
+    {who:'them',t:'那就够了。到了让他自己说一句“我是新来的”。'}
+  ]:[
+    {who:'them',t:'你的申请已经通过了，欢迎。'},
+    {who:'them',t:'先看看公告板的置顶，里面有 11 月的安排。'},
+    {who:'me',t:'谢谢，我先去树洞看看。'}
+  ];
+  var body=msgs.map(function(m){
+    return '<div class="bubble '+m.who+'">'+esc(m.t)+'</div>';
+  }).join('');
+  return hd(d.name)
+    +'<div class="rise pad" style="padding-top:2px">'
+      +'<div class="dm-time">'+esc(d.time)+'</div>'+body
+      +'<div class="quick-replies"><button data-toast="已回复：明天见">明天见</button><button data-toast="已回复：谢谢老师">谢谢老师</button><button data-toast="已回复：他有点紧张">他有点紧张</button></div>'
+      +'<div class="reply-box" style="margin-top:8px"><input class="in" id="f-dm" placeholder="写一句"><button class="btn primary" data-toast="已发送">'+ic('send','#FFFFFF',2)+'</button></div>'
+      +'<div class="risk soft" style="margin-top:14px">'+ic('moon','#216B92',2)+'<span>已开启免打扰：22:00–08:00 不会提醒。</span></div>'
+      +'<div style="height:16px"></div>'
+    +'</div>';
 }
 
-/* ===== 渲染 ===== */
-var scEl=document.getElementById('screen');
-var dockEl=document.getElementById('dockwrap');
-function render(){
-  var v=S.view,p=S.params||{},html='';
-  switch(v){
-    case 'gate':html=vGate();break;
-    case 'gateOk':html=vGateOk();break;
-    case 'home':html=vHome();break;
-    case 'notice':html=vNotice();break;
-    case 'noticeDetail':html=vNoticeDetail(p.id);break;
-    case 'hollow':html=vHollow();break;
-    case 'compose':html=vCompose();break;
-    case 'post':html=vPost(p.id);break;
-    case 'library':html=vLibrary();break;
-    case 'folder':html=vFolder(p.id);break;
-    case 'activities':html=vActivities();break;
-    case 'activity':html=vActivity();break;
-    case 'enroll':html=vEnroll();break;
-    case 'enrollOk':html=vEnrollOk();break;
-    case 'me':html=vMe();break;
-    case 'mySignups':html=vMySignups();break;
-    case 'myPosts':html=vMyPosts();break;
-    case 'myWorks':html=vMyWorks();break;
-    case 'settings':html=vSettings();break;
-    case 'dm':html=vDm();break;
-    case 'dmDetail':html=vDmDetail();break;
-    default:html=vHome();
+/* ---------- 路由与渲染 ---------- */
+var VIEWS={gate:vGate,gateOk:vGateOk,home:vHome,notice:vNotice,noticeDetail:vNoticeDetail,hollow:vHollow,compose:vCompose,post:vPost,library:vLibrary,folder:vFolder,activities:vActivities,activity:vActivity,enroll:vEnroll,enrollOk:vEnrollOk,me:vMe,mySignups:vMySignups,myPosts:vMyPosts,myWorks:vMyWorks,settings:vSettings,dm:vDm,dmDetail:vDmDetail};
+var HIST=[];
+function syncTab(){
+  var map={home:'home',hollow:'hollow',compose:'hollow',post:'hollow',activities:'activities',activity:'activities',enroll:'activities',enrollOk:'activities',me:'me',settings:'me',dm:'me',dmDetail:'me',mySignups:'me',myPosts:'hollow',myWorks:'me'};
+  var active=map[S.view]||'';
+  var tabs=document.querySelectorAll('#tabbar button');
+  for(var i=0;i<tabs.length;i++){tabs[i].classList.toggle('on',tabs[i].getAttribute('data-go')===active)}
+  var links=document.querySelectorAll('.side [data-go]');
+  for(var j=0;j<links.length;j++){
+    var g=links[j].getAttribute('data-go');
+    var on=(g===S.view)||(g==='activities'&&(S.view==='activity'||S.view==='enroll'||S.view==='enrollOk'))||(g==='hollow'&&(S.view==='post'||S.view==='compose'));
+    links[j].classList.toggle('on',on);
   }
-  var i=html.indexOf('<!--DOCK-->');
-  if(i>=0){dockEl.innerHTML=html.slice(i+11);html=html.slice(0,i);}
-  else{dockEl.innerHTML='';}
-  scEl.innerHTML=html;
-  scEl.scrollTop=0;
 }
-
-function collect(el){
-  var o={};
-  ['id','tab'].forEach(function(k){
-    var vv=el.getAttribute('data-'+k);
-    if(vv!==null){o[k]=vv;}
-  });
-  return o;
+function render(){
+  var el=document.getElementById('screen');
+  el.innerHTML=(VIEWS[S.view]||vHome)();
+  document.getElementById('tabbar').classList.toggle('hide',['gate','gateOk','enroll','enrollOk','compose'].indexOf(S.view)>-1);
+  document.getElementById('riskstrip').classList.toggle('show',S.view==='home');
+  syncTab();
+  el.scrollTop=0;
 }
 function go(v,p){
-  p=p||{};
-  hist.push({v:S.view,p:S.params});
-  if(hist.length>40){hist.shift();}
-  S.view=v;S.params=p;
-  if(v==='activity'){S.atab=p.tab||'detail';}
+  if(S.view!==v)HIST.push({v:S.view,p:S.params,tab:S.tab,atab:S.atab});
+  S.view=v;
+  if(p)S.params=p;
+  if(v==='activity')S.atab=(p&&p.tab)||'detail';
   render();
 }
 function back(){
-  var h=hist.pop();
-  if(h){S.view=h.v;S.params=h.p||{};}
-  else{S.view='home';S.params={};}
-  render();
+  var h=HIST.pop();
+  if(h){S.view=h.v;S.params=h.p||{};S.tab=h.tab;S.atab=h.atab;render();}
+  else{S.view='home';render();}
 }
-
-/* ===== 弹层 ===== */
-var dev=document.querySelector('.device');
-function overlay(html){
-  closeOv();
-  var tmp=document.createElement('div');
-  tmp.innerHTML=html;
-  var node=tmp.firstElementChild;
-  node.id='ovNode';
-  dev.appendChild(node);
+var toastTimer=null;
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){t.classList.remove('on')},1800);
 }
-function closeOv(){
-  var o=document.getElementById('ovNode');
-  if(o&&o.parentNode){o.parentNode.removeChild(o);}
+function closeOverlay(){var o=document.getElementById('ov');if(o)o.parentNode.removeChild(o)}
+function overlay(html,center){
+  closeOverlay();
+  var d=document.querySelector('.device');
+  var o=document.createElement('div');
+  o.className='ov'+(center?' center':'');o.id='ov';o.innerHTML=html;
+  o.addEventListener('click',function(e){if(e.target===o)closeOverlay()});
+  d.appendChild(o);
 }
 function openReport(){
-  var opts=['评判、说教、否定他人','争吵与冲突','广告与推销','泄露他人信息','其他'];
-  overlay('<div class="ov"><div class="sheet">'
-    +'<h4>举报这条内容</h4>'
-    +'<p class="sp2">会直接推给管理员。被举报的人不会知道是谁举报的，你也不会被拉进任何讨论。</p>'
-    +opts.map(function(o,i){
-      return '<label class="rrow"><input type="radio" name="rp" value="'+esc(o)+'" '+(i===0?'checked':'')+'>'+esc(o)+'</label>';
-    }).join('')
-    +'<textarea class="in" id="rp-note" placeholder="补充说明（选填）" style="height:70px;margin-top:14px"></textarea>'
-    +'<div class="acts"><button class="btn ghost" data-act="close-ov">取消</button>'
-    +'<button class="btn primary" data-act="send-report">提交</button></div>'
-  +'</div></div>');
+  overlay('<div class="sheet"><h4>举报这条内容</h4><p style="color:#5B7468;font-size:12.5px;margin:0 0 6px">管理员会看到，发帖人不会知道是谁举报的。</p>'
+    +'<label class="radiorow"><input type="radio" name="rp" checked>泄露了孩子或家庭的隐私</label>'
+    +'<label class="radiorow"><input type="radio" name="rp">带有评判、指责或攻击</label>'
+    +'<label class="radiorow"><input type="radio" name="rp">广告、引流或与社群无关</label>'
+    +'<label class="radiorow" style="border-bottom:0"><input type="radio" name="rp">其他</label>'
+    +'<div class="dlg-actions"><button class="btn ghost" data-close>取消</button><button class="btn coral" id="btn-report">提交举报</button></div></div>');
 }
-function openQuiet(){
-  var opts=['22:00–07:00','23:00–08:00','不设置'];
-  overlay('<div class="ov"><div class="sheet"><h4>消息免打扰</h4>'
-    +'<p class="sp2">该时段内不推送任何提醒，但你仍然可以主动打开查看。</p>'
-    +opts.map(function(o){
-      return '<label class="rrow"><input type="radio" name="qq" value="'+esc(o)+'" '+(S.quiet===o?'checked':'')+'>'+esc(o)+'</label>';
-    }).join('')
-    +'<div class="acts"><button class="btn ghost" data-act="close-ov">取消</button>'
-    +'<button class="btn primary" data-act="save-quiet">保存</button></div></div></div>');
+function openNick(){
+  overlay('<div class="dialog"><h4>修改昵称</h4><p>这是其他家长看到的名字，手机号不会显示。</p>'
+    +'<input class="in" id="f-nick" value="'+esc(S.nick)+'" maxlength="8">'
+    +'<div class="dlg-actions"><button class="btn ghost" data-close>取消</button><button class="btn primary" id="btn-nick-save">保存</button></div></div>',true);
 }
-function openLogout(){
-  overlay('<div class="ov center"><div class="dialog"><h4>退出登录？</h4>'
-    +'<p>退出后需要重新用邀请码申请，之前填过的资料不会自动带过来。</p>'
-    +'<div class="acts"><button class="btn ghost" data-act="close-ov">取消</button>'
-    +'<button class="btn primary" data-act="do-logout">退出</button></div></div></div>');
+function openExit(){
+  overlay('<div class="dialog"><h4>退出演示账号？</h4><p>刷新页面就能重新开始。已填的内容不会保存。</p>'
+    +'<div class="dlg-actions"><button class="btn ghost" data-close>再待一会</button><button class="btn coral" id="btn-exit-ok">退出</button></div></div>',true);
 }
 
-/* ===== 事件 ===== */
-dev.addEventListener('click',function(ev){
-  var t=ev.target;
-  if(t.classList&&t.classList.contains('ov')){closeOv();return;}
-
-  var nav=t.closest('[data-nav]');
-  if(nav){go(nav.getAttribute('data-nav'),collect(nav));return;}
-
-  var bk=t.closest('[data-back]');
-  if(bk){back();return;}
-
-  var tb=t.closest('[data-tab]');
-  if(tb){S.atab=tb.getAttribute('data-tab');render();return;}
-
-  var fl=t.closest('[data-filter]');
-  if(fl){var fv=fl.getAttribute('data-filter');S.filter=(fv==='全部'?'all':fv);render();return;}
-
-  var an=t.closest('[data-anon]');
-  if(an){
-    var ct=document.getElementById('cp-t');if(ct){S.draft.t=ct.value;}
-    var cb=document.getElementById('cp-b');if(cb){S.draft.b=cb.value;}
-    S.draft.anon=an.getAttribute('data-anon')==='1';
-    render();return;
+/* ---------- 事件 ---------- */
+document.addEventListener('click',function(e){
+  var el=e.target.closest('[data-go],[data-nav],[data-back],[data-tab],[data-filter],[data-type],[data-mood],[data-react],[data-toast],[data-close],[data-nick]');
+  if(!el)return;
+  if(el.hasAttribute('data-close')){closeOverlay();return}
+  if(el.hasAttribute('data-report')){openReport();return}
+  if(el.hasAttribute('data-toast')){toast(el.getAttribute('data-toast'));return}
+  if(el.hasAttribute('data-back')){back();return}
+  if(el.hasAttribute('data-nick')){openNick();return}
+  if(el.hasAttribute('data-react')){
+    var k=el.getAttribute('data-react');S.reacts[k]=S.reacts[k]?0:1;render();return;
   }
-
-  var da=t.closest('[data-defanon]');
-  if(da){S.anon=da.getAttribute('data-defanon')==='1';render();return;}
-
-  var act=t.closest('[data-act]');
-  if(act){handle(act);return;}
+  if(el.hasAttribute('data-mood')){
+    S.pubMood=el.getAttribute('data-mood');
+    var mb=document.querySelectorAll('.moodbtn');
+    for(var i=0;i<mb.length;i++){mb[i].classList.toggle('on',mb[i].getAttribute('data-mood')===S.pubMood)}
+    return;
+  }
+  if(el.hasAttribute('data-filter')){
+    S.filter=el.getAttribute('data-filter');render();return;
+  }
+  if(el.hasAttribute('data-type')){
+    S.typeFilter=el.getAttribute('data-type');render();return;
+  }
+  var nav=el.closest('[data-nav]');
+  if(nav){
+    var nv=nav.getAttribute('data-nav'), nid=nav.getAttribute('data-id')||'';
+    if(nv==='noticeDetail')S.notice=nid;
+    if(nv==='folder')S.folder=nid;
+    if(nv==='dmDetail')S.dm=nid;
+    go(nv,{id:nid,tab:nav.getAttribute('data-tab')||''});
+    return;
+  }
+  if(el.hasAttribute('data-tab')){
+    S.atab=el.getAttribute('data-tab');render();return;
+  }
+  var g=el.closest('[data-go]');
+  if(g){go(g.getAttribute('data-go'),{id:g.getAttribute('data-id')||''});return}
 });
-
-dev.addEventListener('change',function(ev){
-  if(ev.target.id==='sw-stranger'){
-    S.strangerDM=ev.target.checked;
-    toast(S.strangerDM?'已允许陌生人私信':'已关闭陌生人私信');
+document.addEventListener('change',function(e){
+  var t=e.target;
+  if(t.id==='sw-anon'){
+    S.anon=t.checked;
+    var lab=document.getElementById('anon-t');
+    if(lab)lab.textContent=t.checked?'匿名发布 · 显示“一位家长”':'实名发布 · 显示昵称“'+S.nick+'”';
+    return;
   }
+  if(t.hasAttribute('data-set')){S.settings[t.getAttribute('data-set')]=t.checked;toast('设置已更新');return}
+  if(t.hasAttribute('data-notice')){S.notify[t.getAttribute('data-notice')]=t.checked;toast('提醒设置已更新');return}
 });
-
-function handle(el){
-  var a=el.getAttribute('data-act'),id=el.getAttribute('data-id');
-
-  if(a==='apply'){
-    var code=document.getElementById('g-code'),nick=document.getElementById('g-nick'),agree=document.getElementById('g-agree');
-    if(!code.value.trim()){toast('请填写邀请码');return;}
-    if(!nick.value.trim()){toast('请填写你想用的昵称');return;}
-    if(!agree.checked){toast('请先勾选社群公约');return;}
-    S.nick=nick.value.trim();
-    go('gateOk');return;
+document.addEventListener('click',function(e){
+  var id=e.target.id;
+  if(id==='btn-apply'){
+    var code=(document.getElementById('f-code')||{}).value||'';
+    var name=(document.getElementById('f-name')||{}).value||'';
+    var phone=(document.getElementById('f-phone')||{}).value||'';
+    if(!code.trim()||!name.trim()||!phone.trim()){toast('邀请码、称呼和手机号都要填');return}
+    S.nick=name.trim().slice(0,8);
+    S.pending=true;go('gateOk');return;
   }
-  if(a==='pass'){go('home');toast('已通过审核，欢迎进入无名树');return;}
-  if(a==='publish'){
-    var pt=document.getElementById('cp-t'),pb=document.getElementById('cp-b');
-    if(!pt.value.trim()){toast('给这件事一个名字');return;}
-    if(!pb.value.trim()){toast('写一点此刻的感受');return;}
-    var nid='p'+Date.now();
-    var was=S.draft.anon;
-    DATA.posts.unshift({id:nid,t:pt.value.trim(),b:pb.value.trim(),anon:was,who:was?'':S.nick,time:'刚刚',n:0,mine:true});
-    DATA.replies[nid]=[];
-    S.draft={t:'',b:'',anon:was};
-    go('hollow');
-    toast(was?'已匿名发布':'已发布');
-    return;
+  if(id==='btn-approve'){S.approved=true;go('home');toast('欢迎来到无名树');return}
+  if(id==='btn-pub'){
+    var title=(document.getElementById('f-title')||{}).value||'';
+    var body=(document.getElementById('f-body')||{}).value||'';
+    if(!title.trim()){toast('写一句就好，不必完整');return}
+    var np={id:'np'+Date.now(),mood:S.pubMood,title:title.trim(),body:body.trim()||'（没有展开，先放在这里）',time:'刚刚',replies:0,anon:S.anon,hug:0,me:0};
+    DATA.posts.unshift(np);DATA.floors[np.id]=[];
+    S.filter='all';go('hollow');toast('已发布 · 只有这里的人看得到');return;
   }
-  if(a==='reply'){
-    var rb=document.getElementById('rp-b');
-    if(!rb||!rb.value.trim()){toast('写一句回应');return;}
-    if(!DATA.replies[id]){DATA.replies[id]=[];}
-    DATA.replies[id].push({who:S.nick,anon:S.anon,time:'刚刚',tx:rb.value.trim(),lv:1});
-    var pp=findPost(id);
-    if(pp){pp.n=pp.n+1;}
-    render();
-    toast(S.anon?'已匿名回应':'已回应');
-    return;
+  if(id==='btn-reply'){
+    var p=DATA.posts.filter(function(x){return x.id===S.params.id})[0]||DATA.posts[0];
+    var rv=(document.getElementById('f-reply')||{}).value||'';
+    if(!rv.trim()){toast('写一句再发');return}
+    DATA.floors[p.id]=DATA.floors[p.id]||[];
+    DATA.floors[p.id].push({name:S.anon?'一位家长':S.nick,lv:1,time:'刚刚',text:rv.trim()});
+    p.replies++;render();toast('回应已放进这一楼');return;
   }
-  if(a==='report'){openReport();return;}
-  if(a==='send-report'){
-    var sel=document.querySelector('input[name="rp"]:checked');
-    closeOv();
-    toast('已提交举报'+(sel?'：'+sel.value:''));
-    return;
+  if(id==='btn-enroll'){
+    var child=(document.getElementById('f-child')||{}).value||'';
+    var age=(document.getElementById('f-age')||{}).value||'';
+    var c1=document.getElementById('c1');
+    if(!child.trim()){toast('先填一下孩子的称呼');return}
+    if(!c1.checked){toast('请先勾选接送与安全规则');return}
+    S.enrolled[S.params.id||'a2']={child:child.trim().slice(0,6),age:age.trim()||'—'};
+    go('enrollOk',{id:S.params.id||'a2'});return;
   }
-  if(a==='close-ov'){closeOv();return;}
-  if(a==='waitlist'){toast('已加入等待名单，有名额会按顺序通知');return;}
-  if(a==='submit-enroll'){
-    var n=document.getElementById('e-name'),ag=document.getElementById('e-age'),ph=document.getElementById('e-phone');
-    if(!n.value.trim()){toast('请填写孩子姓名');return;}
-    if(!ag.value.trim()){toast('请填写孩子年龄');return;}
-    if(ph.value.replace(/\D/g,'').length<11){toast('请填写 11 位手机号');return;}
-    S.enrolled[id]={child:n.value.trim(),age:ag.value.trim(),phone:ph.value,note:(document.getElementById('e-note')||{}).value||''};
-    go('enrollOk',{id:id});return;
+  if(id==='btn-report'){closeOverlay();toast('已提交，管理员会尽快处理');return}
+  if(id==='btn-nick-save'){
+    var nv=(document.getElementById('f-nick')||{}).value||'';
+    if(!nv.trim()){toast('昵称不能为空');return}
+    S.nick=nv.trim().slice(0,8);closeOverlay();render();toast('昵称已更新');return;
   }
-  if(a==='jump-archive'){S.atab='archive';render();return;}
-  if(a==='quiet'){openQuiet();return;}
-  if(a==='save-quiet'){
-    var q=document.querySelector('input[name="qq"]:checked');
-    if(q){S.quiet=q.value;}
-    closeOv();render();toast('免打扰时段已更新');return;
-  }
-  if(a==='nick'){
-    overlay('<div class="ov center"><div class="dialog"><h4>修改昵称</h4>'
-      +'<input class="in" id="nk" value="'+esc(S.nick)+'" style="margin-bottom:18px" autocomplete="off">'
-      +'<div class="acts"><button class="btn ghost" data-act="close-ov">取消</button>'
-      +'<button class="btn primary" data-act="save-nick">保存</button></div></div></div>');
-    return;
-  }
-  if(a==='save-nick'){
-    var nk=document.getElementById('nk');
-    if(nk&&nk.value.trim()){S.nick=nk.value.trim();}
-    closeOv();render();toast('昵称已更新');return;
-  }
-  if(a==='logout'){openLogout();return;}
-  if(a==='do-logout'){
-    closeOv();
-    S.view='gate';S.params={};S.enrolled={};S.atab='detail';hist=[];
-    render();toast('已退出登录');return;
-  }
-  if(a==='send-dm'){
-    var dmb=document.getElementById('dm-b');
-    if(!dmb||!dmb.value.trim()){toast('写一条消息');return;}
-    DATA.dm[0].msgs.push({me:true,tx:dmb.value.trim(),time:'刚刚'});
-    render();toast('已发送');return;
-  }
-  if(a==='search'){toast('原型里检索还没做，只能按文件夹找');return;}
-  if(a==='file'){toast('原型里文件预览还没做');return;}
-}
-
-/* 导览跳转 */
-Array.prototype.forEach.call(document.querySelectorAll('[data-go]'),function(g){
-  g.addEventListener('click',function(e){
-    e.preventDefault();
-    hist=[];
-    go(g.getAttribute('data-go'));
-  });
+  if(id==='btn-exit'){openExit();return}
+  if(id==='btn-exit-ok'){closeOverlay();go('gate');toast('已退出演示账号');return}
 });
 
 render();
+
 </script>
 </body>
 </html>
+
