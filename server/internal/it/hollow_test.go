@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"strings"
 	"testing"
-
 )
 
 func submitAndApprove(t *testing.T, s *itEnv, adminToken, invite, nickname, phone string) {

@@ -22,15 +22,32 @@ type Page struct {
 	Limit  int
 }
 
-// PostRow 帖子行（作者昵称随行；匿名显示名由 service 解析——红线：匿名不回传作者字段）。
+// PostRow 帖子行（扁平字段：gorm 对带主键的嵌套结构会按关联解析，故不嵌套）。
 type PostRow struct {
-	Post           model.Post
+	ID             int64
+	AuthorID       int64
+	Mood           string
+	Title          string
+	Body           *string
+	IsAnonymous    bool
+	Status         string
+	RemovedReason  *string
+	ReviewStatus   string
+	PublishedAt    time.Time
 	AuthorNickname string
 }
 
-// FloorRow 楼层行。
+// FloorRow 楼层行（同上扁平）。
 type FloorRow struct {
-	Floor          model.Floor
+	ID             int64
+	PostID         int64
+	ParentFloorID  *int64
+	Depth          int8
+	AuthorID       int64
+	Content        string
+	IsAnonymous    bool
+	Status         string
+	CreatedAt      time.Time
 	AuthorNickname string
 }
 
@@ -262,7 +279,13 @@ func (s *HollowService) execCreatePost(ctx context.Context, memberID int64, mood
 	if res.Crisis {
 		s.alertCrisis(ctx, memberID, "post", p.ID, res.Hit)
 	}
-	return s.postVO(&PostRow{Post: p, AuthorNickname: s.nicknameOf(memberID)}, 0, nil), nil
+	row := PostRow{
+		ID: p.ID, AuthorID: p.AuthorID, Mood: p.Mood, Title: p.Title,
+		Body: p.Body, IsAnonymous: p.IsAnonymous, Status: p.Status,
+		ReviewStatus: p.ReviewStatus, PublishedAt: p.PublishedAt,
+		AuthorNickname: s.nicknameOf(memberID),
+	}
+	return s.postVO(&row, 0, nil), nil
 }
 
 // execCreateFloor 频控 → 楼层校验 → 机审 → 入库 → 红点/告警。
@@ -271,7 +294,7 @@ func (s *HollowService) execCreateFloor(ctx context.Context, memberID, postID in
 	if err != nil {
 		return nil, err
 	}
-	if post == nil || post.Post.Status != model.PostPublished {
+	if post == nil || post.Status != model.PostPublished {
 		return nil, code.ErrNotFound
 	}
 	if ok, _ := s.limiter.Allow(ctx, "floor:day:"+int64Key(memberID), 50, 24*time.Hour); !ok {
@@ -312,12 +335,21 @@ func (s *HollowService) execCreateFloor(ctx context.Context, memberID, postID in
 	if res.Crisis {
 		s.alertCrisis(ctx, memberID, "floor", f.ID, res.Hit)
 	}
-	_ = s.badges.Mark(ctx, post.Post.AuthorID, "hollow")
-	row := FloorRow{Floor: f}
+	_ = s.badges.Mark(ctx, post.AuthorID, "hollow")
+	row := FloorRow{
+		ID:          f.ID,
+		PostID:      f.PostID,
+		Depth:       f.Depth,
+		AuthorID:    f.AuthorID,
+		Content:     f.Content,
+		IsAnonymous: f.IsAnonymous,
+		Status:      f.Status,
+		CreatedAt:   f.CreatedAt,
+	}
 	if !f.IsAnonymous {
 		row.AuthorNickname = s.nicknameOf(memberID)
 	}
-	vo := floorVO(row)
+	vo := floorVO(&row)
 	return &vo, nil
 }
 
@@ -357,7 +389,7 @@ func (s *HollowService) GetPost(ctx context.Context, memberID, postID int64) (*P
 	if err != nil {
 		return nil, err
 	}
-	if row == nil || row.Post.Status != model.PostPublished {
+	if row == nil || row.Status != model.PostPublished {
 		return nil, code.ErrNotFound
 	}
 	vo := s.postVO(row, 0, nil)
@@ -365,7 +397,7 @@ func (s *HollowService) GetPost(ctx context.Context, memberID, postID int64) (*P
 	if err != nil {
 		return nil, err
 	}
-	crisis := s.audit.CheckText(row.Post.Title + "\n" + bodyText(row.Post.Body)).Crisis
+	crisis := s.audit.CheckText(row.Title + "\n" + bodyText(row.Body)).Crisis
 	return &PostDetailVO{Post: *vo, Floors: floors, Crisis: crisis}, nil
 }
 
@@ -376,7 +408,7 @@ func (s *HollowService) ListFloors(ctx context.Context, memberID, postID int64, 
 	}
 	if row, err := s.posts.FindByID(postID); err != nil {
 		return nil, nil, err
-	} else if row == nil || row.Post.Status != model.PostPublished {
+	} else if row == nil || row.Status != model.PostPublished {
 		return nil, nil, code.ErrNotFound
 	}
 	floors, next, err := s.floorVOs(ctx, postID, page)
@@ -400,7 +432,7 @@ func (s *HollowService) CreateFloor(ctx context.Context, memberID, postID int64,
 	if err != nil {
 		return nil, err
 	}
-	if post == nil || post.Post.Status != model.PostPublished {
+	if post == nil || post.Status != model.PostPublished {
 		return nil, code.ErrNotFound
 	}
 
@@ -434,7 +466,7 @@ func (s *HollowService) TogglePostReaction(ctx context.Context, memberID, postID
 	if err != nil {
 		return nil, err
 	}
-	if row == nil || row.Post.Status != model.PostPublished {
+	if row == nil || row.Status != model.PostPublished {
 		return nil, code.ErrNotFound
 	}
 	active, err := s.react.Toggle(memberID, "post", postID, rtype)
@@ -462,7 +494,7 @@ func (s *HollowService) ToggleFloorReaction(ctx context.Context, memberID, floor
 	}
 	if post, err := s.posts.FindByID(f.PostID); err != nil {
 		return nil, err
-	} else if post == nil || post.Post.Status != model.PostPublished {
+	} else if post == nil || post.Status != model.PostPublished {
 		return nil, code.ErrNotFound
 	}
 	active, err := s.react.Toggle(memberID, "floor", floorID, rtype)
@@ -482,18 +514,18 @@ func (s *HollowService) DeletePost(ctx context.Context, memberID, postID int64) 
 	if err != nil {
 		return err
 	}
-	if row == nil || row.Post.Status != model.PostPublished {
+	if row == nil || row.Status != model.PostPublished {
 		return code.ErrNotFound
 	}
 	m, err := s.members.FindByID(memberID)
 	if err != nil {
 		return err
 	}
-	if row.Post.AuthorID != memberID && (m == nil || m.Role != model.RoleAdmin) {
+	if row.AuthorID != memberID && (m == nil || m.Role != model.RoleAdmin) {
 		return code.ErrNoPermission
 	}
 	reason := "by_author"
-	if row.Post.AuthorID != memberID {
+	if row.AuthorID != memberID {
 		reason = "by_report" // 管理员处置复用该枚举（DDL 注释三种来源之一）
 	}
 	return s.posts.UpdateStatus(postID, model.PostRemoved, reason)
@@ -524,23 +556,22 @@ func (s *HollowService) MyPosts(ctx context.Context, memberID int64, page Page) 
 
 // postVO 单帖视图组装（红线：匿名帖不含 authorId 与昵称，displayName 按匿名解析）。
 func (s *HollowService) postVO(row *PostRow, replies int64, my []string) *PostVO {
-	p := row.Post
 	display := "一位家长"
-	if !p.IsAnonymous {
+	if !row.IsAnonymous {
 		display = row.AuthorNickname
 	}
 	vo := &PostVO{
-		ID:          p.ID,
-		Mood:        p.Mood,
-		Title:       p.Title,
-		IsAnonymous: p.IsAnonymous,
+		ID:          row.ID,
+		Mood:        row.Mood,
+		Title:       row.Title,
+		IsAnonymous: row.IsAnonymous,
 		DisplayName: display,
 		Replies:     replies,
 		MyReactions: my,
-		PublishedAt: p.PublishedAt,
+		PublishedAt: row.PublishedAt,
 	}
-	if p.Body != nil {
-		vo.Body = *p.Body
+	if row.Body != nil {
+		vo.Body = *row.Body
 	}
 	return vo
 }
@@ -549,7 +580,7 @@ func (s *HollowService) postVO(row *PostRow, replies int64, my []string) *PostVO
 func (s *HollowService) postPage(ctx context.Context, rows []PostRow, next string, viewerID int64) (*PostPageVO, error) {
 	ids := make([]int64, 0, len(rows))
 	for _, r := range rows {
-		ids = append(ids, r.Post.ID)
+		ids = append(ids, r.ID)
 	}
 	replyCounts, err := s.floors.CountPublishedByPosts(ids)
 	if err != nil {
@@ -564,10 +595,11 @@ func (s *HollowService) postPage(ctx context.Context, rows []PostRow, next strin
 		return nil, err
 	}
 	items := make([]PostVO, 0, len(rows))
-	for _, r := range rows {
-		vo := s.postVO(&r, replyCounts[r.Post.ID], mine[r.Post.ID])
-		vo.Hug = reactCounts[r.Post.ID]["hug"]
-		vo.MeToo = reactCounts[r.Post.ID]["me_too"]
+	for i := range rows {
+		r := &rows[i]
+		vo := s.postVO(r, replyCounts[r.ID], mine[r.ID])
+		vo.Hug = reactCounts[r.ID]["hug"]
+		vo.MeToo = reactCounts[r.ID]["me_too"]
 		items = append(items, *vo)
 	}
 	page := &PostPageVO{Items: items}
@@ -578,18 +610,18 @@ func (s *HollowService) postPage(ctx context.Context, rows []PostRow, next strin
 }
 
 // floorVO 单楼层视图（匿名显示名解析——红线）。
-func floorVO(row FloorRow) FloorVO {
+func floorVO(row *FloorRow) FloorVO {
 	display := "一位家长"
-	if !row.Floor.IsAnonymous {
+	if !row.IsAnonymous {
 		display = row.AuthorNickname
 	}
 	return FloorVO{
-		ID:          row.Floor.ID,
-		ParentID:    row.Floor.ParentFloorID,
-		Depth:       int(row.Floor.Depth),
+		ID:          row.ID,
+		ParentID:    row.ParentFloorID,
+		Depth:       int(row.Depth),
 		DisplayName: display,
-		Content:     row.Floor.Content,
-		CreatedAt:   row.Floor.CreatedAt,
+		Content:     row.Content,
+		CreatedAt:   row.CreatedAt,
 	}
 }
 
@@ -601,17 +633,18 @@ func (s *HollowService) floorVOs(ctx context.Context, postID int64, page Page) (
 	}
 	ids := make([]int64, 0, len(rows))
 	for _, r := range rows {
-		ids = append(ids, r.Floor.ID)
+		ids = append(ids, r.ID)
 	}
 	counts, err := s.react.CountByTargets("floor", ids)
 	if err != nil {
 		return nil, "", err
 	}
 	out := make([]FloorVO, 0, len(rows))
-	for _, r := range rows {
+	for i := range rows {
+		r := &rows[i]
 		vo := floorVO(r)
-		vo.Hug = counts[r.Floor.ID]["hug"]
-		vo.Helpful = counts[r.Floor.ID]["helpful"]
+		vo.Hug = counts[r.ID]["hug"]
+		vo.Helpful = counts[r.ID]["helpful"]
 		out = append(out, vo)
 	}
 	return out, next, nil

@@ -28,7 +28,11 @@ func newFakePosts(members MemberByID) *fakePostStore {
 func (f *fakePostStore) Create(p *model.Post) error {
 	f.seq++
 	p.ID = f.seq
-	row := &PostRow{Post: *p}
+	row := &PostRow{
+		ID: p.ID, AuthorID: p.AuthorID, Mood: p.Mood, Title: p.Title,
+		Body: p.Body, IsAnonymous: p.IsAnonymous, Status: p.Status,
+		ReviewStatus: p.ReviewStatus, PublishedAt: p.PublishedAt,
+	}
 	if f.members != nil {
 		if m, err := f.members.FindByID(p.AuthorID); err == nil && m != nil {
 			row.AuthorNickname = m.Nickname
@@ -49,10 +53,10 @@ func (f *fakePostStore) FindByID(id int64) (*PostRow, error) {
 func (f *fakePostStore) List(mood string, page Page) ([]PostRow, string, error) {
 	var out []PostRow
 	for _, r := range f.posts {
-		if r.Post.Status != model.PostPublished {
+		if r.Status != model.PostPublished {
 			continue
 		}
-		if mood != "" && r.Post.Mood != mood {
+		if mood != "" && r.Mood != mood {
 			continue
 		}
 		out = append(out, *r)
@@ -63,7 +67,7 @@ func (f *fakePostStore) List(mood string, page Page) ([]PostRow, string, error) 
 func (f *fakePostStore) ListByAuthor(authorID int64, page Page) ([]PostRow, string, error) {
 	var out []PostRow
 	for _, r := range f.posts {
-		if r.Post.AuthorID == authorID && r.Post.Status == model.PostPublished {
+		if r.AuthorID == authorID && r.Status == model.PostPublished {
 			out = append(out, *r)
 		}
 	}
@@ -72,8 +76,8 @@ func (f *fakePostStore) ListByAuthor(authorID int64, page Page) ([]PostRow, stri
 
 func (f *fakePostStore) UpdateStatus(id int64, status, removedReason string) error {
 	if r, ok := f.posts[id]; ok {
-		r.Post.Status = status
-		r.Post.RemovedReason = &removedReason
+		r.Status = status
+		r.RemovedReason = &removedReason
 	}
 	return nil
 }

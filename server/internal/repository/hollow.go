@@ -71,7 +71,7 @@ func (r *PostRepo) List(mood string, page service.Page) ([]service.PostRow, stri
 	next := ""
 	if len(rows) > page.Limit {
 		last := rows[page.Limit-1]
-		next = cursor.Key(last.Post.PublishedAt, last.Post.ID)
+		next = cursor.Key(last.PublishedAt, last.ID)
 		rows = rows[:page.Limit]
 	}
 	return rows, next, nil
@@ -93,7 +93,7 @@ func (r *PostRepo) ListByAuthor(authorID int64, page service.Page) ([]service.Po
 	next := ""
 	if len(rows) > page.Limit {
 		last := rows[page.Limit-1]
-		next = cursor.Key(last.Post.PublishedAt, last.Post.ID)
+		next = cursor.Key(last.PublishedAt, last.ID)
 		rows = rows[:page.Limit]
 	}
 	return rows, next, nil
@@ -176,7 +176,7 @@ func (r *FloorRepo) ListByPost(postID int64, page service.Page) ([]service.Floor
 	next := ""
 	if len(rows) > page.Limit {
 		last := rows[page.Limit-1]
-		next = cursor.Key(last.Floor.CreatedAt, last.Floor.ID)
+		next = cursor.Key(last.CreatedAt, last.ID)
 		rows = rows[:page.Limit]
 	}
 	return rows, next, nil
