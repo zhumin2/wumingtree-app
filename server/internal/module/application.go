@@ -37,6 +37,11 @@ func RegisterApplications(rg *gin.RouterGroup, svc *service.ApplicationService, 
 
 	admin := rg.Group("/admin", authMW, adminMW)
 
+	// 拒绝原因模板（管理台下拉数据源；与服务端 service.RejectReasons 同源）
+	admin.GET("/reject-reasons", func(c *gin.Context) {
+		httpx.OK(c, service.RejectReasons)
+	})
+
 	// 申请列表（?status=&offset=&limit=）
 	admin.GET("/applications", func(c *gin.Context) {
 		status := c.Query("status")

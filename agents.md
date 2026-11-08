@@ -32,9 +32,9 @@
 | `docs/tech/schema-init-v1.0.sql` | 数据库 DDL v1.1 | 19 张表 MySQL 8；配套 golang-migrate up/down |
 | `docs/tech/openapi-v1.0.yaml` | API 契约初稿 | 评审与联调参考；实现走统一信封 + 手写 VO |
 | `docs/无名树App开发计划-v1.0.md` | 开发计划 | M0–M6 任务分解（111 人天）、门禁、长周期事项 |
-| `server/` | Go API 服务端 | M0+M1 已建：统一信封与错误码、短信登录、邀请准入、我的模块、审核端点；部署三件套在 `server/deploy/linux/` |
+| `server/` | Go API 服务端 | M0+M1 已建：统一信封与错误码、短信登录、邀请准入、我的模块、审核端点、seedadmin 工具；部署三件套在 `server/deploy/linux/` |
 | `app/` | Flutter 客户端 | M0+M1 已建：骨架 + 邀请/登录/我的/设置四页；平台目录初始化见 `app/README.md` |
-| `admin/` | 管理台 React | 占位；M1 后半初始化（服务端审核端点已就绪） |
+| `admin/` | 管理台 React + Ant Design | M1-6 最小版已建：短信登录、申请列表/筛选、通过/拒绝（原因模板）；dev 经 vite 代理本机 API，`npm run build` 已验证 |
 
 线上 Pages 由 `main` 分支根目录直接发布，`index.html` 即线上首页。改动 `index.html` 后，Pages 会自动重建；通常 1—2 分钟内生效。
 
@@ -125,7 +125,9 @@ monorepo 三目录；工程约定的唯一来源是《技术架构设计》（`d
 
 - 分层：module → service → repository → model；pkg 放零业务横切件（code/httpx/jwt/sms/ratelimit/verifycode/crypto）。
 - 统一信封 `{"code":0,"message":"ok","data":...,"request_id"}`；16 个数字错误码与哨兵错误在 `internal/pkg/code`（唯一事实来源，改前先改文档）；**禁止裸 c.JSON**（CI envelope-guard 强制，本地也可跑同款 grep）。
-- 已通端点：`/auth/sms-codes`、`/auth/login`（outcome 四路：member/application_pending/application_rejected/no_record）、`/auth/refresh`（access 7d + refresh 30d 一次性轮换，复用检测 → 2002 吊销全会话）；`/applications`（邀请码事务消费 + 手机号防重）；`/me`、`/me/badges`（仅布尔）、`/me/summary`、`PATCH /me`；`/admin/applications` 列表/通过/拒绝（事务建成员 + 审计日志）、`/admin/members/:id/phone`（phone.view 逐次审计）。
+- 已通端点：`/auth/sms-codes`、`/auth/login`（outcome 四路：member/application_pending/application_rejected/no_record）、`/auth/refresh`（access 7d + refresh 30d 一次性轮换，复用检测 → 2002 吊销全会话）；`/applications`（邀请码事务消费 + 手机号防重）；`/me`、`/me/badges`（仅布尔）、`/me/summary`、`PATCH /me`；`/admin/applications` 列表/通过/拒绝（事务建成员 + 审计日志）、`/admin/reject-reasons`（拒绝原因模板）、`/admin/members/:id/phone`（phone.view 逐次审计）。
+- `cmd/seedadmin`：一次性创建管理员（`go run ./cmd/seedadmin -phone 138... -name 主管理员`，幂等；与正式准入同构加密）。
+- 集成测试：`internal/it/it_test.go`（build tag `integration`）在真实 MySQL 上重放迁移并断言「申请 → 防重 → 审核 → 登录 → 资料/掩码/红点 → 权限拦截 → phone.view 审计」全链路；无 `WMT_IT_DSN` 自动跳过；CI 的 MySQL service 容器跑它（M1-14）。
 - 手机号：member 主表不落手机号；密文在 member_secure（AES-256-GCM，主密钥 FILE_KEY），HMAC 摘要用于查找；明文只有管理端点解出。dev 无 FILE_KEY 时用固定派生键（config 内注明禁产）。
 - 会话与频控在 Redis（不建表）；无 Redis 时自动退化为内存实现（仅 dev），验证码固定 123456（SMS_TYPE=mock）。
 - 迁移：`migrations/000001_init.up.sql / .down.sql`（19 表）；迁移即事实，**禁止 AutoMigrate**；生产库有数据后脚本禁止 DROP/DELETE。
@@ -137,6 +139,13 @@ monorepo 三目录；工程约定的唯一来源是《技术架构设计》（`d
 - `AuthController` 会话状态机（unknown/guest/pending/member）驱动 go_router `refreshListenable` 三态守卫；令牌存 flutter_secure_storage。
 - 页面：`/gate` 邀请表单、`/gate/pending` 三步进度（禁返回）、`/login` 短信登录（60s 倒计时、按 outcome 分流）、`/me` 身份卡、`/me/settings`（昵称 8 字、四开关即时 PATCH、版本号 dart-define）。
 - 本机无 Flutter SDK：`flutter analyze/test` 依赖 CI；平台目录初始化命令见 `app/README.md`。
+
+**admin/（React 18 + Ant Design 5 + Vite 5，M1-6 最小版）**
+
+- 页面：短信登录（校验 role=admin，非管理员拒绝）→ 申请列表（状态筛选 + 分页 + 通过/拒绝，拒绝原因下拉来自 `/admin/reject-reasons`）。
+- `src/api.js` 信封解包；2001/2002 清 token 回登录；令牌存 localStorage（管理台内网使用，M1 口径）。
+- dev：`npm run dev`（vite 把 `/api` 代理到 `127.0.0.1:8080`，无 CORS）；构建 `npm run build`（产物 base=/static/admin/，生产由 API 同源提供）。
+- npm 安装间歇超时：npmmirror 与 npmjs 双源循环重试（本次 npmjs 第二源成功）。
 
 ### 5.1 小改
 
@@ -256,14 +265,12 @@ git reset --hard origin/main
 4. 选一个明确的小任务，不要一上来重做视觉。
 5. 改完先本地检查，再提交；提交信息写清楚“改了什么、为什么”。
 
-优先候选任务（对应开发计划 M1 剩余，按序）：
+优先候选任务（对应开发计划，按序）：
 
-- M1-6 管理台最小版 UI：React + Ant Design（登录 + 申请列表 + 通过/拒绝）；服务端 `/admin/applications*` 端点已就绪。
 - M1-10 设计系统组件补齐：ThickButton / Sticker / WmtPill / LockedCard 从原型移植进 `app/lib/shared/widgets/`。
-- M1-14 CI 集成测试：GitHub Actions 加 MySQL/Redis service 容器，跑迁移 + 权限矩阵逐格断言。
-- M1-13 垂直切片联调：需要真实环境（install.sh 装机），mock 短信走通「申请 → 审核 → 登录 → 首页」。
+- M1-13 垂直切片联调：需要真实环境（install.sh 装机 + seedadmin 建管理员），mock 短信走通「申请 → 审核（管理台）→ 登录 → 首页」。
 - 长周期事项跟进（用户线下办理）：ICP/App 备案、短信签名模板、厂商推送账号、iOS 开发者账号。
-- M2 树洞（发帖/楼层/回应/举报/机审钩子/危机卡）随后启动。
+- M2 树洞（发帖/楼层/回应/举报/机审钩子/危机卡）随后启动；服务端横向复制 M1 模式即可。
 
 ## 10. 环境备注
 
@@ -281,3 +288,4 @@ git reset --hard origin/main
 | 2026-11-07 | v3 明亮活泼版原型完成；README、preview 更新；产品说明文档 v1.0 完成；本接手说明建立 |
 | 2026-11-08 | 文档定稿：技术设计 / 架构设计 / 细化设计（DDL 19 表 + OpenAPI 契约）/ 开发计划（M0–M6，111 人天）。M0 完成：monorepo 骨架（app/server/admin）、部署三件套（install.sh / systemd / wumingtree.sh）、CI（含信封铁律 guard）。M1 服务端完成：迁移 19 表、统一信封与 16 个数字错误码、短信验证码登录（outcome 四路）、邀请码事务消费与防重、刷新令牌轮换与复用检测、我的模块（掩码手机号）、审核端点与 phone.view 审计；服务层/组件 20+ 用例全绿（build/vet/test）。M1 客户端完成：网络层 2001 续期 / 2002 吊销钩子、三态路由守卫、邀请 / 登录 / 我的 / 设置四页；待 CI（无本地 Flutter SDK）。M1 剩余：管理台 UI、设计系统组件、CI 集成测试、垂直切片联调 |
 | 2026-11-08 | 推送上远端：`github.com` 直连被阻断，5 个提交经 Git Data API 复刻（远端 tree 与本地全 MATCH，SHA 因 GitHub 日期/换行归一而不同）；本地对齐命令见 7.2。远端 main 头：`08832c6` 之后另有 agents.md 补记提交 |
+| 2026-11-08 | M1-6 完成：管理台最小版（React+AntD，短信登录/申请列表/通过/拒绝+原因模板端点）；M1-14 完成：CI 加 MySQL service，集成测试在真库重放迁移并断言准入全链路（权限矩阵关键格/4203/3002/掩码/红点布尔/phone.view 审计）；配套 `cmd/seedadmin` 幂等建管理员。本地 build/vet/test 全绿，管理台 `npm run build` 通过；集成测试待 CI 首跑验证 |

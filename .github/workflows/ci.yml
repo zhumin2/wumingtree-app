@@ -11,6 +11,21 @@ jobs:
     defaults:
       run:
         working-directory: server
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wumingtree
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -proot"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=20
+    env:
+      WMT_IT_DSN: "root:root@tcp(127.0.0.1:3306)/wumingtree?parseTime=true&loc=UTC&multiStatements=true"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -21,8 +36,10 @@ jobs:
         run: go vet ./...
       - name: build
         run: go build ./...
-      - name: test
+      - name: test（单元）
         run: go test ./...
+      - name: test（集成：真实 MySQL 跑迁移 + 准入全链路，M1-14）
+        run: go test -tags integration ./internal/it/ -v
       - name: envelope-guard（禁止裸 c.JSON，httpx 除外 —— 架构设计 3.2 铁律）
         run: |
           if grep -rn "c\.JSON(" --include="*.go" cmd internal | grep -v "pkg.httpx"; then
