@@ -5,6 +5,7 @@ import '../../core/network/api_client.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/models/models.dart';
 import '../../shared/widgets/widgets.dart';
+import 'hollow_list_page.dart' show PostCard;
 import '../auth/auth_controller.dart';
 import 'hollow_controller.dart';
 
@@ -49,10 +50,10 @@ class _MyPostsPageState extends State<MyPostsPage> {
         title: const Text('删除这条帖子？'),
         content: const Text('回应会一并隐藏，删除后不可恢复。'),
         actions: [
-          TextButton(onPressed: () => ctx.pop(false), child: const Text('取消')),
+          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('取消')),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: WmtColors.coralDeep),
-            onPressed: () => ctx.pop(true),
+            onPressed: () => Navigator.of(ctx).pop(true),
             child: const Text('删除'),
           ),
         ],

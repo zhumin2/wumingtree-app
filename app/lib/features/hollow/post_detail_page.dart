@@ -109,7 +109,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
               ('ads', '广告、引流或与社群无关'),
               ('other', '其他'),
             ])
-              ListTile(title: Text(r.$2), onTap: () => ctx.pop(r.$1)),
+              ListTile(title: Text(r.$2), onTap: () => Navigator.of(ctx).pop(r.$1)),
             const SizedBox(height: 8),
           ],
         ),
