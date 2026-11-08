@@ -44,6 +44,7 @@ class _MyPostsPageState extends State<MyPostsPage> {
   }
 
   Future<void> _delete(HollowPost post) async {
+    final auth = context.read<AuthController>();
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -61,7 +62,6 @@ class _MyPostsPageState extends State<MyPostsPage> {
     );
     if (ok != true) return;
     try {
-      final auth = context.read<AuthController>();
       await HollowController(auth.api).deletePost(post.id);
       _load();
     } on AppError catch (e) {
