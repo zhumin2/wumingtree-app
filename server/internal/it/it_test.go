@@ -2,8 +2,10 @@
 
 // 集成测试：真实 MySQL 上应用迁移，走「邀请码申请 → 管理员审核 → 短信登录 → 我的资料」
 // 全链路（开发计划 M1-14；CI 由 MySQL service 容器提供数据库）。
-// 运行：WMT_IT_DSN="root:root@tcp(127.0.0.1:3306)/wumingtree?parseTime=true&loc=UTC&multiStatements=true" \
-//        go test -tags integration ./internal/it/ -v
+//
+//	运行：WMT_IT_DSN="root:root@tcp(127.0.0.1:3306)/wumingtree?parseTime=true&loc=UTC&multiStatements=true" \
+//	       go test -tags integration ./internal/it/ -v
+//
 // 本地无 DB 时自动跳过。
 package it
 
@@ -34,6 +36,7 @@ const (
 	inviteBad = "WMTTESTZZZZ9" // 格式合法但不存在：3002 用
 	adminPhon = "13800000001"
 	memberPh  = "13800001234"
+	member2Ph = "13800002345" // pending 断言专用（一次性发码，避开 60s 频控）
 )
 
 func itDSN(t *testing.T) string {
@@ -197,21 +200,6 @@ func TestOnboardingFlow(t *testing.T) {
 		if app["status"] != "submitted" {
 			t.Fatalf("应 submitted: %v", app)
 		}
-		// 申请者短信登录 → outcome=pending（非成员不发令牌）
-		_, env = call(s.e, "POST", "/api/v1/auth/sms-codes", "", map[string]any{"phone": memberPh})
-		if codeNum(env) != 0 {
-			t.Fatalf("发送验证码失败: %v", env)
-		}
-		_, env = call(s.e, "POST", "/api/v1/auth/login", "", map[string]any{"phone": memberPh, "code": sms.MockVerifyCode})
-		if codeNum(env) != 0 {
-			t.Fatalf("登录失败: %v", env)
-		}
-		if got := dataMap(env)["outcome"]; got != "application_pending" {
-			t.Fatalf("应 pending, got %v", got)
-		}
-		if dataMap(env)["tokens"] != nil {
-			t.Fatalf("非成员不得发令牌")
-		}
 	})
 
 	t.Run("重复申请同手机号被 4203 拒绝", func(t *testing.T) {
@@ -229,6 +217,29 @@ func TestOnboardingFlow(t *testing.T) {
 		})
 		if codeNum(env) != int64(code.CodeInviteInvalid) {
 			t.Fatalf("want 3002, got %v", env)
+		}
+	})
+
+	t.Run("非成员登录返回 pending 不发令牌", func(t *testing.T) {
+		_, env := call(s.e, "POST", "/api/v1/applications", "", map[string]any{
+			"inviteCode": inviteB, "nickname": "还在观望", "phone": member2Ph,
+		})
+		if codeNum(env) != 0 {
+			t.Fatalf("提交申请失败: %v", env)
+		}
+		_, env = call(s.e, "POST", "/api/v1/auth/sms-codes", "", map[string]any{"phone": member2Ph})
+		if codeNum(env) != 0 {
+			t.Fatalf("发送验证码失败: %v", env)
+		}
+		_, env = call(s.e, "POST", "/api/v1/auth/login", "", map[string]any{"phone": member2Ph, "code": sms.MockVerifyCode})
+		if codeNum(env) != 0 {
+			t.Fatalf("登录失败: %v", env)
+		}
+		if got := dataMap(env)["outcome"]; got != "application_pending" {
+			t.Fatalf("应 pending, got %v", got)
+		}
+		if dataMap(env)["tokens"] != nil {
+			t.Fatalf("非成员不得发令牌")
 		}
 	})
 
