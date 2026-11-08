@@ -5,6 +5,7 @@
 package httpx
 
 import (
+	"log/slog"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -40,8 +41,12 @@ func OK(c *gin.Context, data any) {
 }
 
 // Fail 业务失败信封：按哨兵错误映射 code；未知错误归 9000 且不泄露内部信息。
+// 内部错误（9000）必须记录原始 error 与 request_id，便于日志串联排查。
 func Fail(c *gin.Context, err error) {
 	bc, msg := code.Of(err)
+	if bc == code.CodeInternal && err != nil {
+		slog.Error("internal error", "err", err, "requestId", requestID(c), "path", c.FullPath())
+	}
 	c.JSON(http.StatusOK, Envelope{Code: bc, Message: msg, Data: nil, RequestID: requestID(c)})
 }
 
