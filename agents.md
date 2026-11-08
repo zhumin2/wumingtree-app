@@ -241,6 +241,8 @@ git reset --hard origin/main
 
 在这之前若再次推送：优先重试 `git push`（间歇性），仍不通则继续用 Git Data API 追加提交；本地新增提交与远端链会持续并存，最终以一次 `fetch + reset --hard` 收敛。
 
+**当前状态（2026-11-08 晚）**：远端 main = `86054d6`（CI 全绿）；本地 main = `1eba480`，内容与远端一致（每个提交 TREE 均 MATCH），仅 SHA 不同。git 直连恢复后先 `git fetch origin && git reset --hard origin/main` 收敛，再继续常规提交推送；未收敛前本地提交一律走 7.2 的 API 通道，且**不要基于本地旧 SHA 链做 rebase**。
+
 当前 Windows 机器没有可直接使用的 `gh` 命令；如 API 回退，需要先安装 gh 或改用现有凭据的 git 推送（本次即用 `git credential fill` 取凭据直调 REST）。不要凭记忆假设 `gh` 一定存在。
 
 ### 7.3 分叉处理
@@ -288,4 +290,6 @@ git reset --hard origin/main
 | 2026-11-07 | v3 明亮活泼版原型完成；README、preview 更新；产品说明文档 v1.0 完成；本接手说明建立 |
 | 2026-11-08 | 文档定稿：技术设计 / 架构设计 / 细化设计（DDL 19 表 + OpenAPI 契约）/ 开发计划（M0–M6，111 人天）。M0 完成：monorepo 骨架（app/server/admin）、部署三件套（install.sh / systemd / wumingtree.sh）、CI（含信封铁律 guard）。M1 服务端完成：迁移 19 表、统一信封与 16 个数字错误码、短信验证码登录（outcome 四路）、邀请码事务消费与防重、刷新令牌轮换与复用检测、我的模块（掩码手机号）、审核端点与 phone.view 审计；服务层/组件 20+ 用例全绿（build/vet/test）。M1 客户端完成：网络层 2001 续期 / 2002 吊销钩子、三态路由守卫、邀请 / 登录 / 我的 / 设置四页；待 CI（无本地 Flutter SDK）。M1 剩余：管理台 UI、设计系统组件、CI 集成测试、垂直切片联调 |
 | 2026-11-08 | 推送上远端：`github.com` 直连被阻断，5 个提交经 Git Data API 复刻（远端 tree 与本地全 MATCH，SHA 因 GitHub 日期/换行归一而不同）；本地对齐命令见 7.2。远端 main 头：`08832c6` 之后另有 agents.md 补记提交 |
-| 2026-11-08 | M1-6 完成：管理台最小版（React+AntD，短信登录/申请列表/通过/拒绝+原因模板端点）；M1-14 完成：CI 加 MySQL service，集成测试在真库重放迁移并断言准入全链路（权限矩阵关键格/4203/3002/掩码/红点布尔/phone.view 审计）；配套 `cmd/seedadmin` 幂等建管理员。本地 build/vet/test 全绿，管理台 `npm run build` 通过；集成测试待 CI 首跑验证 |
+| 2026-11-08 | M1-6 完成：管理台最小版（React+AntD，短信登录/申请列表/通过/拒绝+原因模板端点）；M1-14 完成：CI 加 MySQL service，集成测试在真库重放迁移并断言准入全链路（权限矩阵关键格/4203/3002/掩码/红点布尔/phone.view 审计）；配套 `cmd/seedadmin` 幂等建管理员。本地 build/vet/test 全绿，管理台 `npm run build` 通过 |
+| 2026-11-08 | CI 五轮迭代后**全绿**（run5 头 `86054d6`：server build/vet/test + 真库集成测试 + envelope guard；client analyze 零告警 + test）。迭代修掉的真问题：测试邀请码 13 位不符合 12 位格式校验、集成测试编排与短信 60s 频控冲突（login 助手改为按手机号缓存令牌、pending 断言改用一次性手机号）、审核需按提交返回的申请 ID 精确批准（列表倒序 items[0] 非目标）、Dart：Envelope 重复构造器/go_route const/弃用 activeColor/smoke test 用 const Color 比较 |
+| 2026-11-08 | **Git 状态**：远端 main 头 `86054d6`（CI 全绿）；本地 main `1eba480`，两者内容一致（tree 同源、SHA 因 GitHub 日期/换行归一而不同）。本地曾因一次误操作 reset 回退到 8eb99e5，已从 reflog 恢复到含全部修复的 1eba480。**git 直连恢复后执行 `git fetch origin && git reset --hard origin/main` 收敛；在此之前不要基于本地旧历史发起新提交推送，先用 API 通道（7.2）** |
