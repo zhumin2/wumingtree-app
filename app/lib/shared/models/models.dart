@@ -244,3 +244,19 @@ String newClientToken() {
   }
   return buf.toString();
 }
+
+/// 树洞列表分页。
+class PostPage {
+  PostPage({required this.items, required this.nextCursor});
+
+  factory PostPage.fromJson(dynamic data) {
+    final j = (data ?? <String, dynamic>{}) as Map<String, dynamic>;
+    return PostPage(
+      items: ((j['items'] as List?) ?? []).map(HollowPost.fromJson).toList(),
+      nextCursor: j['nextCursor'] as String?,
+    );
+  }
+
+  final List<HollowPost> items;
+  final String? nextCursor;
+}
