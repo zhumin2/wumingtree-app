@@ -178,6 +178,7 @@ func (s *itEnv) login(t *testing.T, phone string) string {
 
 func TestOnboardingFlow(t *testing.T) {
 	s := setup(t)
+	var submittedAppID int64
 	adminToken := s.seedAdmin(t)
 	s.seedInvite(t, inviteA, 1)
 	s.seedInvite(t, inviteB, 3)
@@ -200,6 +201,7 @@ func TestOnboardingFlow(t *testing.T) {
 		if app["status"] != "submitted" {
 			t.Fatalf("应 submitted: %v", app)
 		}
+		submittedAppID = int64(app["id"].(float64))
 	})
 
 	t.Run("重复申请同手机号被 4203 拒绝", func(t *testing.T) {
@@ -248,13 +250,11 @@ func TestOnboardingFlow(t *testing.T) {
 		if codeNum(env) != 0 {
 			t.Fatalf("列表失败: %v", env)
 		}
-		items, _ := dataMap(env)["items"].([]any)
-		if len(items) == 0 {
-			t.Fatalf("应有待审核申请: %v", env)
+		// 精确按提交返回的 ID 批准（列表 id 倒序，items[0] 未必是目标申请）
+		if submittedAppID == 0 {
+			t.Fatalf("前置子测试未记录申请 ID")
 		}
-		first := items[0].(map[string]any)
-		id := int64(first["id"].(float64))
-		_, env = call(s.e, "POST", fmt.Sprintf("/api/v1/admin/applications/%d/approve", id), adminToken, map[string]any{})
+		_, env = call(s.e, "POST", fmt.Sprintf("/api/v1/admin/applications/%d/approve", submittedAppID), adminToken, map[string]any{})
 		if codeNum(env) != 0 {
 			t.Fatalf("通过失败: %v", env)
 		}
