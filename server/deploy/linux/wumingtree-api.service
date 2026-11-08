@@ -1,0 +1,23 @@
+[Unit]
+Description=WumingTree API (无名树 App 服务端)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=wmt
+Group=wmt
+WorkingDirectory=/opt/wumingtree
+EnvironmentFile=/opt/wumingtree/wumingtree.env
+ExecStart=/opt/wumingtree/bin/api
+Restart=always
+RestartSec=3
+# 沙箱加固（架构设计 5.1）：专用用户 + 只读系统 + 仅 uploads 可写
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/wumingtree/uploads
+
+[Install]
+WantedBy=multi-user.target

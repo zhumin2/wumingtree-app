@@ -1,0 +1,119 @@
+// Package router 路由装配：中间件 → 健康检查 → 业务模块挂载（依赖接线）。
+package router
+
+import (
+	"context"
+	"encoding/hex"
+	"errors"
+	"log/slog"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
+	"gorm.io/gorm"
+
+	"github.com/zhumin2/wumingtree-app/server/internal/config"
+	"github.com/zhumin2/wumingtree-app/server/internal/middleware"
+	"github.com/zhumin2/wumingtree-app/server/internal/module"
+	"github.com/zhumin2/wumingtree-app/server/internal/pkg/code"
+	"github.com/zhumin2/wumingtree-app/server/internal/pkg/crypto"
+	"github.com/zhumin2/wumingtree-app/server/internal/pkg/httpx"
+	"github.com/zhumin2/wumingtree-app/server/internal/pkg/ratelimit"
+	"github.com/zhumin2/wumingtree-app/server/internal/pkg/sms"
+	"github.com/zhumin2/wumingtree-app/server/internal/pkg/verifycode"
+	"github.com/zhumin2/wumingtree-app/server/internal/repository"
+	"github.com/zhumin2/wumingtree-app/server/internal/service"
+)
+
+var errRedisNotConfigured = errors.New("redis not configured")
+
+// New 装配路由。db / rdb 允许为 nil（本地与 CI 无依赖启动，业务路由不挂载）。
+func New(cfg config.Config, db *gorm.DB, rdb *redis.Client) *gin.Engine {
+	if cfg.Env == "prod" {
+		gin.SetMode(gin.ReleaseMode)
+	}
+	r := gin.New()
+	r.Use(gin.Recovery(), middleware.RequestID())
+
+	// 客户端解析器只认信封：未匹配路由也走信封（5001 口径）。
+	r.NoRoute(func(c *gin.Context) {
+		httpx.FailCode(c, code.CodeNotFound, code.ErrNotFound.Message)
+	})
+
+	pingRedis := func(ctx context.Context) error { return errRedisNotConfigured }
+	if rdb != nil {
+		pingRedis = func(ctx context.Context) error { return rdb.Ping(ctx).Err() }
+	}
+
+	api := r.Group("/api/v1")
+	api.GET("/healthz", module.NewHealth(db, pingRedis))
+
+	if db == nil {
+		slog.Warn("未连接数据库，业务路由未挂载（仅 healthz 可用）")
+		return r
+	}
+
+	// ---- 手机号加解密器（FILE_KEY 32 字节）----
+	key, err := hex.DecodeString(cfg.FileKey)
+	if err != nil || len(key) != 32 {
+		slog.Error("FILE_KEY 非法，业务路由未挂载", "err", err)
+		return r
+	}
+	phoneCrypto, err := crypto.NewPhoneCrypto(key)
+	if err != nil {
+		slog.Error("手机号加解密器构造失败", "err", err)
+		return r
+	}
+
+	// ---- 仓库 ----
+	memberRepo := &repository.MemberRepo{DB: db}
+	appRepo := &repository.ApplicationRepo{DB: db}
+	counters := &repository.Counters{DB: db}
+
+	// ---- Redis 会话件（无 Redis 时退化为内存实现，仅 dev）----
+	var vstore verifycode.Store = verifycode.NewMemory()
+	var lim ratelimit.Limiter = ratelimit.NewMemory()
+	var fails service.FailCounter = repository.NewMemoryFailCounter()
+	var refresh service.RefreshStore = repository.NewMemoryRefreshStore()
+	if rdb != nil {
+		vstore = &repository.RedisVerifyStore{R: rdb}
+		lim = &ratelimit.RedisLimiter{R: &redisCmdAdapter{R: rdb}}
+		fails = &repository.RedisFailCounter{R: rdb}
+		refresh = &repository.RedisRefreshStore{R: rdb}
+	} else {
+		slog.Warn("未配置 Redis，会话与频控使用内存实现（仅限 dev）")
+	}
+
+	// ---- 服务 ----
+	authSvc := service.NewAuthService(
+		memberRepo, memberRepo, appRepo, vstore,
+		sms.New(cfg.SMSType == "mock", cfg.SMSSecret),
+		lim, fails, refresh, phoneCrypto,
+		cfg.SMSType == "mock", cfg.JWTSecret,
+	)
+	appSvc := service.NewApplicationService(appRepo, appRepo, appRepo, phoneCrypto)
+	auditSvc := service.NewAuditWriter(memberRepo, phoneCrypto, &repository.AuditRepo{DB: db})
+	meSvc := service.NewMemberService(memberRepo, memberRepo, memberRepo, counters, phoneCrypto)
+
+	// ---- 路由 ----
+	module.RegisterAuth(api, authSvc)
+	module.RegisterApplications(api, appSvc, auditSvc, middleware.Auth(cfg.JWTSecret), middleware.RequireAdmin())
+
+	me := api.Group("", middleware.Auth(cfg.JWTSecret))
+	module.RegisterMember(me, meSvc)
+
+	// M2 挂载点：posts / reports；M3：notices / folders / files；
+	// M4：activities / enrollments / archive；M5：conversations。
+	return r
+}
+
+// redisCmdAdapter 适配 go-redis 到 ratelimit.RedisCmd 最小接口。
+type redisCmdAdapter struct{ R *redis.Client }
+
+func (a *redisCmdAdapter) Incr(ctx context.Context, key string) (int64, error) {
+	return a.R.Incr(ctx, key).Result()
+}
+
+func (a *redisCmdAdapter) ExpireNX(ctx context.Context, key string, window time.Duration) error {
+	return a.R.ExpireNX(ctx, key, window).Err()
+}
