@@ -26,11 +26,15 @@ class HomePage extends StatelessWidget {
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(16),
-              children: const [
-                _EntryCard(color: WmtColors.yellowDeep, title: '公告板', subtitle: '置顶：11 月集合时间'),
-                _EntryCard(color: WmtColors.coralDeep, title: '树洞互助', subtitle: '今天有人说话了'),
-                _EntryCard(color: WmtColors.skyDeep, title: '经验资源库', subtitle: '5 个主题 · 长期留存'),
-                _EntryCard(color: WmtColors.greenDeep, title: '活动专区', subtitle: '5 场正在报名与排期'),
+              children: [
+                const _EntryCard(color: WmtColors.yellowDeep, title: '公告板', subtitle: '置顶：11 月集合时间'),
+                _EntryCard(
+                    color: WmtColors.coralDeep,
+                    title: '树洞互助',
+                    subtitle: '今天有人说话了',
+                    onTap: () => context.push('/hollow')),
+                const _EntryCard(color: WmtColors.skyDeep, title: '经验资源库', subtitle: '5 个主题 · 长期留存'),
+                const _EntryCard(color: WmtColors.greenDeep, title: '活动专区', subtitle: '5 场正在报名与排期'),
               ],
             ),
           ),
@@ -42,11 +46,12 @@ class HomePage extends StatelessWidget {
 }
 
 class _EntryCard extends StatelessWidget {
-  const _EntryCard({required this.color, required this.title, required this.subtitle});
+  const _EntryCard({required this.color, required this.title, required this.subtitle, this.onTap});
 
   final Color color;
   final String title;
   final String subtitle;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {

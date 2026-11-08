@@ -23,6 +23,7 @@ type Config struct {
 	SMSType       string // mock / remote（mock 固定验证码，联调用）
 	SMSSecret     string // remote 模式的云厂商凭证
 	AuditMode     string // mock / remote（mock 关键词表）
+	AuditSecret   string // remote 模式的云内容安全凭证
 	PublicBaseURL string // 文件分发外链基地址（架构设计 3.9 的抽象）
 	UploadsDir    string // 本地上传根目录，默认 /opt/wumingtree/uploads
 }
@@ -40,6 +41,7 @@ func Load() (Config, error) {
 		SMSType:       getEnv("SMS_TYPE", "mock"),
 		SMSSecret:     os.Getenv("SMS_SECRET"),
 		AuditMode:     getEnv("AUDIT_MODE", "mock"),
+		AuditSecret:   os.Getenv("AUDIT_SECRET"),
 		PublicBaseURL: strings.TrimRight(os.Getenv("PUBLIC_BASE_URL"), "/"),
 		UploadsDir:    getEnv("UPLOADS_DIR", "/opt/wumingtree/uploads"),
 	}

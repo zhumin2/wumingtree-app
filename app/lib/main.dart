@@ -7,6 +7,7 @@ import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/auth_controller.dart';
 import 'features/auth/token_store.dart';
+import 'features/hollow/hollow_controller.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,6 +18,8 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: auth),
+        ChangeNotifierProvider(
+            create: (_) => HollowController(auth.api)..refresh()),
       ],
       child: buildWmtApp(
         WmtAppDependencies(theme: buildWmtTheme(), router: buildRouter(auth)),

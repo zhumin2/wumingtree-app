@@ -15,9 +15,11 @@ import (
 	"github.com/zhumin2/wumingtree-app/server/internal/config"
 	"github.com/zhumin2/wumingtree-app/server/internal/middleware"
 	"github.com/zhumin2/wumingtree-app/server/internal/module"
+	"github.com/zhumin2/wumingtree-app/server/internal/pkg/audit"
 	"github.com/zhumin2/wumingtree-app/server/internal/pkg/code"
 	"github.com/zhumin2/wumingtree-app/server/internal/pkg/crypto"
 	"github.com/zhumin2/wumingtree-app/server/internal/pkg/httpx"
+	"github.com/zhumin2/wumingtree-app/server/internal/pkg/idempot"
 	"github.com/zhumin2/wumingtree-app/server/internal/pkg/ratelimit"
 	"github.com/zhumin2/wumingtree-app/server/internal/pkg/sms"
 	"github.com/zhumin2/wumingtree-app/server/internal/pkg/verifycode"
@@ -69,17 +71,23 @@ func New(cfg config.Config, db *gorm.DB, rdb *redis.Client) *gin.Engine {
 	memberRepo := &repository.MemberRepo{DB: db}
 	appRepo := &repository.ApplicationRepo{DB: db}
 	counters := &repository.Counters{DB: db}
+	postRepo := &repository.PostRepo{DB: db}
+	floorRepo := &repository.FloorRepo{DB: db}
+	reactionRepo := &repository.ReactionRepo{DB: db}
+	reportRepo := &repository.ReportRepo{DB: db}
 
 	// ---- Redis 会话件（无 Redis 时退化为内存实现，仅 dev）----
 	var vstore verifycode.Store = verifycode.NewMemory()
 	var lim ratelimit.Limiter = ratelimit.NewMemory()
 	var fails service.FailCounter = repository.NewMemoryFailCounter()
 	var refresh service.RefreshStore = repository.NewMemoryRefreshStore()
+	var badges service.BadgeStore = repository.NewMemoryBadgeStore()
 	if rdb != nil {
 		vstore = &repository.RedisVerifyStore{R: rdb}
 		lim = &ratelimit.RedisLimiter{R: &redisCmdAdapter{R: rdb}}
 		fails = &repository.RedisFailCounter{R: rdb}
 		refresh = &repository.RedisRefreshStore{R: rdb}
+		badges = &repository.RedisBadgeStore{R: rdb}
 	} else {
 		slog.Warn("未配置 Redis，会话与频控使用内存实现（仅限 dev）")
 	}
@@ -93,16 +101,24 @@ func New(cfg config.Config, db *gorm.DB, rdb *redis.Client) *gin.Engine {
 	)
 	appSvc := service.NewApplicationService(appRepo, appRepo, appRepo, phoneCrypto)
 	auditSvc := service.NewAuditWriter(memberRepo, phoneCrypto, &repository.AuditRepo{DB: db})
-	meSvc := service.NewMemberService(memberRepo, memberRepo, memberRepo, counters, phoneCrypto)
+	meSvc := service.NewMemberService(memberRepo, memberRepo, memberRepo, counters, badges, phoneCrypto)
+	auditor := audit.New(cfg.AuditMode, cfg.AuditSecret)
+	hollowSvc := service.NewHollowService(
+		postRepo, floorRepo, reactionRepo, memberRepo,
+		&repository.AuditRepo{DB: db}, auditor,
+		lim, idempot.NewMemory(), badges,
+	)
+	reportSvc := service.NewReportService(reportRepo, reportRepo, reportRepo, lim)
 
 	// ---- 路由 ----
 	module.RegisterAuth(api, authSvc)
 	module.RegisterApplications(api, appSvc, auditSvc, middleware.Auth(cfg.JWTSecret), middleware.RequireAdmin())
+	module.RegisterHollow(api, hollowSvc, reportSvc, middleware.Auth(cfg.JWTSecret), middleware.RequireAdmin())
 
 	me := api.Group("", middleware.Auth(cfg.JWTSecret))
 	module.RegisterMember(me, meSvc)
 
-	// M2 挂载点：posts / reports；M3：notices / folders / files；
+	// M3 挂载点：notices / folders / files；
 	// M4：activities / enrollments / archive；M5：conversations。
 	return r
 }

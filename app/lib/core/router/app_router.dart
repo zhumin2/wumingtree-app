@@ -4,6 +4,10 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/auth_controller.dart';
 import '../../features/auth/login_page.dart';
 import '../../features/gate/gate_page.dart';
+import '../../features/hollow/compose_page.dart';
+import '../../features/hollow/hollow_list_page.dart';
+import '../../features/hollow/my_posts_page.dart';
+import '../../features/hollow/post_detail_page.dart';
 import '../../features/home/home_page.dart';
 import '../../features/profile/profile_page.dart';
 import '../../features/profile/settings_page.dart';
@@ -42,8 +46,21 @@ GoRouter buildRouter(AuthController auth) {
         ],
       ),
       GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
+      GoRoute(
+        path: '/hollow',
+        builder: (context, state) => const HollowListPage(),
+        routes: [
+          GoRoute(path: 'compose', builder: (context, state) => const ComposePage()),
+        ],
+      ),
+      GoRoute(
+        path: '/hollow/posts/:id',
+        builder: (context, state) => PostDetailPage(
+            postId: int.parse(state.pathParameters['id']!)),
+      ),
       GoRoute(path: '/home', builder: (_, __) => const HomePage()),
       GoRoute(path: '/me', builder: (_, __) => const ProfilePage()),
+      GoRoute(path: '/me/posts', builder: (_, __) => const MyPostsPage()),
       GoRoute(path: '/me/settings', builder: (_, __) => const SettingsPage()),
     ],
   );

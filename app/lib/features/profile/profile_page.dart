@@ -72,7 +72,7 @@ class ProfilePage extends StatelessWidget {
           _MenuTile(
               icon: Icons.forum,
               title: '我的树洞',
-              onTap: () => _todo(context)), // M2 接线
+              onTap: () => context.push('/me/posts')),
           _MenuTile(
               icon: Icons.palette,
               title: '孩子的作品',

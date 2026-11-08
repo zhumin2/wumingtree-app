@@ -36,11 +36,12 @@ type MemberService struct {
 	cipher SecureCipherReader
 	upd    ProfileUpdater
 	counts Counters
+	badges BadgeStore
 	phone  *crypto.PhoneCrypto
 }
 
-func NewMemberService(byID MeReader, cipher SecureCipherReader, upd ProfileUpdater, counts Counters, phone *crypto.PhoneCrypto) *MemberService {
-	return &MemberService{byID: byID, cipher: cipher, upd: upd, counts: counts, phone: phone}
+func NewMemberService(byID MeReader, cipher SecureCipherReader, upd ProfileUpdater, counts Counters, badges BadgeStore, phone *crypto.PhoneCrypto) *MemberService {
+	return &MemberService{byID: byID, cipher: cipher, upd: upd, counts: counts, badges: badges, phone: phone}
 }
 
 // Me 本人资料（含掩码手机号；明文任何接口不出现——红线）。
@@ -77,10 +78,22 @@ func (s *MemberService) UpdateMe(ctx context.Context, memberID int64, p MemberPa
 	return s.upd.UpdateProfile(memberID, p)
 }
 
-// Badges 红点（架构设计 3.2 红线：仅布尔，无计数）。
-// M1 静态返回；M2 起 Redis 位标记。
+// Badges 红点（架构设计 3.2 红线：仅布尔，无聚合计数）。
+// 存储为位标记（Redis/Memory），有人回应帖子等事件置位（M2 hollow 接线）。
 func (s *MemberService) Badges(ctx context.Context, memberID int64) map[string]bool {
-	return map[string]bool{"notice": false, "hollow": false, "dm": false}
+	out := map[string]bool{"notice": false, "hollow": false, "dm": false}
+	if s.badges == nil {
+		return out
+	}
+	for _, k := range []string{"notice", "hollow", "dm"} {
+		v, err := s.badges.Read(ctx, memberID, k)
+		if err != nil || v == false {
+			out[k] = false
+			continue
+		}
+		out[k] = v
+	}
+	return out
 }
 
 // SummaryVO 我的页统计。
