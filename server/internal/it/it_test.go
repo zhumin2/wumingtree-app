@@ -65,9 +65,10 @@ func applyMigrations(t *testing.T, dsn string) *gorm.DB {
 }
 
 type itEnv struct {
-	e     *gin.Engine
-	db    *gorm.DB
-	phone *crypto.PhoneCrypto
+	e      *gin.Engine
+	db     *gorm.DB
+	phone  *crypto.PhoneCrypto
+	tokens map[string]string // 按手机号缓存 access token：短信 60s 频控下不能反复发码登录
 }
 
 func setup(t *testing.T) *itEnv {
@@ -90,7 +91,7 @@ func setup(t *testing.T) *itEnv {
 	if err != nil {
 		t.Fatalf("crypto: %v", err)
 	}
-	return &itEnv{e: router.New(cfg, db, nil), db: db, phone: phoneCrypto}
+	return &itEnv{e: router.New(cfg, db, nil), db: db, phone: phoneCrypto, tokens: map[string]string{}}
 }
 
 // call 发请求并解析统一信封（HTTP 恒 200，业务看 code）。
@@ -155,6 +156,9 @@ func (s *itEnv) seedInvite(t *testing.T, code string, maxUses int) {
 
 func (s *itEnv) login(t *testing.T, phone string) string {
 	t.Helper()
+	if tok, ok := s.tokens[phone]; ok {
+		return tok
+	}
 	_, env := call(s.e, "POST", "/api/v1/auth/sms-codes", "", map[string]any{"phone": phone})
 	if codeNum(env) != 0 {
 		t.Fatalf("发送验证码失败: %v", env)
@@ -164,7 +168,9 @@ func (s *itEnv) login(t *testing.T, phone string) string {
 		t.Fatalf("登录失败: %v", env)
 	}
 	toks := dataMap(env)["tokens"].(map[string]any)
-	return toks["accessToken"].(string)
+	access := toks["accessToken"].(string)
+	s.tokens[phone] = access
+	return access
 }
 
 func TestOnboardingFlow(t *testing.T) {
@@ -192,6 +198,10 @@ func TestOnboardingFlow(t *testing.T) {
 			t.Fatalf("应 submitted: %v", app)
 		}
 		// 申请者短信登录 → outcome=pending（非成员不发令牌）
+		_, env = call(s.e, "POST", "/api/v1/auth/sms-codes", "", map[string]any{"phone": memberPh})
+		if codeNum(env) != 0 {
+			t.Fatalf("发送验证码失败: %v", env)
+		}
 		_, env = call(s.e, "POST", "/api/v1/auth/login", "", map[string]any{"phone": memberPh, "code": sms.MockVerifyCode})
 		if codeNum(env) != 0 {
 			t.Fatalf("登录失败: %v", env)

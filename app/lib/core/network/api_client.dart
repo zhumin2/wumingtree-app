@@ -13,8 +13,6 @@ class AppError implements Exception {
 
 /// 统一信封结构：{"code":0,"message":"ok","data":...,"request_id":"..."}
 class Envelope {
-  Envelope({required this.code, required this.message, this.data, this.requestId});
-
   factory Envelope.fromJson(Map<String, dynamic> j) => Envelope(
         code: (j['code'] as num?)?.toInt() ?? -1,
         message: (j['message'] as String?) ?? '',
