@@ -63,20 +63,20 @@ type Reaction struct {
 
 func (Reaction) TableName() string { return "reaction" }
 
-// Report 举报（目标多态；reporter_id 任何接口不回传——红线）。
+// Report 举报（目标多态；reporter_id 任何接口不回传——红线 json:-）。
 type Report struct {
-	ID         int64      `gorm:"primaryKey;autoIncrement"`
-	TargetType string     `gorm:"column:target_type;size:16;not null"`
-	TargetID   int64      `gorm:"column:target_id;not null"`
-	Reason     string     `gorm:"column:reason;size:8;not null"`
-	Detail     *string    `gorm:"column:detail;size:200"`
-	ReporterID int64      `gorm:"column:reporter_id;not null"`
-	Status     string     `gorm:"column:status;size:16;not null;default:open"`
-	HandledBy  *int64     `gorm:"column:handled_by"`
-	HandledAt  *time.Time `gorm:"column:handled_at"`
-	Action     *string    `gorm:"column:action;size:50"`
-	Note       *string    `gorm:"column:note;size:200"`
-	CreatedAt  time.Time  `gorm:"column:created_at;not null"`
+	ID         int64      `gorm:"primaryKey;autoIncrement" json:"id"`
+	TargetType string     `gorm:"column:target_type;size:16;not null" json:"targetType"`
+	TargetID   int64      `gorm:"column:target_id;not null" json:"targetId"`
+	Reason     string     `gorm:"column:reason;size:8;not null" json:"reason"`
+	Detail     *string    `gorm:"column:detail;size:200" json:"detail,omitempty"`
+	ReporterID int64      `gorm:"column:reporter_id;not null" json:"-"`
+	Status     string     `gorm:"column:status;size:16;not null;default:open" json:"status"`
+	HandledBy  *int64     `gorm:"column:handled_by" json:"handledBy,omitempty"`
+	HandledAt  *time.Time `gorm:"column:handled_at" json:"handledAt,omitempty"`
+	Action     *string    `gorm:"column:action;size:50" json:"action,omitempty"`
+	Note       *string    `gorm:"column:note;size:200" json:"note,omitempty"`
+	CreatedAt  time.Time  `gorm:"column:created_at;not null" json:"createdAt"`
 }
 
 func (Report) TableName() string { return "report" }
