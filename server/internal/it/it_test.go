@@ -29,8 +29,9 @@ import (
 )
 
 const (
-	inviteA   = "WMTTESTAAAA01" // 单次有效：主流程用
-	inviteB   = "WMTTESTBBBB02" // 多次有效（max 3）：防重/边界用
+	inviteA   = "WMTTESTAAAA1" // 单次有效：主流程用（12 位，符合 ^[A-Z0-9]{12}$）
+	inviteB   = "WMTTESTBBBB2" // 多次有效（max 3）：防重/边界用
+	inviteBad = "WMTTESTZZZZ9" // 格式合法但不存在：3002 用
 	adminPhon = "13800000001"
 	memberPh  = "13800001234"
 )
@@ -214,7 +215,7 @@ func TestOnboardingFlow(t *testing.T) {
 
 	t.Run("无效邀请码被 3002 拒绝", func(t *testing.T) {
 		_, env := call(s.e, "POST", "/api/v1/applications", "", map[string]any{
-			"inviteCode": "WMTTESTZZZZ99", "nickname": "别人", "phone": "13900009999",
+			"inviteCode": inviteBad, "nickname": "别人", "phone": "13900009999",
 		})
 		if codeNum(env) != int64(code.CodeInviteInvalid) {
 			t.Fatalf("want 3002, got %v", env)
@@ -226,9 +227,9 @@ func TestOnboardingFlow(t *testing.T) {
 		if codeNum(env) != 0 {
 			t.Fatalf("列表失败: %v", env)
 		}
-		items := dataMap(env)["items"].([]any)
+		items, _ := dataMap(env)["items"].([]any)
 		if len(items) == 0 {
-			t.Fatalf("应有待审核申请")
+			t.Fatalf("应有待审核申请: %v", env)
 		}
 		first := items[0].(map[string]any)
 		id := int64(first["id"].(float64))

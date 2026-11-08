@@ -42,9 +42,9 @@ GoRouter buildRouter(AuthController auth) {
         ],
       ),
       GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
-      const GoRoute(path: '/home', builder: (_, __) => HomePage()),
-      const GoRoute(path: '/me', builder: (_, __) => ProfilePage()),
-      const GoRoute(path: '/me/settings', builder: (_, __) => SettingsPage()),
+      GoRoute(path: '/home', builder: (_, __) => const HomePage()),
+      GoRoute(path: '/me', builder: (_, __) => const ProfilePage()),
+      GoRoute(path: '/me/settings', builder: (_, __) => const SettingsPage()),
     ],
   );
 }

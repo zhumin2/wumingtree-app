@@ -22,6 +22,13 @@ class Envelope {
         requestId: (j['request_id'] as String?) ?? '',
       );
 
+  Envelope({
+    required this.code,
+    required this.message,
+    required this.data,
+    required this.requestId,
+  });
+
   final int code;
   final String message;
   final dynamic data;

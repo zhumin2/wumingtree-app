@@ -75,10 +75,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Center(
+                const Center(
                   child: Text('无名树 v$_appVersion',
-                      style:
-                          const TextStyle(fontSize: 12, color: WmtColors.skyDeep)),
+                      style: TextStyle(fontSize: 12, color: WmtColors.skyDeep)),
                 ),
               ],
             ),
@@ -183,7 +182,6 @@ class _SwitchTile extends StatelessWidget {
         title: Text(title, style: const TextStyle(color: WmtColors.ink)),
         subtitle: Text(subtitle, style: const TextStyle(fontSize: 12, color: WmtColors.skyDeep)),
         value: value,
-        activeColor: WmtColors.green,
         onChanged: onChanged,
       ),
     );
