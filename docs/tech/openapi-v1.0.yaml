@@ -1,0 +1,1013 @@
+# =====================================================================
+# 无名树 App · API 契约初稿 v1.0（核心端点）
+# 依据：《无名树App技术设计文档-v1.0》第 4.4 节 + 《无名树App细化设计-v1.0》
+# 用法：oapi-codegen（Go 服务端 models+gin）；openapi-generator dart-dio（Flutter 客户端）
+# 约定：时间线接口一律时间倒序，无任何热度排序参数（产品红线）；
+#       红点接口只返回布尔；匿名内容响应不含作者字段（红线）。
+# =====================================================================
+openapi: 3.0.3
+info:
+  title: 无名树 App API
+  version: 1.0.0-draft
+  description: |
+    无名树 App 第一阶段 API 契约初稿（评审与联调参考文档）。
+    实际实现采用统一响应信封 {"code":0,"message":"ok","data":…,"request_id"}
+    （见《无名树App技术架构设计-v1.0》3.2）：本文档各端点的响应 schema 描述的是
+    信封内 data 的结构；初稿中的 HTTP 错误状态码对应信封数字错误码，
+    映射见《无名树App细化设计-v1.0》第 3 节。
+    代码以服务端手写 VO 与客户端手写 model 对齐字段，不做代码生成。
+servers:
+  - url: https://api.wumingtree.example.com/api/v1
+    description: 占位地址，部署后替换
+tags:
+  - name: auth
+    description: 登录与会话
+  - name: application
+    description: 邀请与加入申请
+  - name: me
+    description: 本人资料、红点、个人记录
+  - name: notice
+    description: 公告（只读）
+  - name: hollow
+    description: 树洞（帖子、楼层、回应、举报）
+  - name: library
+    description: 经验资源库
+  - name: activity
+    description: 活动与报名
+  - name: archive
+    description: 活动档案（报名后可见）
+  - name: dm
+    description: 私信（仅老师 / 管理员）
+
+security:
+  - bearerAuth: []
+
+paths:
+  /auth/sms-codes:
+    post:
+      tags: [auth]
+      security: []
+      summary: 发送短信验证码（限流：同号 60s/1 条、24h/5 条）
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone]
+              properties:
+                phone: { type: string, example: "13800001234" }
+      responses:
+        "204": { description: 已发送 }
+        "429": { description: 限流, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "503": { description: 短信服务不可用, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+
+  /auth/login:
+    post:
+      tags: [auth]
+      security: []
+      summary: 手机号 + 验证码登录；未通过审核时返回申请状态
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [phone, code]
+              properties:
+                phone: { type: string }
+                code: { type: string, example: "123456" }
+      responses:
+        "200":
+          description: 登录成功或返回申请状态
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/LoginResult" }
+        "401": { description: 验证码错误或过期, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+
+  /auth/refresh:
+    post:
+      tags: [auth]
+      security: []
+      summary: 刷新令牌（轮换；旧 refresh 复用触发全会话吊销）
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refreshToken]
+              properties:
+                refreshToken: { type: string }
+      responses:
+        "200":
+          description: 新令牌对
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/TokenPair" }
+        "401": { description: 失效或复用（code=TOKEN_REUSE）, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+
+  /applications:
+    post:
+      tags: [application]
+      security: []
+      summary: 提交加入申请（邀请码 + 称呼 + 手机号）
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ApplicationCreate" }
+      responses:
+        "201":
+          description: 已提交，进入审核
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApplicationView" }
+        "409": { description: 手机号已有成员或未结申请（PHONE_DUPLICATE）, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "422": { description: 邀请码无效 / 过期 / 次数用尽, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+
+  /applications/mine:
+    get:
+      tags: [application]
+      security: []
+      summary: 查询本人申请与审核进度（凭提交时手机号会话或短信验证后访问）
+      responses:
+        "200":
+          description: 申请状态
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ApplicationView" }
+
+  /me:
+    get:
+      tags: [me]
+      summary: 本人资料（不含手机号——红线）
+      responses:
+        "200":
+          description: 成员资料
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Me" }
+    patch:
+      tags: [me]
+      summary: 修改昵称 / 默认匿名 / 免打扰 / 提醒开关
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/MePatch" }
+      responses:
+        "200":
+          description: 更新后的资料
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Me" }
+        "422": { description: 校验失败, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+
+  /me/badges:
+    get:
+      tags: [me]
+      summary: 红点（只返回布尔，无未读数字——红线）
+      responses:
+        "200":
+          description: 各模块是否有新内容
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/BadgeSet" }
+
+  /me/posts:
+    get:
+      tags: [me]
+      summary: 我的树洞（含匿名帖；服务端按作者过滤）
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+      responses:
+        "200":
+          description: 帖子分页
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PostPage" }
+
+  /me/enrollments:
+    get:
+      tags: [me]
+      summary: 我的报名
+      responses:
+        "200":
+          description: 报名记录列表
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/EnrollmentView" }
+
+  /notices:
+    get:
+      tags: [notice]
+      summary: 公告列表（置顶在前，其余时间倒序）
+      responses:
+        "200":
+          description: 公告列表
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/NoticeItem" }
+
+  /notices/{id}:
+    get:
+      tags: [notice]
+      summary: 公告详情（无任何互动能力——红线）
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        "200":
+          description: 公告详情
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/NoticeDetail" }
+        "404": { description: 不存在, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+
+  /notices/{id}/read:
+    post:
+      tags: [notice]
+      summary: 标记个人已读（仅个人状态，无已读人数）
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        "204": { description: 已标记 }
+
+  /posts:
+    get:
+      tags: [hollow]
+      summary: 树洞列表（心情筛选；时间倒序）
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Mood"
+      responses:
+        "200":
+          description: 帖子分页
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PostPage" }
+    post:
+      tags: [hollow]
+      summary: 发帖（默认匿名；机审拒绝级返回 422）
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/PostCreate" }
+      responses:
+        "201":
+          description: 发布成功
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PostItem" }
+        "422": { description: 内容被拒绝或校验失败, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "429": { description: 超出发帖频次, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+
+  /posts/{id}:
+    get:
+      tags: [hollow]
+      summary: 帖子详情 + 首屏楼层
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: 帖子与楼层
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PostDetail" }
+        "404": { description: 不存在或已删除, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+    delete:
+      tags: [hollow]
+      summary: 删帖（回应一并隐藏，不可恢复）
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204": { description: 已删除 }
+        "403": { description: 非作者, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+
+  /posts/{id}/floors:
+    get:
+      tags: [hollow]
+      summary: 楼层分页（按时间从上到下）
+      parameters:
+        - $ref: "#/components/parameters/Id"
+        - $ref: "#/components/parameters/Cursor"
+      responses:
+        "200":
+          description: 楼层分页
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: "#/components/schemas/FloorItem" }
+                  nextCursor: { type: string, nullable: true }
+    post:
+      tags: [hollow]
+      summary: 发表楼层（parentFloorId 对楼层再回应，楼中楼仅一层）
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/FloorCreate" }
+      responses:
+        "201":
+          description: 楼层已发布
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/FloorItem" }
+        "422": { description: 内容被拒绝或校验失败, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+
+  /posts/{id}/reactions:
+    post:
+      tags: [hollow]
+      summary: 帖子级回应 toggle（hug 抱抱 / meToo 我也是）
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [type]
+              properties:
+                type: { type: string, enum: [hug, meToo] }
+      responses:
+        "200":
+          description: 当前回应状态
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ReactionState" }
+
+  /floors/{id}/reactions:
+    post:
+      tags: [hollow]
+      summary: 楼层级回应 toggle（hug 抱一下 / helpful 有帮助）
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [type]
+              properties:
+                type: { type: string, enum: [hug, helpful] }
+      responses:
+        "200":
+          description: 当前回应状态
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ReactionState" }
+
+  /reports:
+    post:
+      tags: [hollow]
+      summary: 举报（举报人身份任何接口不回传——红线）
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ReportCreate" }
+      responses:
+        "201":
+          description: 已受理
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: integer, format: int64 }
+
+  /folders:
+    get:
+      tags: [library]
+      summary: 文件夹列表（含锁定态；锁定时前端只渲染引导页）
+      responses:
+        "200":
+          description: 文件夹列表
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/FolderItem" }
+
+  /folders/{id}/files:
+    get:
+      tags: [library]
+      summary: 文件列表（无权限返回 403 FOLDER_LOCKED，不泄露文件信息）
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: 文件列表
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/FileItem" }
+        "403": { description: 成员资料未解锁, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+
+  /files/{id}/url:
+    get:
+      tags: [library]
+      summary: 获取文件短时效签名 URL（15 分钟）
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: 签名地址
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url: { type: string }
+                  expiresAt: { type: string, format: date-time }
+        "403": { description: 无权限, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+
+  /activities:
+    get:
+      tags: [activity]
+      summary: 活动列表（类型筛选；卡片名额状态由 remaining 与 myEnrolled 推导）
+      parameters:
+        - name: type
+          in: query
+          schema: { type: string, enum: [outdoor, pbl, drama, culture, salon] }
+      responses:
+        "200":
+          description: 活动列表
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/ActivityListItem" }
+
+  /activities/{id}:
+    get:
+      tags: [activity]
+      summary: 活动详情（含我的报名态；未报名时档案 Tab 由客户端隐藏）
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: 活动详情
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ActivityDetail" }
+        "404": { description: 不存在, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+
+  /activities/{id}/enrollments:
+    post:
+      tags: [activity]
+      summary: 报名（原子占位；consents 必须含 safety 与 photo 当前版本）
+      parameters:
+        - $ref: "#/components/parameters/Id"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EnrollmentCreate" }
+      responses:
+        "201":
+          description: 报名成功（电子票摘要）
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnrollmentView" }
+        "409": { description: 名额已满或重复报名, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "422": { description: 校验失败或同意项缺失, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+
+  /enrollments/{id}:
+    delete:
+      tags: [activity]
+      summary: 取消报名（活动开始前；不要求原因；释放名额）
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: 已取消
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EnrollmentView" }
+        "403": { description: 非本人或活动已开始, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+
+  /activities/{id}/comments:
+    get:
+      tags: [activity]
+      summary: 讨论区（只聊本场活动）
+      parameters:
+        - $ref: "#/components/parameters/Id"
+        - $ref: "#/components/parameters/Cursor"
+      responses:
+        "200":
+          description: 讨论分页
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: "#/components/schemas/CommentItem" }
+                  nextCursor: { type: string, nullable: true }
+    post:
+      tags: [activity]
+      summary: 讨论区发言
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [content]
+              properties:
+                content: { type: string, maxLength: 300 }
+                replyToId: { type: integer, format: int64, nullable: true }
+      responses:
+        "201":
+          description: 已发布
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CommentItem" }
+
+  /activities/{id}/archive:
+    get:
+      tags: [archive]
+      summary: 活动档案（仅报名成员 / 老师 / 管理员；未报名 404——红线）
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: 档案内容（audience 过滤后条目）
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ArchiveBundle" }
+        "404": { description: 未报名（ARCHIVE_NOT_ENROLLED）, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+
+  /conversations:
+    get:
+      tags: [dm]
+      summary: 会话列表（仅带队老师与管理员联系人——红线）
+      responses:
+        "200":
+          description: 会话列表
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/ConversationItem" }
+
+  /conversations/{peerId}/messages:
+    get:
+      tags: [dm]
+      summary: 消息分页（时间正序阅读）
+      parameters:
+        - name: peerId
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+        - $ref: "#/components/parameters/Cursor"
+      responses:
+        "200":
+          description: 消息分页
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: "#/components/schemas/MessageItem" }
+                  nextCursor: { type: string, nullable: true }
+        "403": { description: 家长间私信被拒（DM_FORBIDDEN）, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+    post:
+      tags: [dm]
+      summary: 发送私信（双方至少一方为老师 / 管理员）
+      parameters:
+        - name: peerId
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [content]
+              properties:
+                content: { type: string, maxLength: 500 }
+      responses:
+        "201":
+          description: 已发送
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/MessageItem" }
+        "403": { description: 家长间私信被拒, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+
+  /conversations/{peerId}/read:
+    post:
+      tags: [dm]
+      summary: 标记会话已读
+      parameters:
+        - name: peerId
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        "204": { description: 已标记 }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer, format: int64 }
+    Cursor:
+      name: cursor
+      in: query
+      schema: { type: string }
+      description: 游标分页，取自上一页 nextCursor
+    Mood:
+      name: mood
+      in: query
+      schema: { type: string, enum: [share, tired, ask, talk] }
+    IdempotencyKey:
+      name: client_token
+      in: header
+      required: false
+      schema: { type: string }
+      description: 幂等键（报名、发帖、举报等写操作），服务端 Redis SETNX 去重，重复请求返回首次结果；幂等检查先于频控执行（架构设计 3.4）
+
+  schemas:
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          description: 业务错误码，见细化设计第 3 节
+          example: QUOTA_FULL
+        message: { type: string, example: 名额已满 }
+        requestId: { type: string }
+        errors:
+          type: array
+          description: 仅 VALIDATION_FAILED 时出现
+          items:
+            type: object
+            properties:
+              field: { type: string }
+              reason: { type: string }
+
+    TokenPair:
+      type: object
+      properties:
+        accessToken: { type: string }
+        refreshToken: { type: string }
+
+    LoginResult:
+      type: object
+      properties:
+        outcome:
+          type: string
+          enum: [member, application_pending, application_rejected]
+          description: member=登录成功返回令牌；其余进入对应引导页
+        tokens: { $ref: "#/components/schemas/TokenPair" }
+        member: { $ref: "#/components/schemas/Me" }
+        application: { $ref: "#/components/schemas/ApplicationView" }
+
+    ApplicationCreate:
+      type: object
+      required: [inviteCode, nickname, phone]
+      properties:
+        inviteCode: { type: string, example: WMT-2026-A1B2C3 }
+        nickname: { type: string, maxLength: 8 }
+        phone: { type: string, pattern: "^1[3-9][0-9]{9}$" }
+
+    ApplicationView:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        status: { type: string, enum: [submitted, approved, rejected] }
+        rejectReason: { type: string, nullable: true }
+        submittedAt: { type: string, format: date-time }
+
+    Me:
+      type: object
+      description: 永远不含手机号（红线）
+      properties:
+        id: { type: integer, format: int64 }
+        nickname: { type: string }
+        role: { type: string, enum: [member, teacher, admin] }
+        defaultAnon: { type: boolean }
+        dnd: { type: boolean }
+        notifyNotice: { type: boolean }
+        notifyHollow: { type: boolean }
+        joinedAt: { type: string, format: date-time }
+
+    MePatch:
+      type: object
+      properties:
+        nickname: { type: string, maxLength: 8 }
+        defaultAnon: { type: boolean }
+        dnd: { type: boolean }
+        notifyNotice: { type: boolean }
+        notifyHollow: { type: boolean }
+
+    BadgeSet:
+      type: object
+      description: 只含布尔，无任何计数（红线）
+      properties:
+        notice: { type: boolean }
+        hollow: { type: boolean }
+        dm: { type: boolean }
+
+    NoticeItem:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        pinned: { type: boolean }
+        title: { type: string }
+        summary: { type: string }
+        dateLabel: { type: string, example: "11-05" }
+        read: { type: boolean }
+
+    NoticeDetail:
+      allOf:
+        - $ref: "#/components/schemas/NoticeItem"
+        - type: object
+          properties:
+            segments:
+              type: array
+              items: { type: string }
+            publisherLabel: { type: string, example: 管理员发布 · 不可评论 }
+
+    PostCreate:
+      type: object
+      required: [mood, title]
+      properties:
+        mood: { type: string, enum: [share, tired, ask, talk] }
+        title: { type: string, minLength: 1, maxLength: 50 }
+        body: { type: string, maxLength: 2000, nullable: true }
+        isAnonymous: { type: boolean, default: true }
+
+    PostItem:
+      type: object
+      description: 匿名帖无 authorId / nickname 字段（红线）
+      properties:
+        id: { type: integer, format: int64 }
+        mood: { type: string, enum: [share, tired, ask, talk] }
+        title: { type: string }
+        body: { type: string, nullable: true }
+        isAnonymous: { type: boolean }
+        displayName: { type: string, example: 一位家长 }
+        replies: { type: integer }
+        reactions:
+          type: object
+          properties:
+            hug: { type: integer }
+            meToo: { type: integer }
+        myReactions:
+          type: array
+          items: { type: string, enum: [hug, meToo] }
+        publishedAt: { type: string, format: date-time }
+
+    PostPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items: { $ref: "#/components/schemas/PostItem" }
+        nextCursor: { type: string, nullable: true }
+
+    FloorCreate:
+      type: object
+      required: [content]
+      properties:
+        content: { type: string, minLength: 1, maxLength: 500 }
+        parentFloorId: { type: integer, format: int64, nullable: true }
+        isAnonymous: { type: boolean, default: true }
+
+    FloorItem:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        parentFloorId: { type: integer, format: int64, nullable: true }
+        depth: { type: integer, enum: [1, 2] }
+        isAnonymous: { type: boolean }
+        displayName: { type: string }
+        content: { type: string }
+        reactions:
+          type: object
+          properties:
+            hug: { type: integer }
+            helpful: { type: integer }
+        myReactions:
+          type: array
+          items: { type: string, enum: [hug, helpful] }
+        createdAt: { type: string, format: date-time }
+
+    PostDetail:
+      type: object
+      properties:
+        post: { $ref: "#/components/schemas/PostItem" }
+        floors:
+          type: array
+          items: { $ref: "#/components/schemas/FloorItem" }
+        crisis:
+          type: boolean
+          description: 命中危机词时为 true，客户端立即叠加求助卡（细化设计 / 主文档 6.2）
+
+    ReactionState:
+      type: object
+      properties:
+        active: { type: boolean, description: 当前是否已回应 }
+        count: { type: integer }
+
+    ReportCreate:
+      type: object
+      required: [targetType, targetId, reason]
+      properties:
+        targetType: { type: string, enum: [post, floor, message, resource_file] }
+        targetId: { type: integer, format: int64 }
+        reason: { type: string, enum: [privacy, attack, ads, other] }
+        detail: { type: string, maxLength: 200, nullable: true }
+
+    FolderItem:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        title: { type: string }
+        intro: { type: string }
+        art: { type: string, enum: [leaf, sun, sky, grape, coral] }
+        fileCount: { type: integer }
+        locked: { type: boolean, description: true 时客户端渲染锁定引导页，不请求文件列表 }
+        activityId: { type: integer, format: int64, nullable: true }
+
+    FileItem:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        title: { type: string }
+        fileType: { type: string, enum: [pdf, doc, xlsx, image] }
+        sizeLabel: { type: string, example: 1.2 MB }
+        readMinutes: { type: integer, nullable: true }
+        source: { type: string, example: 管理员整理 }
+        updatedAt: { type: string, format: date-time }
+
+    ActivityListItem:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        title: { type: string }
+        type: { type: string, enum: [outdoor, pbl, drama, culture, salon] }
+        coverArt: { type: string, enum: [leaf, sun, grape, coral, sky] }
+        startAt: { type: string, format: date-time }
+        endAt: { type: string, format: date-time }
+        gatherPlace: { type: string }
+        ageRange: { type: string }
+        priceCents: { type: integer, description: 0=免费，客户端渲染「会员免费」文案 }
+        capacity: { type: integer }
+        remaining: { type: integer }
+        myEnrolled: { type: boolean }
+
+    ActivityDetail:
+      allOf:
+        - $ref: "#/components/schemas/ActivityListItem"
+        - type: object
+          properties:
+            intro: { type: string }
+            points:
+              type: array
+              items: { type: string }
+            bring: { type: string }
+            myEnrollment: { $ref: "#/components/schemas/EnrollmentView" }
+            status: { type: string, enum: [draft, open, closed, finished] }
+
+    EnrollmentCreate:
+      type: object
+      required: [childName, childAge, consents]
+      properties:
+        childName: { type: string, minLength: 1, maxLength: 20 }
+        childAge: { type: integer, minimum: 2, maximum: 18 }
+        note: { type: string, maxLength: 200, nullable: true }
+        consents:
+          type: array
+          items: { type: string, enum: ["safety@v1", "photo@v1"] }
+          description: 必须同时含 safety 与 photo 的当前版本
+
+    EnrollmentView:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        activityId: { type: integer, format: int64 }
+        status: { type: string, enum: [enrolled, cancelled] }
+        childName: { type: string }
+        childAge: { type: integer }
+        maskedPhone: { type: string, example: "138****1234" }
+        ticket:
+          type: object
+          description: 电子票摘要
+          properties:
+            activityTitle: { type: string }
+            gatherTime: { type: string }
+            gatherPlace: { type: string }
+            childName: { type: string }
+            teacherName: { type: string }
+        createdAt: { type: string, format: date-time }
+
+    CommentItem:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        replyToId: { type: integer, format: int64, nullable: true }
+        displayName: { type: string, description: 老师显示姓名与角色，家长按匿名设置显示 }
+        content: { type: string }
+        createdAt: { type: string, format: date-time }
+
+    ArchiveBundle:
+      type: object
+      description: 仅含当前成员有权看到的内容；未报名整体 404
+      properties:
+        counts:
+          type: object
+          properties:
+            photos: { type: integer }
+            works: { type: integer }
+            notes: { type: integer }
+        readonly: { type: boolean, description: 活动结束 30 天后转只读 }
+        photos:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: integer, format: int64 }
+              title: { type: string }
+              audience: { type: string, enum: [all, specific] }
+              thumbUrl: { type: string, description: 400px 缩略，短时效签名 }
+              previewUrl: { type: string, description: 1080px 预览，非原图，短时效签名 }
+        works:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: integer, format: int64 }
+              title: { type: string }
+              childTag: { type: string }
+        notes:
+          type: array
+          items:
+            type: object
+            description: 老师手记，不打分不评级（红线）
+            properties:
+              id: { type: integer, format: int64 }
+              teacherName: { type: string }
+              teacherRole: { type: string }
+              dateLabel: { type: string }
+              content: { type: string }
+
+    ConversationItem:
+      type: object
+      properties:
+        peerId: { type: integer, format: int64 }
+        peerName: { type: string, example: 林老师 }
+        peerRole: { type: string, example: 营地带队 }
+        lastMessage: { type: string }
+        lastTime: { type: string }
+        hasUnread: { type: boolean, description: 布尔，无数字（红线） }
+
+    MessageItem:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        mine: { type: boolean }
+        content: { type: string }
+        createdAt: { type: string, format: date-time }

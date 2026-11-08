@@ -14,6 +14,17 @@ https://zhumin2.github.io/wumingtree-app/
 
 桌面浏览器里是「设计说明 + 392px 手机壳」的展示形态；窗口宽度小于 480px 时自动切换为全屏手机视图。
 
+## 仓库结构（monorepo）
+
+| 目录 | 内容 |
+|---|---|
+| `index.html` / `preview.png` | 高保真原型（GitHub Pages 从根目录发布，线上预览不受影响） |
+| `docs/` | 产品说明、技术设计、架构设计、细化设计与开发计划 |
+| `docs/tech/` | 工程种子：MySQL DDL（19 表）、OpenAPI 契约初稿 |
+| `server/` | Go API（部署三件套在 `server/deploy/linux/`） |
+| `app/` | Flutter 客户端（M0 骨架，初始化见 `app/README.md`） |
+| `admin/` | 管理台 React（M1 初始化） |
+
 ## 这一版的视觉
 
 上一版是米白 + 墨绿的克制素净风，这一版按「活泼、有生气」重做：
@@ -52,4 +63,7 @@ https://zhumin2.github.io/wumingtree-app/
 ## 产品文档与接手说明
 
 - [产品说明文档](docs/无名树App产品说明文档-v1.0.docx)：定位、用户、产品原则、信息架构、核心功能、关键流程、数据模型、视觉规范、原型边界与开放问题。
+- [技术设计文档](docs/无名树App技术设计文档-v1.0.md)：数据模型、API、权限、安全与里程碑。
+- [技术架构设计](docs/无名树App技术架构设计-v1.0.md)：工程约定唯一来源（沿用「拾光 ShinePick」生产验证模式）。
+- [细化设计](docs/tech/无名树App细化设计-v1.0.md)与[开发计划](docs/无名树App开发计划-v1.0.md)：状态机/错误码/限流等工程细节；M0–M6 任务分解。
 - [Agent 接手说明](agents.md)：当前状态、已知演示态、代码结构、构建检查、GitHub 发布方式与下一步建议。

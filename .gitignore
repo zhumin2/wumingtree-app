@@ -1,0 +1,25 @@
+# ---- Go / server ----
+server/bin/
+server/**/*.test
+server/coverage.out
+
+# ---- Flutter / app ----
+app/.dart_tool/
+app/.flutter-plugins
+app/.flutter-plugins-dependencies
+app/build/
+app/.idea/
+
+# ---- admin ----
+admin/node_modules/
+admin/dist/
+
+# ---- 部署与密钥（env 真身不入仓库，模板除外）----
+*.env
+!*.env.example
+server/deploy/linux/bin/*
+!server/deploy/linux/bin/.gitkeep
+
+# ---- 系统 ----
+.DS_Store
+Thumbs.db
