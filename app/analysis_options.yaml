@@ -1,0 +1,11 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  errors:
+    # analyze 保持零告警（开发计划质量门禁 #1）
+    unused_import: error
+
+linter:
+  rules:
+    prefer_const_constructors: true
+    avoid_print: true

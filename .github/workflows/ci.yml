@@ -1,0 +1,49 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  server:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: server/go.mod
+          cache-dependency-path: server/go.sum
+      - name: vet
+        run: go vet ./...
+      - name: build
+        run: go build ./...
+      - name: test
+        run: go test ./...
+      - name: envelope-guard（禁止裸 c.JSON，httpx 除外 —— 架构设计 3.2 铁律）
+        run: |
+          if grep -rn "c\.JSON(" --include="*.go" cmd internal | grep -v "pkg.httpx"; then
+            echo "::error::发现裸 c.JSON，必须走 httpx 信封（客户端解析器只认信封）"
+            exit 1
+          fi
+
+  client:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: pub get
+        run: flutter pub get
+      - name: analyze（保持零告警）
+        run: flutter analyze --fatal-infos
+      - name: test
+        run: flutter test
