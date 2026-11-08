@@ -75,27 +75,17 @@ class ApiClient {
     _dio.options.headers['Authorization'] = t;
   }
 
-  Future<T> get<T>(String path,
-      {Map<String, dynamic>? query, T Function(dynamic)? parse, Map<String, String>? headers}) =>
-      _send((dio) => dio.get<Map<String, dynamic>>(path,
-          queryParameters: query, options: _opts(headers)), parse);
+  Future<T> get<T>(String path, {Map<String, dynamic>? query, T Function(dynamic)? parse}) =>
+      _send((dio) => dio.get<Map<String, dynamic>>(path, queryParameters: query), parse);
 
-  Future<T> post<T>(String path,
-      {Object? body, T Function(dynamic)? parse, Map<String, String>? headers}) =>
-      _send((dio) => dio.post<Map<String, dynamic>>(path,
-          data: body, options: _opts(headers)), parse);
+  Future<T> post<T>(String path, {Object? body, T Function(dynamic)? parse}) =>
+      _send((dio) => dio.post<Map<String, dynamic>>(path, data: body), parse);
 
-  Future<T> patch<T>(String path,
-      {Object? body, T Function(dynamic)? parse, Map<String, String>? headers}) =>
-      _send((dio) => dio.patch<Map<String, dynamic>>(path,
-          data: body, options: _opts(headers)), parse);
+  Future<T> patch<T>(String path, {Object? body, T Function(dynamic)? parse}) =>
+      _send((dio) => dio.patch<Map<String, dynamic>>(path, data: body), parse);
 
-  Future<T> delete<T>(String path,
-      {T Function(dynamic)? parse, Map<String, String>? headers}) =>
-      _send((dio) => dio.delete<Map<String, dynamic>>(path, options: _opts(headers)), parse);
-
-  Options _opts(Map<String, String>? headers) =>
-      headers == null ? Options() : Options(headers: headers);
+  Future<T> delete<T>(String path, {T Function(dynamic)? parse}) =>
+      _send((dio) => dio.delete<Map<String, dynamic>>(path), parse);
 
   Future<T> _send<T>(
     Future<Response<Map<String, dynamic>>> Function(Dio dio) fn,
