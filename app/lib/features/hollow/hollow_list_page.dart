@@ -106,6 +106,7 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final def = moodOf(post.mood);
     return Card(
       color: WmtColors.card,
       margin: const EdgeInsets.only(bottom: 10),

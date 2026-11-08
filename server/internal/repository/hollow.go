@@ -17,13 +17,13 @@ import (
 // 行结构（匿名嵌入：gorm 按 post.* 列映射；作者昵称随行返回，
 // 匿名显示名由 service 解析——红线：匿名内容 API 不回传作者字段）。
 type PostRow struct {
-	model.Post     `gorm:"embedded"` // 显式内嵌：否则 gorm 按 has-one 关联解析要求外键
-	AuthorNickname string            `gorm:"column:author_nickname"`
+	model.Post
+	AuthorNickname string `gorm:"column:author_nickname"`
 }
 
 type FloorRow struct {
-	model.Floor    `gorm:"embedded"` // 同上
-	AuthorNickname string            `gorm:"column:author_nickname"`
+	model.Floor
+	AuthorNickname string `gorm:"column:author_nickname"`
 }
 
 // ErrNotFound 举报对象不存在或已结（repository 层别名）。

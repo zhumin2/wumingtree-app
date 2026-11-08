@@ -5,7 +5,6 @@ import '../../core/network/api_client.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/models/models.dart';
 import '../../shared/widgets/widgets.dart';
-import '../auth/auth_controller.dart';
 import 'hollow_controller.dart';
 
 /// 我的树洞：自己发过的帖子（含匿名帖显示为自己的记录——红线）；可删帖。
