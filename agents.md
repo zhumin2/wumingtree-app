@@ -221,7 +221,18 @@ body: { message, content(base64), branch: "main", sha? }
 - 二进制文件（docx、png）同样用 base64 上传。
 - 上传后用远端 `sha`、Pages 构建状态、线上 URL 三重核验。
 
-当前 Windows 机器没有可直接使用的 `gh` 命令；如 API 回退，需要先安装 gh 或改用现有凭据的 git 推送。不要凭记忆假设 `gh` 一定存在。
+**2026-11-08 实战记录（本次推送即走此通道）**：`github.com:443` 完全阻断（DNS 绕行与 `ssh.github.com:443` 均不通），仅 `api.github.com` 与 `codeload` 可达。用 Git Data API 复刻提交：逐 blob 上传（base64）→ 以 `base_tree` 建 tree → `POST /git/commits`（message/author/committer 原样）→ `PATCH /git/refs/heads/main`。**远端 tree 与本地逐提交一致（内容字节级相同），但 commit SHA 与本地不同**：GitHub 对带偏移的 ISO 日期按「壁钟即 UTC」处理，并剥掉 message 尾部换行，提交对象字节与本地必然有差，不必强求一致。
+
+下次 git 直连恢复后做一次无损对齐（远端内容已验证与本地一致）：
+
+```powershell
+git fetch origin
+git reset --hard origin/main
+```
+
+在这之前若再次推送：优先重试 `git push`（间歇性），仍不通则继续用 Git Data API 追加提交；本地新增提交与远端链会持续并存，最终以一次 `fetch + reset --hard` 收敛。
+
+当前 Windows 机器没有可直接使用的 `gh` 命令；如 API 回退，需要先安装 gh 或改用现有凭据的 git 推送（本次即用 `git credential fill` 取凭据直调 REST）。不要凭记忆假设 `gh` 一定存在。
 
 ### 7.3 分叉处理
 
@@ -269,3 +280,4 @@ body: { message, content(base64), branch: "main", sha? }
 |---|---|
 | 2026-11-07 | v3 明亮活泼版原型完成；README、preview 更新；产品说明文档 v1.0 完成；本接手说明建立 |
 | 2026-11-08 | 文档定稿：技术设计 / 架构设计 / 细化设计（DDL 19 表 + OpenAPI 契约）/ 开发计划（M0–M6，111 人天）。M0 完成：monorepo 骨架（app/server/admin）、部署三件套（install.sh / systemd / wumingtree.sh）、CI（含信封铁律 guard）。M1 服务端完成：迁移 19 表、统一信封与 16 个数字错误码、短信验证码登录（outcome 四路）、邀请码事务消费与防重、刷新令牌轮换与复用检测、我的模块（掩码手机号）、审核端点与 phone.view 审计；服务层/组件 20+ 用例全绿（build/vet/test）。M1 客户端完成：网络层 2001 续期 / 2002 吊销钩子、三态路由守卫、邀请 / 登录 / 我的 / 设置四页；待 CI（无本地 Flutter SDK）。M1 剩余：管理台 UI、设计系统组件、CI 集成测试、垂直切片联调 |
+| 2026-11-08 | 推送上远端：`github.com` 直连被阻断，5 个提交经 Git Data API 复刻（远端 tree 与本地全 MATCH，SHA 因 GitHub 日期/换行归一而不同）；本地对齐命令见 7.2。远端 main 头：`08832c6` 之后另有 agents.md 补记提交 |
