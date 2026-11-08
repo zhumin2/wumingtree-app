@@ -42,8 +42,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
   }
 
   Future<void> _togglePost(String type) async {
+    final controller = context.read<HollowController>();
     try {
-      await context.read<HollowController>().togglePostReaction(widget.postId, type);
+      await controller.togglePostReaction(widget.postId, type);
       _reload();
     } on AppError catch (e) {
       _toast(e.message);
@@ -51,8 +52,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
   }
 
   Future<void> _toggleFloor(int floorId) async {
+    final controller = context.read<HollowController>();
     try {
-      await context.read<HollowController>().toggleFloorReaction(floorId, 'hug');
+      await controller.toggleFloorReaction(floorId, 'hug');
       _reload();
     } on AppError catch (e) {
       _toast(e.message);
@@ -62,9 +64,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
   Future<void> _sendFloor() async {
     final content = _floorInput.text.trim();
     if (content.isEmpty) return;
+    final controller = context.read<HollowController>();
     setState(() => _sending = true);
     try {
-      await context.read<HollowController>().createFloor(
+      await controller.createFloor(
             postId: widget.postId,
             content: content,
             anonymous: _anonFloor,
@@ -79,6 +82,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
   }
 
   Future<void> _report(int postId) async {
+    final controller = context.read<HollowController>();
     final reason = await showModalBottomSheet<String>(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -117,13 +121,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
     );
     if (reason == null) return;
     try {
-      await context.read<HollowController>().report(postId, reason, null);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('已提交举报，管理员会处理')));
-      }
+      await controller.report(postId, reason, null);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('已提交举报，管理员会处理')));
     } on AppError catch (e) {
-      if (mounted) _toast(e.message);
+      if (!mounted) return;
+      _toast(e.message);
     }
   }
 
