@@ -1,0 +1,26 @@
+.label {
+  font-size: 24rpx;
+  color: var(--wmt-sky-deep);
+  margin-bottom: 12rpx;
+}
+
+.body-input {
+  height: 320rpx;
+  width: 100%;
+}
+
+.anon-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--wmt-card);
+  border: 1rpx solid var(--wmt-divider);
+  border-radius: 18rpx;
+  padding: 24rpx;
+  margin-bottom: 32rpx;
+}
+
+.anon-title {
+  font-weight: 600;
+  color: var(--wmt-ink);
+}

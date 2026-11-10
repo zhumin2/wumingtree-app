@@ -1,0 +1,35 @@
+<view class="page-pad">
+  <view class="label">现在的心情</view>
+  <view class="mood-bar">
+    <view
+      wx:for="{{moods}}"
+      wx:key="code"
+      class="mood-chip {{mood === item.code ? 'selected ' + 'mood-' + item.code : ''}}"
+      data-mood="{{item.code}}"
+      bindtap="onMoodTap"
+    >{{item.label}}</view>
+  </view>
+
+  <input class="input" placeholder="写一句标题（必填）" maxlength="50" value="{{title}}" bindinput="onTitle" />
+  <textarea
+    class="input body-input"
+    placeholder="想多说几句（可选）。这里不评判、不建议。也请不要留下孩子学校、住址等可识别信息"
+    maxlength="2000"
+    value="{{body}}"
+    bindinput="onBody"
+  ></textarea>
+
+  <view class="anon-row">
+    <view>
+      <view class="anon-title">匿名发布</view>
+      <view class="hint">{{anonymous ? '显示为「一位家长」' : '实名发布 · 显示你的昵称'}}</view>
+    </view>
+    <switch checked="{{anonymous}}" color="#12A566" bindchange="onAnonChange" />
+  </view>
+
+  <view class="thick-btn btn-yellow {{sending ? 'btn-disabled' : ''}}" bindtap="submit">发布</view>
+
+  <view class="hint" style="margin-top: 20rpx;">
+    发布后其他家长可以回应。如果情况涉及自伤、暴力或医疗紧急，请先联系专业机构，而不是等待回应。
+  </view>
+</view>

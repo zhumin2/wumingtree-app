@@ -35,6 +35,7 @@
 | `server/` | Go API 服务端 | M0–M2 已建：信封与错误码、短信登录、邀请准入、我的模块、审核端点、树洞全链路（发帖/楼层/回应/举报/机审钩子/危机分支）、seedadmin；部署三件套在 `server/deploy/linux/` |
 | `app/` | Flutter 客户端 | M0–M2 已建：邀请/登录/我的/设置 + 树洞列表/发帖/详情/我的树洞 + M1-10 设计系统组件；平台目录初始化见 `app/README.md` |
 | `admin/` | 管理台 React + Ant Design | M1-6 最小版已建：短信登录、申请列表/筛选、通过/拒绝（原因模板）；dev 经 vite 代理本机 API，`npm run build` 已验证 |
+| `miniprogram/` | 微信小程序端（原生） | MP1 已建：邀请/审核/登录/首页/树洞四页/我的，复用 Go API 信封约定；`node tools/check.js` 结构校验通过；导入见 `miniprogram/README.md` |
 
 线上 Pages 由 `main` 分支根目录直接发布，`index.html` 即线上首页。改动 `index.html` 后，Pages 会自动重建；通常 1—2 分钟内生效。
 
@@ -139,6 +140,13 @@ monorepo 三目录；工程约定的唯一来源是《技术架构设计》（`d
 - `AuthController` 会话状态机（unknown/guest/pending/member）驱动 go_router `refreshListenable` 三态守卫；令牌存 flutter_secure_storage。
 - 页面：`/gate` 邀请表单、`/gate/pending` 三步进度（禁返回）、`/login` 短信登录（60s 倒计时、按 outcome 分流）、`/me` 身份卡、`/me/settings`（昵称 8 字、四开关即时 PATCH、版本号 dart-define）。
 - 本机无 Flutter SDK：`flutter analyze/test` 依赖 CI；平台目录初始化命令见 `app/README.md`。
+
+**miniprogram/（微信原生小程序，MP1）**
+
+- `utils/api.js`：信封解包 + 2001 静默续期重放一次 + 2002 清会话回登录；令牌存 wx storage。
+- 页面：gate（邀请表单）、pending（三步进度）、login（60s 倒计时、outcome 四路分流）、home（四入口+常驻风险提示+会话守卫）、hollow/list（心情筛选+下拉刷新+触底加载）、hollow/compose（匿名开关+client_token 幂等）、hollow/detail（危机求助卡+抱一下 toggle+楼层回应+wx.showActionSheet 举报）、hollow/myposts（长按删帖）、me（身份卡+开关 PATCH /me+退出）。
+- 红线静态检查进 `tools/check.js`：sitemap 全量 disallow、详情页 crisis 卡存在、首页风险提示存在。
+- 上线前：BASE_URL 改正式域名并配置 request 合法域名；用户隐私保护指引后台提交。
 
 **admin/（React 18 + Ant Design 5 + Vite 5，M1-6 最小版）**
 
@@ -270,7 +278,8 @@ git reset --hard origin/main
 优先候选任务（对应开发计划，按序）：
 
 - M1-13 垂直切片联调：需要真实环境（install.sh 装机 + seedadmin 建管理员），mock 短信走通「申请 → 审核（管理台）→ 登录 → 树洞发帖」全链路。
-- M3 公告与资源库（服务端横向复制 M1/M2 模式；文件存储用本地盘 + 鉴权代理）。
+- M3 公告与资源库（服务端横向复制 M1/M2 模式；文件存储用本地盘 + 鉴权代理；小程序端同步新增公告/资源页）。
+- 小程序端 MP2：wx.login/code2Session 身份打通（需 AppID 与企业资质）、订阅消息通知、分享开关评估。
 - 长周期事项跟进（用户线下办理）：ICP/App 备案、短信签名模板、厂商推送账号、iOS 开发者账号。
 - M4 活动与档案（含报名事务与 audience 过滤）随后启动。
 
@@ -295,3 +304,4 @@ git reset --hard origin/main
 | 2026-11-08 | **M2 树洞完成**：服务端（audit 机审钩子 mock 词表+危机词不拦截、idempot 幂等存储 Acquire/Save/Load/Release、cursor 游标、树洞四域仓库与服务、举报 reporter json:- 永不序列化、badges Redis/Memory）+ 客户端（M1-10 组件 ThickButton/Sticker/WmtPill/LockedCard/MoodChip/ErrorRetry、树洞列表/发帖/详情/我的树洞四页、路由接线）。CI 七轮迭代后全绿（头 `84aad4e`） |
 | 2026-11-08 | **M2 踩坑沉淀**：gorm 对带主键的匿名嵌入结构按 has-one 关联解析（embedded 标签也无效）→ 行结构改扁平字段；写操作幂等需在业务失败时 Release 槽位；集成测试编排要与短信 60s 频控解耦（按手机号缓存令牌、一次性手机号做 pending 断言）；审核按提交返回的申请 ID 精确批准；async gap 的 BuildContext 需 await 前捕获引用 |
 | 2026-11-08 | **Git 状态**：远端 main 头 `86054d6`（CI 全绿）；本地 main `1eba480`，两者内容一致（tree 同源、SHA 因 GitHub 日期/换行归一而不同）。本地曾因一次误操作 reset 回退到 8eb99e5，已从 reflog 恢复到含全部修复的 1eba480。**git 直连恢复后执行 `git fetch origin && git reset --hard origin/main` 收敛；在此之前不要基于本地旧历史发起新提交推送，先用 API 通道（7.2）** |
+| 2026-11-10 | **小程序端 MP1 完成**（miniprogram/，原生微信小程序）：9 页面（邀请/审核/登录/首页/树洞列表/发帖/详情含危机卡/我的树洞/我的含设置）；utils 信封层（2001 续期/2002 吊销）与设计 token 对齐 Flutter 端；sitemap 全量 disallow + 红线静态检查进 tools/check.js + CI 新增 miniprogram job（JS 语法 + 结构校验）。登录沿用手机号+验证码；wx.login 打通列 MP2。结构校验 9 页全过、JS 语法全过 |

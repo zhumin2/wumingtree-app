@@ -1,0 +1,36 @@
+.post-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14rpx;
+}
+
+.post-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--wmt-ink);
+  line-height: 1.5;
+}
+
+.post-body {
+  margin-top: 10rpx;
+  font-size: 26rpx;
+  color: var(--wmt-sky-deep);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.post-foot {
+  margin-top: 16rpx;
+  display: flex;
+  justify-content: space-between;
+  font-size: 22rpx;
+  color: var(--wmt-sky-deep);
+}
+
+.post-time {
+  color: var(--wmt-divider);
+}

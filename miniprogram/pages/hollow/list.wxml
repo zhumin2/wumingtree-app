@@ -1,0 +1,44 @@
+<view class="mood-bar">
+  <view
+    wx:for="{{moods}}"
+    wx:key="code"
+    class="mood-chip {{activeMood === item.code ? 'selected ' + (item.code ? 'mood-' + item.code : 'mood-share') : ''}}"
+    data-mood="{{item.code}}"
+    bindtap="onMoodTap"
+  >{{item.label}}</view>
+</view>
+
+<view class="page-pad" wx:if="{{error}}">
+  <view class="empty">{{error}}</view>
+  <view class="retry" bindtap="fetch">重试</view>
+</view>
+
+<view class="page-pad" wx:elif="{{posts.length === 0 && !loading}}">
+  <view class="empty">还没有人说，第一句可以说给你听</view>
+</view>
+
+<view class="page-pad" wx:else>
+  <view
+    class="card post"
+    wx:for="{{posts}}"
+    wx:key="id"
+    data-id="{{item.id}}"
+    bindtap="onPostTap"
+  >
+    <view class="post-top">
+      <view class="pill {{'pill-' + (item.mood === 'share' ? 'yellow' : item.mood === 'tired' ? 'sky' : item.mood === 'ask' ? 'green' : 'coral')}}">{{item.moodLabel}}</view>
+      <view class="muted">{{item.displayName}}</view>
+    </view>
+    <view class="post-title">{{item.title}}</view>
+    <view class="post-body" wx:if="{{item.body}}">{{item.body}}</view>
+    <view class="post-foot">
+      <view>回应 {{item.replies}}</view>
+      <view class="foot-hug">抱一下 {{item.hug}}</view>
+      <view class="post-time">{{item.timeLabel}}</view>
+    </view>
+  </view>
+  <view class="loading-more" wx:if="{{loading}}">加载中…</view>
+  <view class="list-end" wx:if="{{!hasMore && posts.length > 0}}">— 到底了 —</view>
+</view>
+
+<view class="compose-fab" bindtap="onCompose">说说此刻</view>

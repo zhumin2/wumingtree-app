@@ -1,0 +1,24 @@
+.hero {
+  padding: 60rpx 0 48rpx;
+}
+
+.hero-title {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: var(--wmt-ink);
+  line-height: 1.4;
+}
+
+.hero-sub {
+  margin-top: 16rpx;
+  font-size: 26rpx;
+  color: var(--wmt-sky-deep);
+  line-height: 1.7;
+}
+
+.go-login {
+  text-align: center;
+  color: var(--wmt-green-deep);
+  font-size: 26rpx;
+  padding: 32rpx 0;
+}

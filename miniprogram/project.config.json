@@ -1,0 +1,14 @@
+{
+  "description": "无名树 · 家长陪伴社群小程序端",
+  "appid": "touristappid",
+  "compileType": "miniprogram",
+  "libVersion": "3.0.0",
+  "setting": {
+    "es6": true,
+    "postcss": true,
+    "minified": true,
+    "urlCheck": false,
+    "enhance": true
+  },
+  "condition": {}
+}

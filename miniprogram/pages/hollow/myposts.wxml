@@ -1,0 +1,34 @@
+<view class="page-pad" wx:if="{{loading}}">
+  <view class="empty">加载中…</view>
+</view>
+
+<view class="page-pad" wx:elif="{{error}}">
+  <view class="empty">{{error}}</view>
+</view>
+
+<view class="page-pad" wx:elif="{{posts.length === 0}}">
+  <view class="empty">还没有发过帖子</view>
+</view>
+
+<view class="page-pad" wx:else>
+  <view
+    class="card post"
+    wx:for="{{posts}}"
+    wx:key="id"
+    data-id="{{item.id}}"
+    bindtap="onPostTap"
+    bindlongpress="onPostLongPress"
+  >
+    <view class="post-top">
+      <view class="pill pill-coral">{{item.moodLabel}}</view>
+      <view class="muted">{{item.displayName}}</view>
+    </view>
+    <view class="post-title">{{item.title}}</view>
+    <view class="post-body" wx:if="{{item.body}}">{{item.body}}</view>
+    <view class="post-foot">
+      <view>回应 {{item.replies}}</view>
+      <view class="post-time">{{item.timeLabel}}</view>
+    </view>
+  </view>
+  <view class="hint" style="text-align: center;">长按帖子可删除</view>
+</view>

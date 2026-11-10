@@ -1,0 +1,48 @@
+.step {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 0;
+}
+
+.dot {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  border: 2rpx solid var(--wmt-divider);
+  color: #fff;
+  text-align: center;
+  line-height: 40rpx;
+  font-size: 24rpx;
+  margin-right: 20rpx;
+}
+
+.dot-done {
+  background: var(--wmt-green);
+  border-color: var(--wmt-green);
+}
+
+.step-title {
+  color: var(--wmt-sky-deep);
+}
+
+.step-done {
+  color: var(--wmt-ink);
+  font-weight: 700;
+}
+
+.notice {
+  background: var(--wmt-green-soft);
+  border-radius: 18rpx;
+  padding: 24rpx;
+  color: var(--wmt-green-deep);
+  font-size: 26rpx;
+  line-height: 1.7;
+  margin-top: 16rpx;
+}
+
+.go-login {
+  text-align: center;
+  color: var(--wmt-green-deep);
+  font-size: 26rpx;
+  padding: 40rpx 0;
+}

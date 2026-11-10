@@ -1,0 +1,87 @@
+.hero {
+  padding: 48rpx 0 36rpx;
+}
+
+.hero-title {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: var(--wmt-ink);
+}
+
+.hero-sub {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  color: var(--wmt-sky-deep);
+}
+
+.entries {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.entry {
+  background: var(--wmt-card);
+  border: 1rpx solid var(--wmt-divider);
+  border-radius: 24rpx;
+  padding: 28rpx;
+}
+
+.entry-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--wmt-ink);
+}
+
+.entry-sub {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: var(--wmt-sky-deep);
+}
+
+.entry-notice { border-left: 8rpx solid var(--wmt-yellow); }
+.entry-hollow { border-left: 8rpx solid var(--wmt-coral); }
+.entry-library { border-left: 8rpx solid var(--wmt-sky); }
+.entry-activity { border-left: 8rpx solid var(--wmt-green); }
+
+.entry-title { color: var(--wmt-ink); }
+.entry-hollow .entry-title { color: var(--wmt-coral-deep); }
+
+.soon {
+  margin-top: 12rpx;
+  display: inline-block;
+  font-size: 20rpx;
+  color: var(--wmt-sky-deep);
+  background: var(--wmt-sky-soft);
+  border-radius: 12rpx;
+  padding: 4rpx 14rpx;
+}
+
+.entry-hollow .arrow {
+  margin-top: 12rpx;
+  color: var(--wmt-coral-deep);
+  font-size: 28rpx;
+}
+
+.me-entry {
+  text-align: right;
+  color: var(--wmt-green-deep);
+  font-size: 26rpx;
+  padding: 24rpx 0;
+}
+
+.risk-strip {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 120rpx;
+}
+
+.brand {
+  text-align: center;
+  color: var(--wmt-sky-deep);
+  font-size: 20rpx;
+  line-height: 1.8;
+  padding: 24rpx 0 140rpx;
+  white-space: pre-line;
+}

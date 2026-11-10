@@ -1,0 +1,36 @@
+<view class="page">
+  <view class="page-pad">
+    <view class="hero">
+      <view class="hero-title">{{greeting}}</view>
+      <view class="hero-sub">只对邀请开放的家长陪伴社群</view>
+    </view>
+
+    <view class="entries">
+      <view class="entry entry-notice" bindtap="onComingSoon">
+        <view class="entry-title">公告板</view>
+        <view class="entry-sub">置顶：11 月集合时间</view>
+        <view class="soon">即将开放</view>
+      </view>
+      <view class="entry entry-hollow" bindtap="onHollow">
+        <view class="entry-title">树洞互助</view>
+        <view class="entry-sub">先说一句，有人会接住</view>
+        <view class="arrow">→</view>
+      </view>
+      <view class="entry entry-library" bindtap="onComingSoon">
+        <view class="entry-title">经验资源库</view>
+        <view class="entry-sub">5 个主题 · 长期留存</view>
+        <view class="soon">即将开放</view>
+      </view>
+      <view class="entry entry-activity" bindtap="onComingSoon">
+        <view class="entry-title">活动专区</view>
+        <view class="entry-sub">5 场正在报名与排期</view>
+        <view class="soon">即将开放</view>
+      </view>
+    </view>
+
+    <view class="me-entry" bindtap="onMe">我的 →</view>
+  </view>
+
+  <view class="risk-strip">同伴互助不能替代专业医疗或心理支持，紧急情况请及时就医</view>
+  <view class="brand">只对邀请开放的家长陪伴社群\n不排名 · 不打卡 · 不比孩子</view>
+</view>

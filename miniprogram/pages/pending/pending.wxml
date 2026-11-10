@@ -1,0 +1,15 @@
+<view class="page-pad">
+  <view class="card" wx:for="{{steps}}" wx:key="title">
+    <view class="step">
+      <view class="dot {{item.done ? 'dot-done' : ''}}">{{item.done ? '✓' : ''}}</view>
+      <view class="step-title {{item.done ? 'step-done' : ''}}">{{item.title}}</view>
+    </view>
+  </view>
+
+  <view class="notice">
+    审核通过后，用手机号短信验证码登录即可进入。
+    不会向你推送任何营销信息。
+  </view>
+
+  <view class="go-login" bindtap="goLogin">已通过？去登录</view>
+</view>

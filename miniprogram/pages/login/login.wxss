@@ -1,0 +1,26 @@
+.code-row {
+  display: flex;
+  align-items: center;
+}
+
+.code-input {
+  flex: 1;
+}
+
+.code-btn {
+  width: 200rpx;
+  margin-left: 16rpx;
+  text-align: center;
+  padding: 20rpx 0;
+  border-radius: 18rpx;
+  background: var(--wmt-sky-soft);
+  color: var(--wmt-sky-deep);
+  font-size: 24rpx;
+}
+
+.go-gate {
+  text-align: center;
+  color: var(--wmt-green-deep);
+  font-size: 26rpx;
+  padding: 24rpx 0;
+}

@@ -1,0 +1,23 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/gate/gate",
+    "pages/pending/pending",
+    "pages/login/login",
+    "pages/hollow/list",
+    "pages/hollow/compose",
+    "pages/hollow/detail",
+    "pages/hollow/myposts",
+    "pages/me/me"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#FFFBF0",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "无名树",
+    "backgroundColor": "#FFFBF0",
+    "backgroundTextStyle": "light"
+  },
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents",
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,138 @@
+/* 无名树小程序 · 全局样式（色板与组件 token 对齐《技术设计文档》3.3） */
+page {
+  --wmt-surface: #FFFBF0;
+  --wmt-card: #FFFFFF;
+  --wmt-ink: #1C3428;
+  --wmt-green: #12A566;
+  --wmt-green-deep: #0B7A4A;
+  --wmt-green-soft: #E2F8EB;
+  --wmt-yellow: #FFC63D;
+  --wmt-yellow-deep: #E5A31A;
+  --wmt-yellow-soft: #FFF3CC;
+  --wmt-coral: #FF7A5C;
+  --wmt-coral-deep: #E85B3E;
+  --wmt-coral-soft: #FFE9E2;
+  --wmt-sky: #3AA9F0;
+  --wmt-sky-deep: #1E85C8;
+  --wmt-sky-soft: #E1F4FF;
+  --wmt-grape: #8A7BE6;
+  --wmt-grape-deep: #6E5FD0;
+  --wmt-grape-soft: #ECE8FD;
+  --wmt-divider: #F2E8D3;
+  background: var(--wmt-surface);
+  color: var(--wmt-ink);
+  font-size: 28rpx;
+  line-height: 1.7;
+}
+
+.page-pad {
+  padding: 24rpx;
+}
+
+.card {
+  background: var(--wmt-card);
+  border-radius: 24rpx;
+  border: 1rpx solid var(--wmt-divider);
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4rpx 18rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.pill-green { background: var(--wmt-green-soft); color: var(--wmt-green-deep); }
+.pill-yellow { background: var(--wmt-yellow-soft); color: var(--wmt-yellow-deep); }
+.pill-coral { background: var(--wmt-coral-soft); color: var(--wmt-coral-deep); }
+.pill-sky { background: var(--wmt-sky-soft); color: var(--wmt-sky-deep); }
+
+.muted { color: var(--wmt-sky-deep); font-size: 24rpx; }
+.hint { color: var(--wmt-sky-deep); font-size: 22rpx; line-height: 1.7; }
+
+.input {
+  background: var(--wmt-card);
+  border: 1rpx solid var(--wmt-divider);
+  border-radius: 18rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.thick-btn {
+  height: 104rpx;
+  border-radius: 18rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 30rpx;
+  box-shadow: 0 6rpx 0 var(--btn-deep, var(--wmt-green-deep));
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.thick-btn:active {
+  transform: translateY(4rpx);
+  box-shadow: 0 2rpx 0 var(--btn-deep, var(--wmt-green-deep));
+}
+
+.btn-green { background: var(--wmt-green); --btn-deep: var(--wmt-green-deep); }
+.btn-yellow { background: var(--wmt-yellow); --btn-deep: var(--wmt-yellow-deep); }
+.btn-coral { background: var(--wmt-coral); --btn-deep: var(--wmt-coral-deep); }
+
+.btn-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.risk-strip {
+  background: var(--wmt-yellow-soft);
+  color: var(--wmt-yellow-deep);
+  font-size: 22rpx;
+  text-align: center;
+  padding: 14rpx 24rpx;
+  line-height: 1.6;
+}
+
+.mood-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 8rpx 22rpx;
+  border-radius: 20rpx;
+  border: 1rpx solid var(--wmt-divider);
+  background: var(--wmt-card);
+  font-size: 24rpx;
+  color: var(--wmt-sky-deep);
+  margin-right: 14rpx;
+  margin-bottom: 12rpx;
+}
+
+.mood-chip.selected {
+  font-weight: 700;
+}
+
+.mood-dot {
+  display: inline-block;
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  margin-right: 10rpx;
+  background: var(--wmt-divider);
+}
+
+.mood-share { background: var(--wmt-yellow-soft); color: var(--wmt-yellow-deep); border-color: var(--wmt-yellow); }
+.mood-tired { background: var(--wmt-sky-soft); color: var(--wmt-sky-deep); border-color: var(--wmt-sky); }
+.mood-ask { background: var(--wmt-green-soft); color: var(--wmt-green-deep); border-color: var(--wmt-green); }
+.mood-talk { background: var(--wmt-coral-soft); color: var(--wmt-coral-deep); border-color: var(--wmt-coral); }
+
+.empty {
+  text-align: center;
+  color: var(--wmt-sky-deep);
+  padding: 80rpx 40rpx;
+}

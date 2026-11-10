@@ -1,0 +1,61 @@
+<view class="page-pad" wx:if="{{loading}}">
+  <view class="empty">加载中…</view>
+</view>
+
+<block wx:elif="{{me}}">
+  <view class="page-pad">
+    <view class="card identity">
+      <view class="avatar">{{me.nickname[0]}}</view>
+      <view class="identity-info">
+        <view class="nickname">{{me.nickname}}</view>
+        <view class="muted">默认匿名 · 手机号不公开{{me.maskedPhone ? ' · ' + me.maskedPhone : ''}}</view>
+        <view class="muted">已加入 {{me.days}} 天</view>
+      </view>
+    </view>
+
+    <view class="menu">
+      <view class="menu-item" bindtap="onMyPosts">
+        <text>我的树洞</text><text class="menu-arrow">→</text>
+      </view>
+    </view>
+
+    <view class="section-title">设置</view>
+    <view class="menu">
+      <view class="menu-item" bindtap="editNickname">
+        <text>昵称</text><text class="menu-value">{{me.nickname}}</text>
+      </view>
+      <view class="menu-item">
+        <view>
+          <view class="menu-title">默认匿名发帖</view>
+          <view class="hint">发帖时显示「一位家长」</view>
+        </view>
+        <switch checked="{{me.defaultAnon}}" color="#12A566" bindchange="onDefaultAnon" />
+      </view>
+      <view class="menu-item">
+        <view>
+          <view class="menu-title">免打扰</view>
+          <view class="hint">22:00–08:00 不提醒</view>
+        </view>
+        <switch checked="{{me.dnd}}" color="#12A566" bindchange="onDnd" />
+      </view>
+      <view class="menu-item">
+        <view>
+          <view class="menu-title">公告板提醒</view>
+          <view class="hint">只有管理员发新公告时提醒</view>
+        </view>
+        <switch checked="{{me.notifyNotice}}" color="#12A566" bindchange="onNotifyNotice" />
+      </view>
+      <view class="menu-item">
+        <view>
+          <view class="menu-title">树洞回应提醒</view>
+          <view class="hint">有人回应你的帖子时提醒</view>
+        </view>
+        <switch checked="{{me.notifyHollow}}" color="#12A566" bindchange="onNotifyHollow" />
+      </view>
+    </view>
+
+    <view class="logout" bindtap="logout">退出登录</view>
+
+    <view class="brand">无名树 v{{version}}\n只对邀请开放的家长陪伴社群</view>
+  </view>
+</block>

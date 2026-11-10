@@ -1,0 +1,16 @@
+<view class="page-pad">
+  <view class="hero">
+    <view class="hero-title">在树下，慢慢长大</view>
+    <view class="hero-sub">一个只对邀请开放的家长陪伴社群，服务正在休整期的孩子与家庭。</view>
+  </view>
+
+  <input class="input" placeholder="邀请码（WMT-XXXX-XXXX）" value="{{invite}}" bindinput="onInvite" />
+  <input class="input" placeholder="怎么称呼你（最多 8 字）" maxlength="8" value="{{nickname}}" bindinput="onNickname" />
+  <input class="input" placeholder="手机号（仅管理员可见，家长之间互不可见）" type="number" maxlength="11" value="{{phone}}" bindinput="onPhone" />
+
+  <view class="hint" style="margin-bottom: 24rpx;">提交后由管理员人工审核，通常 1-2 天。不会向你推送任何营销信息。</view>
+
+  <view class="thick-btn btn-green {{submitting ? 'btn-disabled' : ''}}" bindtap="submit">提交申请</view>
+
+  <view class="go-login" bindtap="goLogin">已经是成员？用短信验证码登录</view>
+</view>

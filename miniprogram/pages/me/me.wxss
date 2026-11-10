@@ -1,0 +1,86 @@
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background: var(--wmt-green-soft);
+  color: var(--wmt-green-deep);
+  font-size: 40rpx;
+  font-weight: 700;
+  text-align: center;
+  line-height: 100rpx;
+}
+
+.identity-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.nickname {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: var(--wmt-ink);
+}
+
+.menu {
+  background: var(--wmt-card);
+  border: 1rpx solid var(--wmt-divider);
+  border-radius: 18rpx;
+  overflow: hidden;
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28rpx;
+  border-bottom: 1rpx solid var(--wmt-divider);
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-title {
+  color: var(--wmt-ink);
+}
+
+.menu-value {
+  color: var(--wmt-sky-deep);
+  font-size: 26rpx;
+}
+
+.menu-arrow {
+  color: var(--wmt-divider);
+}
+
+.section-title {
+  font-weight: 700;
+  color: var(--wmt-ink);
+  margin: 32rpx 0 16rpx;
+}
+
+.logout {
+  text-align: center;
+  color: var(--wmt-coral-deep);
+  background: var(--wmt-card);
+  border: 1rpx solid var(--wmt-divider);
+  border-radius: 18rpx;
+  padding: 26rpx;
+  margin-top: 24rpx;
+}
+
+.brand {
+  text-align: center;
+  color: var(--wmt-sky-deep);
+  font-size: 20rpx;
+  line-height: 1.8;
+  padding: 40rpx 0;
+  white-space: pre-line;
+}

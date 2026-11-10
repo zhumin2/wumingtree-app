@@ -1,0 +1,63 @@
+<view wx:if="{{loading}}">
+  <view class="empty">加载中…</view>
+</view>
+
+<view wx:elif="{{error}}" class="page-pad">
+  <view class="empty">{{error}}</view>
+</view>
+
+<block wx:else>
+  <view class="page-pad detail-body">
+    <view class="crisis" wx:if="{{crisis}}">
+      <view class="crisis-title">你现在安全吗？</view>
+      <view class="crisis-text">如果情况涉及自伤、暴力或医疗紧急，请先联系专业机构或拨打当地心理援助热线，不要等待社群回应。这里不是替代专业帮助的地方。</view>
+    </view>
+
+    <view class="card">
+      <view class="pill pill-coral">{{post.moodLabel}}</view>
+      <view class="post-title">{{post.title}}</view>
+      <view class="post-body" wx:if="{{post.body}}">{{post.body}}</view>
+      <view class="post-meta">{{post.displayName}} · {{post.timeLabel}}</view>
+
+      <view class="reactions">
+        <view class="react-btn {{post.myReactions.indexOf('hug') > -1 ? 'react-active' : ''}}" data-type="hug" bindtap="togglePostReaction">
+          抱一下 {{post.hug}}
+        </view>
+        <view class="react-btn react-green {{post.myReactions.indexOf('me_too') > -1 ? 'react-active' : ''}}" data-type="me_too" bindtap="togglePostReaction">
+          我也是 {{post.meToo}}
+        </view>
+        <view class="report" bindtap="report">举报</view>
+      </view>
+    </view>
+
+    <view class="section-title">回应</view>
+    <view class="empty" wx:if="{{floors.length === 0}}">还没有回应。有人会看到你的。</view>
+
+    <view
+      class="card floor {{item.depth === 2 ? 'floor-reply' : ''}}"
+      wx:for="{{floors}}"
+      wx:key="id"
+    >
+      <view class="floor-top">
+        <view class="floor-name">{{item.displayName}}</view>
+        <view class="floor-hug {{item.hug > 0 ? 'react-active' : ''}}" data-id="{{item.id}}" bindtap="toggleFloorHug">抱一下 {{item.hug}}</view>
+      </view>
+      <view class="floor-content">{{item.content}}</view>
+      <view class="floor-time">{{item.timeLabel}}</view>
+    </view>
+  </view>
+
+  <view class="floor-bar">
+    <input
+      class="floor-input"
+      placeholder="先接住，不评判、不建议"
+      maxlength="500"
+      value="{{floorInput}}"
+      bindinput="onFloorInput"
+      confirm-type="send"
+      bindconfirm="sendFloor"
+    />
+    <view class="anon-toggle {{anonFloor ? 'anon-on' : ''}}" bindtap="toggleAnon">匿</view>
+    <view class="send-btn {{sending ? 'btn-disabled' : ''}}" bindtap="sendFloor">发送</view>
+  </view>
+</block>

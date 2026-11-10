@@ -1,0 +1,16 @@
+<view class="page-pad">
+  <input class="input" placeholder="手机号" type="number" maxlength="11" value="{{phone}}" bindinput="onPhone" />
+  <view class="code-row">
+    <input class="input code-input" placeholder="6 位验证码" type="number" maxlength="6" value="{{code}}" bindinput="onCode" />
+    <view class="code-btn {{(sending || countdown > 0) ? 'btn-disabled' : ''}}" bindtap="sendCode">
+      {{countdown > 0 ? countdown + 's' : '发送验证码'}}
+    </view>
+  </view>
+
+  <view class="thick-btn btn-green {{logging ? 'btn-disabled' : ''}}" bindtap="login">登录</view>
+
+  <view class="hint" style="margin-top: 24rpx; text-align: center;">
+    只对邀请开放的社群：还没有申请？先用邀请码进入。
+  </view>
+  <view class="go-gate" bindtap="goGate">返回邀请页</view>
+</view>
