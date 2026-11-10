@@ -2,6 +2,8 @@
 /// 字段命名 snake_case（信封）→ camelCase（Dart）的映射集中在此，禁止散落。
 library;
 
+import 'dart:math';
+
 /// 登录结果（openapi LoginResult）。
 class LoginResult {
   LoginResult({required this.outcome, this.tokens, this.me, this.application});
@@ -234,15 +236,10 @@ class ReactionState {
 }
 
 /// 客户端幂等令牌（写操作携带，重试复用同一 token——架构设计 3.4）。
+/// 字节级生成：dart2js 无法精确表示 64 位整数字面量（Web 编译坑，见 agents.md）。
 String newClientToken() {
-  final r = DateTime.now().microsecondsSinceEpoch;
-  final buf = StringBuffer();
-  var seed = r;
-  for (var i = 0; i < 16; i++) {
-    seed = (seed * 6364136223846793005 + 1442695040888963407) & 0x7FFFFFFFFFFFFFFF;
-    buf.write((seed >> 33 & 0xFF).toRadixString(16).padLeft(2, '0'));
-  }
-  return buf.toString();
+  final rnd = Random.secure();
+  return List.generate(16, (_) => rnd.nextInt(256).toRadixString(16).padLeft(2, '0')).join();
 }
 
 /// 树洞列表分页。
