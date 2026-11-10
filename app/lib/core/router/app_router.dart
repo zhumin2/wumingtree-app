@@ -76,18 +76,19 @@ Widget buildWmtApp(WmtAppDependencies deps) {
     routerConfig: deps.router,
     builder: (context, child) {
       final width = MediaQuery.sizeOf(context).width;
-      if (width > 900 && child != null) {
+      final base = child!;
+      if (width > 900) {
         return ColoredBox(
           color: Theme.of(context).colorScheme.surface,
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 480),
-              child: child,
+              child: base,
             ),
           ),
         );
       }
-      return child;
+      return base;
     },
   );
 }
