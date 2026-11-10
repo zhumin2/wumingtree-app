@@ -35,6 +35,7 @@
 | `server/` | Go API 服务端 | M0–M2 已建：信封与错误码、短信登录、邀请准入、我的模块、审核端点、树洞全链路（发帖/楼层/回应/举报/机审钩子/危机分支）、seedadmin；部署三件套在 `server/deploy/linux/` |
 | `app/` | Flutter 客户端 | M0–M2 已建：邀请/登录/我的/设置 + 树洞列表/发帖/详情/我的树洞 + M1-10 设计系统组件；平台目录初始化见 `app/README.md` |
 | `admin/` | 管理台 React + Ant Design | M1-6 最小版已建：短信登录、申请列表/筛选、通过/拒绝（原因模板）；dev 经 vite 代理本机 API，`npm run build` 已验证 |
+| `app/`（Web 形态） | 用户端 Web | 同一代码库 `flutter build web`，`/static/web/` 由 API 同源托管（no-cache）；CI 产出 web-dist artifact |
 | `miniprogram/` | 微信小程序端（原生） | MP1 已建：邀请/审核/登录/首页/树洞四页/我的，复用 Go API 信封约定；`node tools/check.js` 结构校验通过；导入见 `miniprogram/README.md` |
 
 线上 Pages 由 `main` 分支根目录直接发布，`index.html` 即线上首页。改动 `index.html` 后，Pages 会自动重建；通常 1—2 分钟内生效。
@@ -140,6 +141,7 @@ monorepo 三目录；工程约定的唯一来源是《技术架构设计》（`d
 - `AuthController` 会话状态机（unknown/guest/pending/member）驱动 go_router `refreshListenable` 三态守卫；令牌存 flutter_secure_storage。
 - 页面：`/gate` 邀请表单、`/gate/pending` 三步进度（禁返回）、`/login` 短信登录（60s 倒计时、按 outcome 分流）、`/me` 身份卡、`/me/settings`（昵称 8 字、四开关即时 PATCH、版本号 dart-define）。
 - 本机无 Flutter SDK：`flutter analyze/test` 依赖 CI；平台目录初始化命令见 `app/README.md`。
+- **Web 用户端**（2026-11-10 启用）：`kIsWeb` 时 API 基地址用相对 `/api/v1`；hash URL 策略（`flutter_web_plugins`，免疫 base-href 子路径）；宽屏 >900px 居中限宽 480px（避开 800×600 测试窗口）；CI 自动 `flutter build web` 并上传 web-dist artifact。踩坑：dart2js 无法精确表示 64 位整数字面量（token 生成改 Random.secure 字节串）；MaterialApp.builder 的 child 是 `Widget?`。
 
 **miniprogram/（微信原生小程序，MP1）**
 
@@ -305,3 +307,4 @@ git reset --hard origin/main
 | 2026-11-08 | **M2 踩坑沉淀**：gorm 对带主键的匿名嵌入结构按 has-one 关联解析（embedded 标签也无效）→ 行结构改扁平字段；写操作幂等需在业务失败时 Release 槽位；集成测试编排要与短信 60s 频控解耦（按手机号缓存令牌、一次性手机号做 pending 断言）；审核按提交返回的申请 ID 精确批准；async gap 的 BuildContext 需 await 前捕获引用 |
 | 2026-11-08 | **Git 状态**：远端 main 头 `86054d6`（CI 全绿）；本地 main `1eba480`，两者内容一致（tree 同源、SHA 因 GitHub 日期/换行归一而不同）。本地曾因一次误操作 reset 回退到 8eb99e5，已从 reflog 恢复到含全部修复的 1eba480。**git 直连恢复后执行 `git fetch origin && git reset --hard origin/main` 收敛；在此之前不要基于本地旧历史发起新提交推送，先用 API 通道（7.2）** |
 | 2026-11-10 | **小程序端 MP1 完成**（miniprogram/，原生微信小程序）：9 页面（邀请/审核/登录/首页/树洞列表/发帖/详情含危机卡/我的树洞/我的含设置）；utils 信封层（2001 续期/2002 吊销）与设计 token 对齐 Flutter 端；sitemap 全量 disallow + 红线静态检查进 tools/check.js + CI 新增 miniprogram job（JS 语法 + 结构校验）。登录沿用手机号+验证码；wx.login 打通列 MP2。结构校验 9 页全过、JS 语法全过 |
+| 2026-11-10 | **用户端 Web 启用**（参考架构 5.2 模式）：Flutter 同一代码库出 Web 形态——kIsWeb 相对 API 路径、hash URL 策略、宽屏居中限宽；server 新增 WEB_DIR 静态托管 `/static/web/`（no-cache 铁律）+ env/update 接线；CI client job 增加 `flutter build web` + web-dist artifact。踩坑：dart2js 64 位字面量（token 改 Random.secure）、MaterialApp.builder child 可空。CI 全绿（头 `cd87f10`） |

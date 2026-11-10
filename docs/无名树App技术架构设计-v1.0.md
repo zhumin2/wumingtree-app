@@ -49,7 +49,8 @@
 - GraphQL：REST + 统一信封足够（沿用）。
 - OpenAPI 代码生成强约束：`docs/tech/openapi-v1.0.yaml` 降级为**评审与联调参考文档**，代码用服务端手写 VO + 客户端手写 model 对齐字段（沿用参考架构做法，减少工具链 ceremony）。
 - Docker：Dockerfile 备而不用，触模后迁移容器化。
-- Web / Windows 端：第二阶段再评估。含孩子照片的产品，每多一个端多一个泄露面；参考架构的 Web 同源分发模式已验证，届时照抄即可。
+- Windows 桌面端：暂不做。
+- Web 用户端：**已启用（2026-11-10，参考架构 5.2 同源分发模式照抄）**——Flutter 同一代码库出 Web 形态，`flutter build web --dart-define=API_BASE_URL=/api/v1 --base-href /static/web/`，产物由 Go API 同源托管 + no-cache；hash 路由免 SPA fallback。残余风险（已知并接受）：令牌存 localStorage（安全存储的 Web 实现即如此）；浏览器截屏/复制无法技术阻止（照片类内容 M4 上线时叠加轻水印）；每多一端多一个泄露面，web-dist 构建在 CI（artifact web-dist）。
 - 支付：第一阶段全部免费活动，支付与退款放第二阶段（对齐产品文档 11.3）。
 
 ---
@@ -297,9 +298,10 @@ HTTP 层不做业务语义区分（恒 200，网络/网关层错误除外）；�
 | PUBLIC_BASE_URL | 文件分发外链基地址 |
 | PUSH_*** | 推送服务凭证 |
 
-## 5.2 管理台与静态分发
+## 5.2 用户端 Web 与静态分发
 
-- `admin/` 构建产物入 `server/deploy/linux/admin/` 随仓库走，update 时复制到 `/opt/wumingtree/uploads/admin/`，由 Go API 同源提供（`/static/admin/`），认证复用 JWT（role=admin）。
+- **用户端 Web**：`flutter build web`（CI 自动构建并上传 web-dist artifact）→ 产物部署到 `WEB_DIR`（env，默认 /opt/wumingtree/web），Go API 同源提供 `/static/web/`；**必须加 `Cache-Control: no-cache, must-revalidate`**——否则发版后浏览器用旧产物（沿用）；验证产物是否含新代码：不能 grep 中文（dart2js UTF-16），grep ASCII 特征串（如路由名 `/hollow`）。
+- **管理台 Web**：`admin/` 构建产物入 `server/deploy/linux/admin/` 随仓库走，update 时复制，同源 `/static/admin/`，认证复用 JWT（role=admin）。
 - **`/static/*` 必须加 `Cache-Control: no-cache, must-revalidate`**——否则发版后浏览器用旧产物，「看不到新功能」（沿用）；验证产物是否包含新代码：不能用 grep 中文（dart2js UTF-16 编码），要 grep ASCII 特征串（如路由名）。
 - 管理台功能范围见技术设计文档 4.4 管理端点表（审核 / 公告 / 活动 / 档案上传 / 举报处理）。
 
