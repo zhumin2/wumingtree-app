@@ -251,7 +251,7 @@ git reset --hard origin/main
 
 在这之前若再次推送：优先重试 `git push`（间歇性），仍不通则继续用 Git Data API 追加提交；本地新增提交与远端链会持续并存，最终以一次 `fetch + reset --hard` 收敛。
 
-**当前状态（2026-11-09）**：远端 main = `84aad4e`（CI 全绿，含 M2）；本地 main = `855bc40`，内容与远端一致（每个提交 TREE 均 MATCH），仅 SHA 不同。git 直连恢复后先 `git fetch origin && git reset --hard origin/main` 收敛，再继续常规提交推送；未收敛前本地提交一律走 7.2 的 API 通道（本次已沉淀可复用脚本模式：blob 上传 → base_tree 建 tree → 复刻提交 → PATCH ref），且**不要基于本地旧 SHA 链做 rebase**。
+**当前状态（2026-11-11）**：远端 main = `9dddda6`（CI 全绿，含 M2 + MP1 小程序 + Web 启用）；本地 main = `fd7ebac`，内容与远端一致（每个提交 TREE 均 MATCH），仅 SHA 不同。git 直连恢复后先 `git fetch origin && git reset --hard origin/main` 收敛，再继续常规提交推送；未收敛前本地提交一律走 7.2 的 API 通道（可复用脚本模式：blob 上传 → base_tree 建 tree → 复刻提交 → PATCH ref，临时脚本模式见 `%TEMP%\wmt_push.py` 的逻辑），且**不要基于本地旧 SHA 链做 rebase**。
 
 当前 Windows 机器没有可直接使用的 `gh` 命令；如 API 回退，需要先安装 gh 或改用现有凭据的 git 推送（本次即用 `git credential fill` 取凭据直调 REST）。不要凭记忆假设 `gh` 一定存在。
 
@@ -277,8 +277,35 @@ git reset --hard origin/main
 4. 选一个明确的小任务，不要一上来重做视觉。
 5. 改完先本地检查，再提交；提交信息写清楚“改了什么、为什么”。
 
-优先候选任务（对应开发计划，按序）：
+## 9.0 端矩阵（2026-11-10）
 
+| 端 | 目录 | 使用者 | 分发 | 进度 |
+|---|---|---|---|---|
+| Flutter App | `app/` | 家长（主力） | Android APK（apkserver）；iOS 待账号 | M0–M2 ✓ |
+| 用户端 Web | `app/`（同一代码库） | 家长（浏览器） | `flutter build web` → `WEB_DIR` → API 同源 `/static/web/`（no-cache） | 已启用 ✓ |
+| 微信小程序 | `miniprogram/` | 家长（轻量入口） | 微信平台（上线流程见 9.1） | MP1 ✓ |
+| 管理台 Web | `admin/` | 管理员/带队老师 | 同源 `/static/admin/` | 审核+举报 ✓ |
+
+服务端 `server/` 是唯一数据入口，四端共用同一 API 契约与信封约定；M3+ 新功能服务端先行、多端跟进。
+
+## 9.1 小程序上线路线（MP1 → 发布；关键路径是备案，合计约 4–8 周）
+
+| 步骤 | 事项 | 说明 | 谁办 |
+|---|---|---|---|
+| 1 | 注册小程序账号（mp.weixin.qq.com） | **必须企业/个体户主体**——树洞是 UGC，「社交-社区/论坛」类目不接受个人 | 用户 |
+| 2 | 小程序认证（300 元/年）+ 类目「社交-社区/论坛」 | 需域名 ICP 备案材料 | 用户 |
+| 3 | 域名 ICP 备案（2–4 周）→ 小程序备案（1–4 周） | 微信平台内提交 | 用户 |
+| 4 | 云主机 + 域名 + HTTPS + `install.sh` 部署 + `seedadmin` | M0-5 清单 | 用户+agent |
+| 5 | `SMS_TYPE=remote` / `AUDIT_MODE=remote` 真实接入 | **代码侧待做**：RemoteSender/RemoteAuditor 目前是占位（推荐腾讯云，与微信生态同源；SecretId/Key 走 env 注入不入仓库） | agent |
+| 6 | 用户协议/隐私政策/社区规范页面 + gate 与我的页入口 | **代码侧待做**——审核必查项 | agent |
+| 7 | `utils/config.js` BASE_URL 改正式域名；AppID 替换 `touristappid` | 正式域名需 HTTPS+备案 | agent |
+| 8 | DevTools 上传 → 体验版 → 真机内测全链路 | mock 短信 123456 → 切真实短信 | 用户+agent |
+| 9 | 提交审核 | 材料：类目证明（ICP 截图）、测试账号（邀请码+说明）、隐私保护指引（声明手机号/昵称/storage）、UGC 安全机制说明（机审+人工+举报已具备） | 用户 |
+| 10 | 发布；上线 30 日内公安联网备案（beian.mps.gov.cn）+ 页脚展示 | | 用户 |
+
+## 9.2 优先候选任务（对应开发计划，按序）
+
+- 上线代码侧第 5、6 项（短信/内容安全真实接入 + 协议页），见 9.1。
 - M1-13 垂直切片联调：需要真实环境（install.sh 装机 + seedadmin 建管理员），mock 短信走通「申请 → 审核（管理台）→ 登录 → 树洞发帖」全链路。
 - M3 公告与资源库（服务端横向复制 M1/M2 模式；文件存储用本地盘 + 鉴权代理；小程序端同步新增公告/资源页）。
 - 小程序端 MP2：wx.login/code2Session 身份打通（需 AppID 与企业资质）、订阅消息通知、分享开关评估。
@@ -308,3 +335,4 @@ git reset --hard origin/main
 | 2026-11-08 | **Git 状态**：远端 main 头 `86054d6`（CI 全绿）；本地 main `1eba480`，两者内容一致（tree 同源、SHA 因 GitHub 日期/换行归一而不同）。本地曾因一次误操作 reset 回退到 8eb99e5，已从 reflog 恢复到含全部修复的 1eba480。**git 直连恢复后执行 `git fetch origin && git reset --hard origin/main` 收敛；在此之前不要基于本地旧历史发起新提交推送，先用 API 通道（7.2）** |
 | 2026-11-10 | **小程序端 MP1 完成**（miniprogram/，原生微信小程序）：9 页面（邀请/审核/登录/首页/树洞列表/发帖/详情含危机卡/我的树洞/我的含设置）；utils 信封层（2001 续期/2002 吊销）与设计 token 对齐 Flutter 端；sitemap 全量 disallow + 红线静态检查进 tools/check.js + CI 新增 miniprogram job（JS 语法 + 结构校验）。登录沿用手机号+验证码；wx.login 打通列 MP2。结构校验 9 页全过、JS 语法全过 |
 | 2026-11-10 | **用户端 Web 启用**（参考架构 5.2 模式）：Flutter 同一代码库出 Web 形态——kIsWeb 相对 API 路径、hash URL 策略、宽屏居中限宽；server 新增 WEB_DIR 静态托管 `/static/web/`（no-cache 铁律）+ env/update 接线；CI client job 增加 `flutter build web` + web-dist artifact。踩坑：dart2js 64 位字面量（token 改 Random.secure）、MaterialApp.builder child 可空。CI 全绿（头 `cd87f10`） |
+| 2026-11-11 | **四端矩阵与小程序上线路线固化进本文件**（9.0/9.1）；Git 状态更新（远端 9dddda6 CI 全绿：M2+MP1+Web；本地 fd7ebac 内容一致）。上线代码侧待办明确：RemoteSender/RemoteAuditor 真实接入（推荐腾讯云）、协议/隐私页、BASE_URL 与 AppID 替换；关键路径为 ICP+小程序备案（4–8 周） |
