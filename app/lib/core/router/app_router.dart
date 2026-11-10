@@ -67,11 +67,28 @@ GoRouter buildRouter(AuthController auth) {
 }
 
 Widget buildWmtApp(WmtAppDependencies deps) {
+  // 宽屏（桌面浏览器）居中限宽 480px；阈值 >900 避开 widget 测试 800x600 窗口
+  // （参考架构 4.5 踩坑表）。
   return MaterialApp.router(
     title: '无名树',
     debugShowCheckedModeBanner: false,
     theme: deps.theme,
     routerConfig: deps.router,
+    builder: (context, child) {
+      final width = MediaQuery.sizeOf(context).width;
+      if (width > 900 && child != null) {
+        return ColoredBox(
+          color: Theme.of(context).colorScheme.surface,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
+              child: child,
+            ),
+          ),
+        );
+      }
+      return child;
+    },
   );
 }
 

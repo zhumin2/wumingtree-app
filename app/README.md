@@ -24,3 +24,20 @@ flutter run
 ```
 
 版本号注入：`--dart-define=APP_VERSION=x.y.z`（技术设计 12 章口径统一）。
+
+## Web 用户端（参考架构 5.2）
+
+
+
+产物  部署到 （Go API 同源托管 ，带 no-cache）。
+CI 每次推送自动构建并上传  artifact。
+
+## Web 用户端（参考架构 5.2）
+
+```bash
+flutter create --platforms web .
+flutter build web --release --dart-define=API_BASE_URL=/api/v1 --base-href /static/web/
+```
+
+产物 `build/web/` 部署到 `WEB_DIR`（Go API 同源托管 `/static/web/`，带 no-cache）。
+CI 每次推送自动构建并上传 `web-dist` artifact。

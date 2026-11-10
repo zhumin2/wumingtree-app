@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../../core/network/api_base.dart';
 import '../../core/network/api_client.dart';
 import '../../shared/models/models.dart';
 import 'token_store.dart';
@@ -11,7 +12,7 @@ enum AuthStatus { unknown, guest, pending, member }
 /// 负责令牌存取、静默续期、登录/登出状态机；页面只 watch 不碰 dio。
 class AuthController extends ChangeNotifier {
   AuthController({ApiClient? api, TokenStore? store})
-      : api = api ?? ApiClient(baseUrl: ApiClient.fallbackBaseUrl),
+      : api = api ?? ApiClient(baseUrl: defaultBaseUrl()),
         store = store ?? TokenStore() {
     wireHooks();
   }

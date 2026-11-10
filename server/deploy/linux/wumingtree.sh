@@ -100,6 +100,12 @@ cmd_update() {
   fi
   # 同分区 mv 原子替换，再重启
   mv -f "$BIN.new" "$BIN"
+  # 用户端 Web 产物随仓库走（参考架构 5.2）
+  if [ -d "$REPO/server/deploy/linux/web" ]; then
+    mkdir -p "$OPT/web"
+    cp -r "$REPO/server/deploy/linux/web/." "$OPT/web/"
+    say "用户端 Web 产物已更新"
+  fi
   svc restart
   cmd_health
   say "update 完成"

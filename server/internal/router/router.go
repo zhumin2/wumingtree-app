@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"log/slog"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -49,6 +50,22 @@ func New(cfg config.Config, db *gorm.DB, rdb *redis.Client) *gin.Engine {
 
 	api := r.Group("/api/v1")
 	api.GET("/healthz", module.NewHealth(db, pingRedis))
+
+	// 用户端 Web（参考架构 5.2）：Flutter Web 产物同源托管 + no-cache 铁律。
+	// hash 路由策略下浏览器只请求 /static/web/ 本身，无需 SPA fallback。
+	if cfg.WebDir != "" {
+		if _, err := os.Stat(cfg.WebDir); err == nil {
+			noCache := func(c *gin.Context) {
+				c.Header("Cache-Control", "no-cache, must-revalidate")
+				c.Next()
+			}
+			web := r.Group("/static/web", noCache)
+			web.Static("/", cfg.WebDir)
+			slog.Info("用户端 Web 已托管", "dir", cfg.WebDir)
+		} else {
+			slog.Warn("WEB_DIR 不存在，用户端 Web 未托管", "dir", cfg.WebDir)
+		}
+	}
 
 	if db == nil {
 		slog.Warn("未连接数据库，业务路由未挂载（仅 healthz 可用）")

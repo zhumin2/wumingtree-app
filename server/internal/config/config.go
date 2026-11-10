@@ -26,6 +26,7 @@ type Config struct {
 	AuditSecret   string // remote 模式的云内容安全凭证
 	PublicBaseURL string // 文件分发外链基地址（架构设计 3.9 的抽象）
 	UploadsDir    string // 本地上传根目录，默认 /opt/wumingtree/uploads
+	WebDir        string // Flutter Web 用户端产物目录；为空则不托管（架构设计 5.2）
 }
 
 // Load 读取配置并做最小校验。prod 缺密钥直接启动失败（宁可起不来，不可裸奔）。
@@ -44,6 +45,7 @@ func Load() (Config, error) {
 		AuditSecret:   os.Getenv("AUDIT_SECRET"),
 		PublicBaseURL: strings.TrimRight(os.Getenv("PUBLIC_BASE_URL"), "/"),
 		UploadsDir:    getEnv("UPLOADS_DIR", "/opt/wumingtree/uploads"),
+		WebDir:        strings.TrimSpace(os.Getenv("WEB_DIR")),
 	}
 
 	if c.JWTSecret == "" {
