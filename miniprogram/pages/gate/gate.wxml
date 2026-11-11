@@ -10,6 +10,13 @@
 
   <view class="hint" style="margin-bottom: 24rpx;">提交后由管理员人工审核，通常 1-2 天。不会向你推送任何营销信息。</view>
 
+  <view class="agree-row">
+    <view class="agree-box {{agreed ? 'agree-box-on' : ''}}" bindtap="toggleAgree">{{agreed ? '✓' : ''}}</view>
+    <view class="agree-text">
+      我已阅读并同意<text class="agree-link" data-type="user" catchtap="openAgreement">《用户协议》</text>、<text class="agree-link" data-type="privacy" catchtap="openAgreement">《隐私政策》</text>和<text class="agree-link" data-type="rules" catchtap="openAgreement">《社区规范》</text>
+    </view>
+  </view>
+
   <view class="thick-btn btn-green {{submitting ? 'btn-disabled' : ''}}" bindtap="submit">提交申请</view>
 
   <view class="go-login" bindtap="goLogin">已经是成员？用短信验证码登录</view>

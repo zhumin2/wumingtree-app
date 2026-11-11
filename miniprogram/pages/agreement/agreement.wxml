@@ -1,0 +1,8 @@
+<view class="page-pad">
+  <view class="card" wx:for="{{sections}}" wx:key="heading">
+    <view class="sec-heading">{{item.heading}}</view>
+    <view class="sec-para" wx:for="{{item.paragraphs}}" wx:for-item="p" wx:key="*this">{{p}}</view>
+  </view>
+
+  <view class="brand">只对邀请开放的家长陪伴社群\n不排名 · 不打卡 · 不比孩子</view>
+</view>

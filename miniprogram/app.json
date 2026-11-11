@@ -8,7 +8,8 @@
     "pages/hollow/compose",
     "pages/hollow/detail",
     "pages/hollow/myposts",
-    "pages/me/me"
+    "pages/me/me",
+    "pages/agreement/agreement"
   ],
   "window": {
     "navigationBarBackgroundColor": "#FFFBF0",

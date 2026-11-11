@@ -22,3 +22,38 @@
   font-size: 26rpx;
   padding: 32rpx 0;
 }
+
+.agree-row {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 24rpx;
+}
+
+.agree-box {
+  flex: none;
+  width: 36rpx;
+  height: 36rpx;
+  border: 2rpx solid var(--wmt-divider);
+  border-radius: 8rpx;
+  background: var(--wmt-card);
+  color: #ffffff;
+  font-size: 24rpx;
+  line-height: 36rpx;
+  text-align: center;
+  margin: 4rpx 12rpx 0 0;
+}
+
+.agree-box-on {
+  background: var(--wmt-green);
+  border-color: var(--wmt-green);
+}
+
+.agree-text {
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: var(--wmt-sky-deep);
+}
+
+.agree-link {
+  color: var(--wmt-green-deep);
+}

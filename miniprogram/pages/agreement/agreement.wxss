@@ -1,0 +1,22 @@
+.sec-heading {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--wmt-ink);
+  margin-bottom: 12rpx;
+}
+
+.sec-para {
+  font-size: 26rpx;
+  line-height: 1.8;
+  color: var(--wmt-ink);
+  margin-bottom: 10rpx;
+}
+
+.brand {
+  text-align: center;
+  color: var(--wmt-sky-deep);
+  font-size: 22rpx;
+  line-height: 1.8;
+  padding: 40rpx 0 24rpx;
+  white-space: pre-line;
+}

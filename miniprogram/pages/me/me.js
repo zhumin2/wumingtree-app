@@ -31,6 +31,10 @@ Page({
     wx.navigateTo({ url: '/pages/hollow/myposts' });
   },
 
+  openAgreement(e) {
+    wx.navigateTo({ url: '/pages/agreement/agreement?type=' + (e.currentTarget.dataset.type || 'user') });
+  },
+
   editNickname() {
     const me = this.data.me;
     if (!me) return;

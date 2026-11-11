@@ -65,6 +65,31 @@ if (homeWxml.indexOf('同伴互助不能替代专业医疗或心理支持') === 
   errors.push('红线：首页缺少常驻风险提示');
 }
 
+// 6. 上线必查项：协议三件套已注册，gate 有勾选与链接，我的页有入口
+const agreeWxml = fs.readFileSync(path.join(root, 'pages/agreement/agreement.wxml'), 'utf8');
+if (agreeWxml.indexOf('sections') === -1) {
+  errors.push('协议页缺少正文渲染');
+}
+const gateWxml = fs.readFileSync(path.join(root, 'pages/gate/gate.wxml'), 'utf8');
+for (const doc of ['user', 'privacy', 'rules']) {
+  if (gateWxml.indexOf('data-type="' + doc + '"') === -1) {
+    errors.push('红线：邀请页缺少《' + doc + '》协议链接');
+  }
+}
+if (gateWxml.indexOf('toggleAgree') === -1) {
+  errors.push('红线：邀请页缺少协议勾选');
+}
+const meWxml = fs.readFileSync(path.join(root, 'pages/me/me.wxml'), 'utf8');
+if (meWxml.indexOf('openAgreement') === -1) {
+  errors.push('红线：我的页缺少协议入口');
+}
+const agreeContent = require(path.join(root, 'pages/agreement/content.js'));
+for (const key of ['user', 'privacy', 'rules']) {
+  if (!agreeContent.DOCS[key] || !agreeContent.DOCS[key].sections.length) {
+    errors.push('协议正文缺失: ' + key);
+  }
+}
+
 if (errors.length) {
   console.error(errors.join('\n'));
   process.exit(1);
