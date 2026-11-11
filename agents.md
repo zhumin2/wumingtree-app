@@ -36,7 +36,8 @@
 | `app/` | Flutter 客户端 | M0–M2 已建：邀请/登录/我的/设置 + 树洞列表/发帖/详情/我的树洞 + M1-10 设计系统组件；平台目录初始化见 `app/README.md` |
 | `admin/` | 管理台 React + Ant Design | M1-6 最小版已建：短信登录、申请列表/筛选、通过/拒绝（原因模板）；dev 经 vite 代理本机 API，`npm run build` 已验证 |
 | `app/`（Web 形态） | 用户端 Web | 同一代码库 `flutter build web`，`/static/web/` 由 API 同源托管（no-cache）；CI 产出 web-dist artifact |
-| `miniprogram/` | 微信小程序端（原生） | MP1 已建：邀请/审核/登录/首页/树洞四页/我的，复用 Go API 信封约定；`node tools/check.js` 结构校验通过；导入见 `miniprogram/README.md` |
+| `miniprogram/` | 微信小程序端（原生） | MP1 已建：邀请/审核/登录/首页/树洞四页/我的/协议页，复用 Go API 信封约定；`node tools/check.js` 结构校验通过；导入见 `miniprogram/README.md` |
+| `docs/agreements/` | 协议正本 | 用户协议 / 隐私政策 / 社区规范 v1（客户端页面与本文件同步）；替换正式法务文本只改此处与两端常量 |
 
 线上 Pages 由 `main` 分支根目录直接发布，`index.html` 即线上首页。改动 `index.html` 后，Pages 会自动重建；通常 1—2 分钟内生效。
 
@@ -125,7 +126,8 @@ monorepo 三目录；工程约定的唯一来源是《技术架构设计》（`d
 
 **server/（Go 1.23 + gin v1.10 + gorm v1.25，go.mod 已固定轻量版本，勿随手升级 gin）**
 
-- 分层：module → service → repository → model；pkg 放零业务横切件（code/httpx/jwt/sms/ratelimit/verifycode/crypto）。
+- 分层：module → service → repository → model；pkg 放零业务横切件（code/httpx/jwt/sms/audit/tc3/ratelimit/verifycode/crypto）。
+- **云服务直连（2026-11-11）**：`pkg/tc3` 是手写腾讯云 TC3-HMAC-SHA256 签名客户端（不引 SDK，5s 超时，`BaseURL` 仅测试注入）；`sms.TencentSender` 走 SendSms v2021-01-11（+86 前缀，`SendStatusSet[0].Code=="Ok"` 才算成功，日志手机号只留后四位）；`audit.TencentAuditor` 走 TextModeration v2020-12-29，**危机词本地先行不外发**，本地词表先行双保险，Block→reject / Review→pending / Pass→allow，云异常降级 pending（先发后审）。配置：`TENCENT_SECRET_ID/KEY/REGION`、`SMS_SDK_APP_ID/SIGN_NAME/TEMPLATE_ID`；remote 缺凭证启动即失败。签名回归用官方文档示例的派生密钥链做固定向量（`tc3_test.go`）。
 - 统一信封 `{"code":0,"message":"ok","data":...,"request_id"}`；16 个数字错误码与哨兵错误在 `internal/pkg/code`（唯一事实来源，改前先改文档）；**禁止裸 c.JSON**（CI envelope-guard 强制，本地也可跑同款 grep）。
 - 已通端点：`/auth/sms-codes`、`/auth/login`（outcome 四路：member/application_pending/application_rejected/no_record）、`/auth/refresh`（access 7d + refresh 30d 一次性轮换，复用检测 → 2002 吊销全会话）；`/applications`（邀请码事务消费 + 手机号防重）；`/me`、`/me/badges`（仅布尔）、`/me/summary`、`PATCH /me`；`/admin/applications` 列表/通过/拒绝（事务建成员 + 审计日志）、`/admin/reject-reasons`（拒绝原因模板）、`/admin/members/:id/phone`（phone.view 逐次审计）。
 - `cmd/seedadmin`：一次性创建管理员（`go run ./cmd/seedadmin -phone 138... -name 主管理员`，幂等；与正式准入同构加密）。
@@ -139,15 +141,16 @@ monorepo 三目录；工程约定的唯一来源是《技术架构设计》（`d
 
 - `core/network/api_client.dart`：信封解包；2001 → 静默续期重放一次；2002 → 会话吊销回调。API 地址 `--dart-define=API_BASE_URL` 注入。
 - `AuthController` 会话状态机（unknown/guest/pending/member）驱动 go_router `refreshListenable` 三态守卫；令牌存 flutter_secure_storage。
-- 页面：`/gate` 邀请表单、`/gate/pending` 三步进度（禁返回）、`/login` 短信登录（60s 倒计时、按 outcome 分流）、`/me` 身份卡、`/me/settings`（昵称 8 字、四开关即时 PATCH、版本号 dart-define）。
+- 页面：`/gate` 邀请表单（含协议勾选）、`/gate/pending` 三步进度（禁返回）、`/login` 短信登录（60s 倒计时、按 outcome 分流）、`/me` 身份卡（含协议三入口）、`/me/settings`（昵称 8 字、四开关即时 PATCH、版本号 dart-define）、`/agreement/:doc` 协议静态页（user/privacy/rules，正文在 `features/agreement/agreement_content.dart`）。
+- **协议页路由**：顶层 `/agreement/:doc`，guest 白名单放行；**不要挂到 `/gate` 子路由**——member 状态下 `/gate*` 会被 redirect 强制回 `/home`，我的页入口会失效。
 - 本机无 Flutter SDK：`flutter analyze/test` 依赖 CI；平台目录初始化命令见 `app/README.md`。
 - **Web 用户端**（2026-11-10 启用）：`kIsWeb` 时 API 基地址用相对 `/api/v1`；hash URL 策略（`flutter_web_plugins`，免疫 base-href 子路径）；宽屏 >900px 居中限宽 480px（避开 800×600 测试窗口）；CI 自动 `flutter build web` 并上传 web-dist artifact。踩坑：dart2js 无法精确表示 64 位整数字面量（token 生成改 Random.secure 字节串）；MaterialApp.builder 的 child 是 `Widget?`。
 
 **miniprogram/（微信原生小程序，MP1）**
 
 - `utils/api.js`：信封解包 + 2001 静默续期重放一次 + 2002 清会话回登录；令牌存 wx storage。
-- 页面：gate（邀请表单）、pending（三步进度）、login（60s 倒计时、outcome 四路分流）、home（四入口+常驻风险提示+会话守卫）、hollow/list（心情筛选+下拉刷新+触底加载）、hollow/compose（匿名开关+client_token 幂等）、hollow/detail（危机求助卡+抱一下 toggle+楼层回应+wx.showActionSheet 举报）、hollow/myposts（长按删帖）、me（身份卡+开关 PATCH /me+退出）。
-- 红线静态检查进 `tools/check.js`：sitemap 全量 disallow、详情页 crisis 卡存在、首页风险提示存在。
+- 页面：gate（邀请表单+协议勾选）、pending（三步进度）、login（60s 倒计时、outcome 四路分流）、home（四入口+常驻风险提示+会话守卫）、hollow/list（心情筛选+下拉刷新+触底加载）、hollow/compose（匿名开关+client_token 幂等）、hollow/detail（危机求助卡+抱一下 toggle+楼层回应+wx.showActionSheet 举报）、hollow/myposts（长按删帖）、me（身份卡+开关 PATCH /me+协议入口+退出）、agreement（`?type=user|privacy|rules` 单页三篇，正文在 `pages/agreement/content.js`）。
+- 红线静态检查进 `tools/check.js`：sitemap 全量 disallow、详情页 crisis 卡存在、首页风险提示存在、协议三篇已注册且 gate/my 入口存在。
 - 上线前：BASE_URL 改正式域名并配置 request 合法域名；用户隐私保护指引后台提交。
 
 **admin/（React 18 + Ant Design 5 + Vite 5，M1-6 最小版）**
@@ -251,7 +254,7 @@ git reset --hard origin/main
 
 在这之前若再次推送：优先重试 `git push`（间歇性），仍不通则继续用 Git Data API 追加提交；本地新增提交与远端链会持续并存，最终以一次 `fetch + reset --hard` 收敛。
 
-**当前状态（2026-11-11）**：远端 main = `9dddda6`（CI 全绿，含 M2 + MP1 小程序 + Web 启用）；本地 main = `fd7ebac`，内容与远端一致（每个提交 TREE 均 MATCH），仅 SHA 不同。git 直连恢复后先 `git fetch origin && git reset --hard origin/main` 收敛，再继续常规提交推送；未收敛前本地提交一律走 7.2 的 API 通道（可复用脚本模式：blob 上传 → base_tree 建 tree → 复刻提交 → PATCH ref，临时脚本模式见 `%TEMP%\wmt_push.py` 的逻辑），且**不要基于本地旧 SHA 链做 rebase**。
+**当前状态（2026-11-11 更新）**：远端与本地已收敛——本机从远端全新克隆（`git clone` 直连正常），本地 main = 远端 main，均为含 M2 + MP1 + Web 的线性历史。7.2 的 API 回退通道保留作应急（`github.com:443` 阻断时）；git 直连正常时直接 `git push origin main`，**不要再基于旧 SHA 链 rebase**。历史分叉提交（旧本地 `fd7ebac` 等）已随新 clone 消解，无需再 `reset --hard`。
 
 当前 Windows 机器没有可直接使用的 `gh` 命令；如 API 回退，需要先安装 gh 或改用现有凭据的 git 推送（本次即用 `git credential fill` 取凭据直调 REST）。不要凭记忆假设 `gh` 一定存在。
 
@@ -296,8 +299,8 @@ git reset --hard origin/main
 | 2 | 小程序认证（300 元/年）+ 类目「社交-社区/论坛」 | 需域名 ICP 备案材料 | 用户 |
 | 3 | 域名 ICP 备案（2–4 周）→ 小程序备案（1–4 周） | 微信平台内提交 | 用户 |
 | 4 | 云主机 + 域名 + HTTPS + `install.sh` 部署 + `seedadmin` | M0-5 清单 | 用户+agent |
-| 5 | `SMS_TYPE=remote` / `AUDIT_MODE=remote` 真实接入 | **代码侧待做**：RemoteSender/RemoteAuditor 目前是占位（推荐腾讯云，与微信生态同源；SecretId/Key 走 env 注入不入仓库） | agent |
-| 6 | 用户协议/隐私政策/社区规范页面 + gate 与我的页入口 | **代码侧待做**——审核必查项 | agent |
+| 5 | `SMS_TYPE=remote` / `AUDIT_MODE=remote` 真实接入 | **代码侧已完成（2026-11-11）**：腾讯云直连（`server/internal/pkg/tc3` 手写 TC3-HMAC-SHA256 + `sms.TencentSender` + `audit.TencentAuditor`）；生产只需在 env 填 `TENCENT_SECRET_ID/KEY`、`SMS_SDK_APP_ID/SIGN_NAME/TEMPLATE_ID` 并切 remote | agent |
+| 6 | 用户协议/隐私政策/社区规范页面 + gate 与我的页入口 | **代码侧已完成（2026-11-11）**——审核必查项：正文正本 `docs/agreements/*.md`；Flutter/Web `/agreement/:doc` + gate 勾选 + 我的页三入口；小程序 `pages/agreement`（单页 ?type=）+ gate 勾选 + 我的页「关于」分组；`tools/check.js` 已加静态红线检查 | agent |
 | 7 | `utils/config.js` BASE_URL 改正式域名；AppID 替换 `touristappid` | 正式域名需 HTTPS+备案 | agent |
 | 8 | DevTools 上传 → 体验版 → 真机内测全链路 | mock 短信 123456 → 切真实短信 | 用户+agent |
 | 9 | 提交审核 | 材料：类目证明（ICP 截图）、测试账号（邀请码+说明）、隐私保护指引（声明手机号/昵称/storage）、UGC 安全机制说明（机审+人工+举报已具备） | 用户 |
@@ -305,7 +308,7 @@ git reset --hard origin/main
 
 ## 9.2 优先候选任务（对应开发计划，按序）
 
-- 上线代码侧第 5、6 项（短信/内容安全真实接入 + 协议页），见 9.1。
+- ~~上线代码侧第 5、6 项（短信/内容安全真实接入 + 协议页）~~ **已完成 2026-11-11**；剩余为用户线下办理（短信签名模板备案、ICP/小程序备案）后填 env 切 remote。
 - M1-13 垂直切片联调：需要真实环境（install.sh 装机 + seedadmin 建管理员），mock 短信走通「申请 → 审核（管理台）→ 登录 → 树洞发帖」全链路。
 - M3 公告与资源库（服务端横向复制 M1/M2 模式；文件存储用本地盘 + 鉴权代理；小程序端同步新增公告/资源页）。
 - 小程序端 MP2：wx.login/code2Session 身份打通（需 AppID 与企业资质）、订阅消息通知、分享开关评估。
@@ -314,7 +317,8 @@ git reset --hard origin/main
 
 ## 10. 环境备注
 
-- 当前 Windows 环境：PIG2LAPTOP。Git Bash 会话内 `git` 已在 PATH（历史条目「需完整路径」已过时）；`node` v24 可用；`python` 可用；Go 1.23.12 在 `D:\code\tools\go`（未入 PATH，用 `export PATH=/d/code/tools/go/bin:$PATH`）；**无 Flutter SDK**，客户端验证依赖 CI。
+- 当前 Windows 环境：PIG2LAPTOP。Git Bash 会话内 `git` 已在 PATH；`node` v24 可用；`python` 可用；本机已装 Go（`go version` = go1.27.3，直接在 PATH，可直接跑 server 的 build/vet/test）；**无 Flutter SDK**，客户端验证依赖 CI。
+- **gofmt 假阳性**：本机 `core.autocrlf=true`，`gofmt -l` 会把几乎全仓（含未改动文件）报成未格式化，实际 diff 只有 `^M`（CRLF）。**不要 `gofmt -w ./...`**——会把整仓变成噪音 diff；只 format 新建文件，且以 CI（Linux/LF）为准。
 - Go 模块代理间歇超时是常态：GOPROXY 在 `goproxy.cn` 与 `proxy.golang.org` 之间循环重试即可（同参考架构踩坑 14）。
 - git 身份已在仓库级配置为 zhumin2 <37998940+zhumin2@users.noreply.github.com>（与历史提交一致）。
 - 云电脑环境：Linux，路径为 `/home/user/Doubao/chats/...`；**不能读取 Windows 的 `D:\` 或 `C:\Users\...`**。跨环境操作先确认文件在哪一侧。
@@ -336,3 +340,5 @@ git reset --hard origin/main
 | 2026-11-10 | **小程序端 MP1 完成**（miniprogram/，原生微信小程序）：9 页面（邀请/审核/登录/首页/树洞列表/发帖/详情含危机卡/我的树洞/我的含设置）；utils 信封层（2001 续期/2002 吊销）与设计 token 对齐 Flutter 端；sitemap 全量 disallow + 红线静态检查进 tools/check.js + CI 新增 miniprogram job（JS 语法 + 结构校验）。登录沿用手机号+验证码；wx.login 打通列 MP2。结构校验 9 页全过、JS 语法全过 |
 | 2026-11-10 | **用户端 Web 启用**（参考架构 5.2 模式）：Flutter 同一代码库出 Web 形态——kIsWeb 相对 API 路径、hash URL 策略、宽屏居中限宽；server 新增 WEB_DIR 静态托管 `/static/web/`（no-cache 铁律）+ env/update 接线；CI client job 增加 `flutter build web` + web-dist artifact。踩坑：dart2js 64 位字面量（token 改 Random.secure）、MaterialApp.builder child 可空。CI 全绿（头 `cd87f10`） |
 | 2026-11-11 | **四端矩阵与小程序上线路线固化进本文件**（9.0/9.1）；Git 状态更新（远端 9dddda6 CI 全绿：M2+MP1+Web；本地 fd7ebac 内容一致）。上线代码侧待办明确：RemoteSender/RemoteAuditor 真实接入（推荐腾讯云）、协议/隐私页、BASE_URL 与 AppID 替换；关键路径为 ICP+小程序备案（4–8 周） |
+| 2026-11-11 | **上线代码侧第 5、6 项完成**。①腾讯云直连：新增 `pkg/tc3`（手写 TC3-HMAC-SHA256，纯标准库，官方文档固定向量测试）+ `sms.TencentSender`（SendSms v2021-01-11）+ `audit.TencentAuditor`（TextModeration v2020-12-29，危机词本地先行不外发、本地词表先行、云异常降级 pending）；config 增 TENCENT_* / SMS_SDK_APP_ID/SIGN_NAME/TEMPLATE_ID，remote 缺凭证启动即失败；env.example 同步。②协议三件套：正本 `docs/agreements/*.md`；Flutter/Web 顶层 `/agreement/:doc`（guest 白名单已放行，不挂 /gate 子路由因 member 会被 redirect 回 /home）+ gate 勾选 + 我的页三入口 + widget test；小程序 `pages/agreement` 单页（?type=）+ gate 勾选 + 我的页「关于」分组 + check.js 静态红线。服务端 build/vet/test 全绿；miniprogram 结构校验 10 页通过；Flutter 依赖 CI |
+| 2026-11-11 | **本地仓库重建**：`git clone` 直连成功（github.com:443 已恢复），本地与远端 history 收敛，旧分叉提交不再需要；7.2 的 API 通道保留为应急 |
