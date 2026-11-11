@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/agreement/agreement_page.dart';
 import '../../features/auth/auth_controller.dart';
 import '../../features/auth/login_page.dart';
 import '../../features/gate/gate_page.dart';
@@ -32,8 +33,12 @@ GoRouter buildRouter(AuthController auth) {
           if (path == '/login' || path == '/gate') return null; // 可回到登录/邀请页
           return '/gate/pending';
         case AuthStatus.guest:
-          // guest 只能到 gate / login（含其子路径）
-          if (path.startsWith('/gate') || path == '/login') return null;
+          // guest 只能到 gate / login（含其子路径）与协议页（勾选前置阅读）
+          if (path.startsWith('/gate') ||
+              path == '/login' ||
+              path.startsWith('/agreement')) {
+            return null;
+          }
           return '/gate';
       }
     },
@@ -46,6 +51,12 @@ GoRouter buildRouter(AuthController auth) {
         ],
       ),
       GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
+      // 协议页放顶层而非 /gate 子路由：member 会被 redirect 强制回 /home，
+      // 「我的」页也需要入口（gate 与 me 两处共用）。
+      GoRoute(
+          path: '/agreement/:doc',
+          builder: (_, state) =>
+              AgreementPage(doc: state.pathParameters['doc']!)),
       GoRoute(
         path: '/hollow',
         builder: (context, state) => const HollowListPage(),

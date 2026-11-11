@@ -85,6 +85,19 @@ class ProfilePage extends StatelessWidget {
               icon: Icons.settings,
               title: '设置',
               onTap: () => context.push('/me/settings')),
+          // 协议入口（上线清单 9.1 第 6 项）：静态正文页，游客与成员均可访问。
+          _MenuTile(
+              icon: Icons.description_outlined,
+              title: '用户协议',
+              onTap: () => context.push('/agreement/user')),
+          _MenuTile(
+              icon: Icons.privacy_tip_outlined,
+              title: '隐私政策',
+              onTap: () => context.push('/agreement/privacy')),
+          _MenuTile(
+              icon: Icons.rule_outlined,
+              title: '社区规范',
+              onTap: () => context.push('/agreement/rules')),
           const SizedBox(height: 24),
           const Center(
             child: Text(

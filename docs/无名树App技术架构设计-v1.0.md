@@ -293,8 +293,10 @@ HTTP 层不做业务语义区分（恒 200，网络/网关层错误除外）；�
 | JWT_SECRET | `openssl rand -hex 32` |
 | FILE_KEY | 手机号加密主密钥（AES-256-GCM），`openssl rand -hex 32` |
 | DB_DSN / REDIS_ADDR | 本机连接串 |
-| SMS_TYPE / SMS_SECRET | mock（联调）/ 云厂商凭证 |
-| AUDIT_MODE | mock（关键词表）/ remote（云内容安全） |
+| SMS_TYPE | mock（联调）/ remote（腾讯云短信 SendSms） |
+| AUDIT_MODE | mock（关键词表）/ remote（腾讯云文本内容安全 TextModeration） |
+| TENCENT_SECRET_ID / TENCENT_SECRET_KEY / TENCENT_REGION | 腾讯云 API 密钥与地域（remote 模式必填；Region 默认 ap-guangzhou） |
+| SMS_SDK_APP_ID / SMS_SIGN_NAME / SMS_TEMPLATE_ID | 腾讯云短信应用、已备案签名与模板（SMS_TYPE=remote 必填） |
 | PUBLIC_BASE_URL | 文件分发外链基地址 |
 | PUSH_*** | 推送服务凭证 |
 

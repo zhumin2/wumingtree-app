@@ -21,6 +21,7 @@ class _GatePageState extends State<GatePage> {
   final _nickname = TextEditingController();
   final _phone = TextEditingController();
   bool _submitting = false;
+  bool _agreed = false;
 
   @override
   void dispose() {
@@ -32,6 +33,11 @@ class _GatePageState extends State<GatePage> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
+    if (!_agreed) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('请先阅读并勾选同意协议')));
+      return;
+    }
     setState(() => _submitting = true);
     final auth = context.read<AuthController>();
     try {
@@ -101,6 +107,42 @@ class _GatePageState extends State<GatePage> {
                 '提交后由管理员人工审核，通常 1–2 天。不会向你推送任何营销信息。',
                 style: TextStyle(fontSize: 12, color: WmtColors.skyDeep),
               ),
+              const SizedBox(height: 16),
+              // 协议勾选（上线清单 9.1 第 6 项）：正文在 /agreement/:doc，guest 可访问。
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: Checkbox(
+                      value: _agreed,
+                      onChanged: (v) => setState(() => _agreed = v ?? false),
+                      visualDensity: VisualDensity.compact,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      activeColor: WmtColors.green,
+                      side: const BorderSide(color: WmtColors.divider),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: [
+                        const Text('我已阅读并同意',
+                            style: _consentStyle),
+                        _agreementLink(context, '《用户协议》', '/agreement/user'),
+                        const Text('、', style: _consentStyle),
+                        _agreementLink(
+                            context, '《隐私政策》', '/agreement/privacy'),
+                        const Text('和', style: _consentStyle),
+                        _agreementLink(
+                            context, '《社区规范》', '/agreement/rules'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
               const SizedBox(height: 24),
               SizedBox(
                 height: 52,
@@ -133,8 +175,22 @@ class _GatePageState extends State<GatePage> {
   }
 }
 
-/// 审核状态页：三步进度 + 禁止返回（M1-8）。
-class GatePendingPage extends StatelessWidget {
+/// 协议勾选行的正文样式（13 号、天蓝深、行高 1.5，与勾选框对齐）。
+const _consentStyle = TextStyle(fontSize: 13, color: WmtColors.skyDeep, height: 1.5);
+
+/// 协议链接片段：绿色深、可点，跳转 /agreement/:doc。
+/// 用 GestureDetector + Wrap 拼接而非 TextSpan recognizer，避免手势识别器的生命周期管理。
+Widget _agreementLink(BuildContext context, String label, String path) {
+  return GestureDetector(
+    behavior: HitTestBehavior.opaque,
+    onTap: () => context.push(path),
+    child: Text(label,
+        style: const TextStyle(
+            fontSize: 13, height: 1.5, color: WmtColors.greenDeep)),
+  );
+}
+
+/// 审核状态页：三步进度 + 禁止返回（M1-8）。class GatePendingPage extends StatelessWidget {
   const GatePendingPage({super.key});
 
   @override
