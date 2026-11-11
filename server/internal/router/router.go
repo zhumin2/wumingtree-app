@@ -23,6 +23,7 @@ import (
 	"github.com/zhumin2/wumingtree-app/server/internal/pkg/idempot"
 	"github.com/zhumin2/wumingtree-app/server/internal/pkg/ratelimit"
 	"github.com/zhumin2/wumingtree-app/server/internal/pkg/sms"
+	"github.com/zhumin2/wumingtree-app/server/internal/pkg/tc3"
 	"github.com/zhumin2/wumingtree-app/server/internal/pkg/verifycode"
 	"github.com/zhumin2/wumingtree-app/server/internal/repository"
 	"github.com/zhumin2/wumingtree-app/server/internal/service"
@@ -110,16 +111,24 @@ func New(cfg config.Config, db *gorm.DB, rdb *redis.Client) *gin.Engine {
 	}
 
 	// ---- 服务 ----
+	tencentCred := tc3.Credential{SecretID: cfg.TencentSecretID, SecretKey: cfg.TencentSecretKey}
 	authSvc := service.NewAuthService(
 		memberRepo, memberRepo, appRepo, vstore,
-		sms.New(cfg.SMSType == "mock", cfg.SMSSecret),
+		sms.New(cfg.SMSType == "mock", sms.Options{
+			TC:         tc3.New(tencentCred, "sms.tencentcloudapi.com", "sms", cfg.TencentRegion),
+			SdkAppID:   cfg.SmsSdkAppID,
+			SignName:   cfg.SmsSignName,
+			TemplateID: cfg.SmsTemplateID,
+		}),
 		lim, fails, refresh, phoneCrypto,
 		cfg.SMSType == "mock", cfg.JWTSecret,
 	)
 	appSvc := service.NewApplicationService(appRepo, appRepo, appRepo, phoneCrypto)
 	auditSvc := service.NewAuditWriter(memberRepo, phoneCrypto, &repository.AuditRepo{DB: db})
 	meSvc := service.NewMemberService(memberRepo, memberRepo, memberRepo, counters, badges, phoneCrypto)
-	auditor := audit.New(cfg.AuditMode, cfg.AuditSecret)
+	auditor := audit.New(cfg.AuditMode, audit.Options{
+		TC: tc3.New(tencentCred, "tms.tencentcloudapi.com", "tms", cfg.TencentRegion),
+	})
 	hollowSvc := service.NewHollowService(
 		postRepo, floorRepo, reactionRepo, memberRepo,
 		&repository.AuditRepo{DB: db}, auditor,

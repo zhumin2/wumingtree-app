@@ -21,12 +21,19 @@ type Config struct {
 	JWTSecret     string
 	FileKey       string // 手机号加密主密钥：64 位 hex（=32 字节 AES-256 key）
 	SMSType       string // mock / remote（mock 固定验证码，联调用）
-	SMSSecret     string // remote 模式的云厂商凭证
 	AuditMode     string // mock / remote（mock 关键词表）
-	AuditSecret   string // remote 模式的云内容安全凭证
 	PublicBaseURL string // 文件分发外链基地址（架构设计 3.9 的抽象）
 	UploadsDir    string // 本地上传根目录，默认 /opt/wumingtree/uploads
 	WebDir        string // Flutter Web 用户端产物目录；为空则不托管（架构设计 5.2）
+
+	// 腾讯云凭证（SMS_TYPE=remote / AUDIT_MODE=remote 时必填，控制台「访问管理」创建）。
+	TencentSecretID  string
+	TencentSecretKey string
+	TencentRegion    string // 如 ap-guangzhou
+	// 腾讯云短信参数（SMS_TYPE=remote 时必填，短信控制台创建）。
+	SmsSdkAppID   string
+	SmsSignName   string
+	SmsTemplateID string
 }
 
 // Load 读取配置并做最小校验。prod 缺密钥直接启动失败（宁可起不来，不可裸奔）。
@@ -40,12 +47,17 @@ func Load() (Config, error) {
 		JWTSecret:     os.Getenv("JWT_SECRET"),
 		FileKey:       strings.TrimSpace(os.Getenv("FILE_KEY")),
 		SMSType:       getEnv("SMS_TYPE", "mock"),
-		SMSSecret:     os.Getenv("SMS_SECRET"),
 		AuditMode:     getEnv("AUDIT_MODE", "mock"),
-		AuditSecret:   os.Getenv("AUDIT_SECRET"),
 		PublicBaseURL: strings.TrimRight(os.Getenv("PUBLIC_BASE_URL"), "/"),
 		UploadsDir:    getEnv("UPLOADS_DIR", "/opt/wumingtree/uploads"),
 		WebDir:        strings.TrimSpace(os.Getenv("WEB_DIR")),
+
+		TencentSecretID:  strings.TrimSpace(os.Getenv("TENCENT_SECRET_ID")),
+		TencentSecretKey: os.Getenv("TENCENT_SECRET_KEY"),
+		TencentRegion:    getEnv("TENCENT_REGION", "ap-guangzhou"),
+		SmsSdkAppID:      strings.TrimSpace(os.Getenv("SMS_SDK_APP_ID")),
+		SmsSignName:      os.Getenv("SMS_SIGN_NAME"),
+		SmsTemplateID:    strings.TrimSpace(os.Getenv("SMS_TEMPLATE_ID")),
 	}
 
 	if c.JWTSecret == "" {
@@ -73,6 +85,14 @@ func Load() (Config, error) {
 	case "mock", "remote":
 	default:
 		return c, fmt.Errorf("config: AUDIT_MODE 仅支持 mock / remote")
+	}
+	// 显式选择 remote 就要求凭证配齐（任何环境，配置错误宁可起不来）。
+	if c.SMSType == "remote" && (c.TencentSecretID == "" || c.TencentSecretKey == "" ||
+		c.SmsSdkAppID == "" || c.SmsSignName == "" || c.SmsTemplateID == "") {
+		return c, fmt.Errorf("config: SMS_TYPE=remote 需要 TENCENT_SECRET_ID/KEY 与 SMS_SDK_APP_ID/SIGN_NAME/TEMPLATE_ID")
+	}
+	if c.AuditMode == "remote" && (c.TencentSecretID == "" || c.TencentSecretKey == "") {
+		return c, fmt.Errorf("config: AUDIT_MODE=remote 需要 TENCENT_SECRET_ID/KEY")
 	}
 	return c, nil
 }
